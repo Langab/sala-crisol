@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sala Crisol — Sala de artes y movimiento · Ñuñoa, Santiago</title>
+  <meta name="description" content="Sala Crisol es un espacio de artes y movimiento en Ñuñoa: flexibilidad, equilibrio de manos, pilates, acroyoga, capoeira, danza y tertulias de cine. Av. Salvador 2302, a pasos del Metro Monseñor Eyzaguirre.">
+  <meta property="og:title" content="Sala Crisol — Sala de artes y movimiento">
+  <meta property="og:description" content="Talleres de movimiento, arte y comunidad en Ñuñoa. Agenda tu primera clase.">
+  <meta property="og:image" content="img/logo.jpg">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+  <!-- ===================== NAVEGACIÓN ===================== -->
+  <header class="nav">
+    <div class="contenedor nav__inner">
+      <a class="nav__marca" href="index.html" aria-label="Sala Crisol, inicio">
+        <img class="nav__logo" src="img/logo.jpg" alt="Logo de Sala Crisol: un crisol con una llama">
+        <span class="nav__nombre">Sala <span>Crisol</span></span>
+      </a>
+
+      <button class="nav__burger" aria-expanded="false" aria-label="Abrir menú">☰</button>
+
+      <ul class="nav__links">
+        <li>
+          <a href="#talleres" aria-haspopup="true">Talleres ▾</a>
+          <div class="nav__despliegue">
+            <a href="talleres/movimiento-flexible.html">Movimiento Flexible <small>Lunes y sábado · Consuelo</small></a>
+            <a href="talleres/equilibrio-de-manos.html">Equilibrio de Manos <small>Miércoles · Consuelo</small></a>
+            <a href="talleres/pilates-matwork.html">Pilates MatWork <small>Esperanza</small></a>
+            <a href="talleres/entrenamiento-integral.html">Entrenamiento Integral <small>Esperanza</small></a>
+            <a href="talleres/chair-fusion.html">Chair Fusión &amp; Femme Fatale <small>Martes · Ginevra</small></a>
+            <a href="talleres/acroyoga-lunar.html">AcroYoga Lunar <small>Ciclos y seminarios · Sofía</small></a>
+            <a href="talleres/capoeira.html">Capoeira <small>Sábado · Os Angoleiros</small></a>
+            <a href="talleres/masaje-tailandes.html">Masaje Tailandés <small>Taller puntual</small></a>
+          </div>
+        </li>
+        <li><a href="#horarios">Horarios</a></li>
+        <li><a href="#tertulias">Tertulias</a></li>
+        <li><a href="#espacio">El espacio</a></li>
+        <li><a href="nosotros.html">Nosotras</a></li>
+        <li><a class="boton boton--fuego" data-ws="Hola! Quiero agendar una clase en Sala Crisol 🔥" href="#">Agenda una clase</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="contenido">
+
+    <!-- ===================== HÉROE ===================== -->
+    <section class="heroe" aria-label="Presentación de Sala Crisol">
+      <div class="contenedor">
+        <p class="heroe__eyebrow">Ñuñoa · Santiago de Chile</p>
+
+        <h1 class="heroe__titulo">
+          <span>Sala</span>
+          <span class="fundido">Crisol</span>
+        </h1>
+
+        <p class="heroe__sub">Sala de artes y movimiento</p>
+
+        <p class="heroe__manifiesto">
+          Un crisol es el recipiente donde los metales se funden y se transforman.
+          Acá pasa lo mismo con las personas: <strong>deporte, arte y cultura</strong> se mezclan
+          en un espacio íntimo, autogestionado y de puertas abiertas, donde
+          <strong>entrenar, crear y encontrarse</strong> es la misma cosa.
+        </p>
+
+        <div class="heroe__ctas">
+          <a class="boton boton--fuego" data-ws="Hola! Quiero agendar mi primera clase en Sala Crisol 🔥" href="#">🔥 Agenda tu primera clase</a>
+          <a class="boton boton--borde" href="#talleres">Ver talleres del mes ↓</a>
+        </div>
+
+        <div class="heroe__datos">
+          <span class="chip">📍 Av. Salvador 2302, Ñuñoa</span>
+          <span class="chip">Ⓜ️ A 4 min del Metro Monseñor Eyzaguirre (L3)</span>
+          <span class="chip">✨ Espacio íntimo · grupos pequeños</span>
+        </div>
+      </div>
+
+      <svg class="heroe__gota" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,20 C240,80 480,0 720,35 C960,70 1200,10 1440,45 L1440,90 L0,90 Z" fill="rgba(240,138,29,0.08)"/>
+        <path d="M0,50 C260,95 520,25 760,55 C1000,85 1240,35 1440,65 L1440,90 L0,90 Z" fill="rgba(232,99,15,0.12)"/>
+      </svg>
+    </section>
+
+    <!-- ===================== CINTA DE TALLERES ===================== -->
+    <div class="cinta" aria-hidden="true">
+      <div class="cinta__pista" data-cinta></div>
+    </div>
+
+    <!-- ===================== TALLERES DEL MES ===================== -->
+    <section class="seccion talleres" id="talleres">
+      <div class="contenedor">
+        <div class="talleres__cabeza">
+          <div>
+            <span class="sticker sticker--fuego revelar">Talleres del mes</span>
+            <h2 class="titulo-seccion revelar">Este mes en <span class="acento">la sala</span></h2>
+            <p class="bajada revelar">
+              Grupos pequeños, profes que te conocen por tu nombre y cero requisito de experiencia.
+              Entra a cada taller para ver horarios, cupos disponibles y de qué se trata.
+            </p>
+          </div>
+          <a class="boton boton--borde revelar" data-ws="Hola! Tengo dudas sobre los talleres de Sala Crisol ✨" href="#">¿Dudas? Hablemos</a>
+        </div>
+
+        <div class="rejilla-talleres" data-rejilla-talleres>
+          <!-- las tarjetas se generan desde js/config.js -->
+          <noscript><p>Activa JavaScript para ver los talleres, o escríbenos por Instagram <a href="https://www.instagram.com/sala.crisol/">@sala.crisol</a>.</p></noscript>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HORARIOS ===================== -->
+    <section class="seccion horario" id="horarios">
+      <div class="contenedor">
+        <span class="sticker revelar">La semana crisol</span>
+        <h2 class="titulo-seccion revelar">Horarios <span class="acento">semanales</span></h2>
+        <p class="bajada revelar">
+          Así se mueve la semana en la sala. Toca cualquier clase para ver el detalle e inscribirte.
+        </p>
+
+        <div class="horario__tabla" data-grilla>
+          <!-- se genera desde js/config.js -->
+        </div>
+
+        <p class="horario__nota revelar">
+          <span>🌙</span>
+          <span>Los bloques lila son <strong>encuentros mensuales</strong> (una vez al mes) y los
+          Domingos Populares son jornadas especiales por el sostenimiento del espacio — se anuncian
+          en <a data-ig href="#" style="color: var(--oro);">Instagram</a>.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================== CÓMO EMPEZAR ===================== -->
+    <section class="seccion pasos" id="como-empezar">
+      <div class="contenedor">
+        <span class="sticker sticker--lila revelar">Tu primera vez</span>
+        <h2 class="titulo-seccion revelar">Empezar es <span class="acento">así de simple</span></h2>
+
+        <div class="pasos__rejilla">
+          <article class="paso revelar">
+            <div class="paso__numero">1</div>
+            <h3 class="paso__titulo">Escríbenos</h3>
+            <p>Cuéntanos por WhatsApp o Instagram qué taller te llama. Te confirmamos cupo y
+            respondemos cualquier duda — no hay preguntas tontas.</p>
+          </article>
+          <article class="paso revelar revelar--retraso-1">
+            <div class="paso__numero">2</div>
+            <h3 class="paso__titulo">Ven a tu primera clase</h3>
+            <p>Llega 10 minutos antes con ropa cómoda y agua. La sala tiene tatamis, espejo y
+            buena música. No necesitas experiencia previa: acá se llega a aprender.</p>
+          </article>
+          <article class="paso revelar revelar--retraso-2">
+            <div class="paso__numero">3</div>
+            <h3 class="paso__titulo">Quédate en la comunidad</h3>
+            <p>Si te gustó, eliges tu plan mensual y pasas a ser parte del crisol: talleres,
+            tertulias, domingos populares y gente que se mueve como tú.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TERTULIAS ===================== -->
+    <section class="seccion tertulias" id="tertulias">
+      <div class="contenedor">
+        <span class="sticker sticker--rosa revelar">Cine + Tertulia</span>
+        <h2 class="titulo-seccion revelar">Las <span class="acento">tertulias</span> del crisol</h2>
+        <p class="tertulias__lema revelar">cine · cuerpo · comunidad</p>
+        <p class="bajada revelar" style="margin-top: 1rem;">
+          Una vez al ciclo, la sala se apaga y se enciende de otra forma: proyectamos una película,
+          conversamos y el cierre lo ponen artistas invitadxs en vivo. Junto a
+          <strong>Cía. Ffrenesí</strong>, ya van tres ciclos.
+        </p>
+
+        <div class="tertulias__rejilla">
+          <!-- Tertulia 01 -->
+          <article class="afiche revelar" style="--acento-afiche: #efa8de;">
+            <div class="afiche__marco">
+              <img src="img/poster-tertulia-1.jpg" alt="Afiche de la primera tertulia: This is Ballroom" loading="lazy">
+              <span class="afiche__numero">Tertulia 01</span>
+            </div>
+            <div class="afiche__cuerpo">
+              <h3 class="afiche__pelicula">This is Ballroom</h3>
+              <p class="afiche__detalle">Apertura de ciclo. Proyección + tertulia con artistas invitadxs: música y danza en vivo, cruce entre disciplinas.</p>
+              <span class="afiche__fecha">Viernes 1 de mayo · 19:00</span>
+            </div>
+          </article>
+
+          <!-- Tertulia 02 -->
+          <article class="afiche revelar revelar--retraso-1" style="--acento-afiche: #7dd8e8;">
+            <div class="afiche__marco">
+              <img src="img/poster-tertulia-2.jpg" alt="Afiche de la segunda tertulia: Perro Bomba de Juan Cáceres" loading="lazy">
+              <span class="afiche__numero">Tertulia 02</span>
+            </div>
+            <div class="afiche__cuerpo">
+              <h3 class="afiche__pelicula">Perro Bomba</h3>
+              <p class="afiche__detalle">De Juan Cáceres (Chile). Un espacio más íntimo: música, danza y expresiones artísticas en atmósfera de escucha.</p>
+              <span class="afiche__fecha">Viernes 29 de mayo · 20:00</span>
+            </div>
+          </article>
+
+          <!-- Tertulia 03 -->
+          <article class="afiche revelar revelar--retraso-2" style="--acento-afiche: #f2e85c;">
+            <div class="afiche__marco">
+              <img src="img/poster-tertulia-3.jpg" alt="Afiche de la tercera tertulia: Tetoterapia El Musical" loading="lazy">
+              <span class="afiche__numero">Tertulia 03</span>
+            </div>
+            <div class="afiche__cuerpo">
+              <h3 class="afiche__pelicula">Tetoterapia: El Musical</h3>
+              <p class="afiche__detalle">De Elefante Gonorrea y sus amigxs. Proyección + tertulia con intervención artística. Espacio íntimo, cupos limitados.</p>
+              <span class="afiche__fecha">Viernes 26 de junio · 19:30</span>
+            </div>
+          </article>
+
+          <!-- Próxima tertulia (marco vacío) -->
+          <article class="afiche afiche--tba revelar revelar--retraso-3">
+            <div class="afiche__marco">
+              <span class="afiche__interrogante">04</span>
+              <span class="afiche__numero">Próximo ciclo</span>
+            </div>
+            <div class="afiche__cuerpo">
+              <h3 class="afiche__pelicula">¿Qué veremos?</h3>
+              <p class="afiche__detalle">La cuarta tertulia se está cocinando. Entradas $5.000 (preventa 2×$7.000). Síguenos para enterarte primero.</p>
+              <a class="afiche__fecha" data-ig href="#" style="text-decoration: none;">Avisarme por Instagram →</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="tertulias__fotos">
+          <figure class="tertulias__foto revelar">
+            <img src="img/foto-tertulia-musica.jpg" alt="Música en vivo bajo luz azul en una tertulia de Sala Crisol" loading="lazy">
+            <figcaption>Música en vivo en la segunda tertulia — la sala convertida en escenario.</figcaption>
+          </figure>
+          <figure class="tertulias__foto revelar revelar--retraso-1">
+            <img src="img/foto-tertulia-performance.jpg" alt="Performance de danza en silla durante una tertulia" loading="lazy">
+            <figcaption>Intervención artística del primer ciclo, This is Ballroom.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== COMUNIDAD / DOMINGO POPULAR ===================== -->
+    <section class="seccion comunidad" id="comunidad">
+      <div class="contenedor comunidad__panel">
+        <div class="comunidad__texto">
+          <span class="sticker sticker--amarillo revelar">Autogestión</span>
+          <h2 class="titulo-seccion revelar">Domingos <span class="acento">populares</span></h2>
+          <p class="revelar">
+            Creemos que los espacios culturales y de movimiento <strong>se construyen entre todas
+            y todos</strong>. Por eso, una vez al mes abrimos las puertas para una jornada completa
+            de entrenamiento, encuentro y colaboración.
+          </p>
+          <ul class="comunidad__lista revelar">
+            <li>Clases de pilates, equilibrio de manos, flexibilidad y danza contemporánea durante todo el día.</li>
+            <li>Participas aportando el valor de la clase <strong>o trayendo materiales</strong> para la sala (café, plantas, papelería, limpieza…).</li>
+            <li>Puedes venir a una clase o quedarte la jornada entera — almuerzo comunitario incluido.</li>
+          </ul>
+          <a class="boton boton--fuego revelar" data-ws="Hola! Quiero saber cuándo es el próximo Domingo Popular 🌿" href="#">Avísame del próximo</a>
+        </div>
+        <div class="polaroid-pila revelar revelar--retraso-1">
+          <figure class="polaroid polaroid--a">
+            <img src="img/flyer-domingo-popular.jpg" alt="Afiche del Domingo de Jornada Popular en Sala Crisol" loading="lazy">
+          </figure>
+          <figure class="polaroid polaroid--b">
+            <img src="img/foto-clase-danza.jpg" alt="Clase de danza en ronda dentro de Sala Crisol" loading="lazy">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== EL ESPACIO / ARRIENDO ===================== -->
+    <section class="seccion espacio" id="espacio">
+      <div class="contenedor">
+        <span class="sticker sticker--lila revelar">El espacio</span>
+        <h2 class="titulo-seccion revelar">Una sala chica con <span class="acento">un fuego grande</span></h2>
+        <p class="bajada revelar">
+          25 m² pensados para el movimiento: luz cálida, piso de linóleo y una energía
+          que se nota apenas entras. También puedes <strong>arrendarla</strong> para tus propias
+          clases, ensayos o talleres.
+        </p>
+
+        <div class="espacio__rejilla">
+          <div class="espacio__specs revelar">
+            <div class="spec">
+              <div class="spec__icono">📐</div>
+              <div class="spec__nombre">25 m² de sala</div>
+              <div class="spec__dato">Piso de linóleo, ideal para danza y entrenamiento</div>
+            </div>
+            <div class="spec">
+              <div class="spec__icono">🪞</div>
+              <div class="spec__nombre">Espejo gigante</div>
+              <div class="spec__dato">1,90 × 3,50 m para verte de cuerpo entero</div>
+            </div>
+            <div class="spec">
+              <div class="spec__icono">🧘</div>
+              <div class="spec__nombre">10 tatamis</div>
+              <div class="spec__dato">Para acro, masaje, suelo y caídas felices</div>
+            </div>
+            <div class="spec">
+              <div class="spec__icono">🔊</div>
+              <div class="spec__nombre">Parlante bluetooth</div>
+              <div class="spec__dato">Tu música, tu clase</div>
+            </div>
+            <div class="spec">
+              <div class="spec__icono">🚲</div>
+              <div class="spec__nombre">Patio para bicis</div>
+              <div class="spec__dato">Interior y seguro</div>
+            </div>
+            <div class="spec">
+              <div class="spec__icono">Ⓜ️</div>
+              <div class="spec__nombre">A pasos del metro</div>
+              <div class="spec__dato">Monseñor Eyzaguirre (L3) e Irarrázaval (L3/L5)</div>
+            </div>
+          </div>
+
+          <aside class="arriendo-caja revelar revelar--retraso-1">
+            <h3>Arrienda la sala</h3>
+            <p>Ideal para danza, yoga, pilates, entrenamientos, ensayos, workshops e intensivos.</p>
+            <ul class="arriendo__precios">
+              <li><span>1 hora</span> <span class="valor">$12.000</span></li>
+              <li><span>1 hora y media</span> <span class="valor">$16.000</span></li>
+              <li><span>Hora para clases regulares del semestre</span> <span class="valor">$10.000</span></li>
+            </ul>
+            <a class="boton boton--fuego" data-ws="Hola! Quiero arrendar la sala para mis clases/ensayos. ¿Qué horarios tienen disponibles? 🎯" href="#">Consultar disponibilidad</a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== NOSOTRAS (TEASER) ===================== -->
+    <section class="seccion nosotras-teaser" id="nosotras">
+      <div class="contenedor nosotras-teaser__panel">
+        <figure class="retrato revelar">
+          <img src="img/foto-consuelo-handstand.jpg" alt="Consuelo Ongaro haciendo un equilibrio de manos dentro de Sala Crisol">
+          <figcaption><span class="sticker sticker--fuego" style="margin: 0;">Consuelo · fundadora</span></figcaption>
+        </figure>
+        <div>
+          <span class="sticker revelar">Quiénes somos</span>
+          <h2 class="titulo-seccion revelar">Las manos detrás <span class="acento">del fuego</span></h2>
+          <blockquote class="cita-fundadora revelar">
+            «Qué rico es cuando la mente permite mover la cuerpa. Gracias a la vida y a las
+            personas que me han dado estas oportunidades.»
+          </blockquote>
+          <p class="bajada revelar">
+            Sala Crisol la sostienen <strong>Consuelo Ongaro</strong> y <strong>Esperanza Fredes</strong>:
+            profes, administradoras y las primeras en llegar a barrer la sala. Conoce su historia,
+            su formación y por qué armaron este espacio.
+          </p>
+          <div class="heroe__ctas revelar">
+            <a class="boton boton--borde" href="nosotros.html">Conócenos →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== UBICACIÓN ===================== -->
+    <section class="seccion ubicacion" id="ubicacion">
+      <div class="contenedor">
+        <span class="sticker sticker--fuego revelar">Cómo llegar</span>
+        <h2 class="titulo-seccion revelar">Fácil de llegar, <span class="acento">difícil de irse</span></h2>
+
+        <div class="ubicacion__rejilla">
+          <div class="ubicacion__datos">
+            <div class="dato-ubicacion revelar">
+              <div class="dato-ubicacion__icono">📍</div>
+              <div>
+                <h4>Dirección</h4>
+                <p>Av. Salvador 2302, Ñuñoa · Santiago<br>
+                <a href="https://maps.google.com/?q=Av.+Salvador+2302,+Ñuñoa,+Santiago" target="_blank" rel="noopener">Abrir en Google Maps →</a></p>
+              </div>
+            </div>
+            <div class="dato-ubicacion revelar revelar--retraso-1">
+              <div class="dato-ubicacion__icono">Ⓜ️</div>
+              <div>
+                <h4>En metro</h4>
+                <p><strong>Monseñor Eyzaguirre (L3)</strong> a 4 minutos caminando, o
+                <strong>Irarrázaval (L3/L5)</strong> a 8 minutos. Sí: llegar es realmente fácil.</p>
+              </div>
+            </div>
+            <div class="dato-ubicacion revelar revelar--retraso-2">
+              <div class="dato-ubicacion__icono">🚲</div>
+              <div>
+                <h4>En bici</h4>
+                <p>Tenemos patio interior para dejarla segura mientras entrenas.</p>
+              </div>
+            </div>
+            <div class="dato-ubicacion revelar revelar--retraso-3">
+              <div class="dato-ubicacion__icono">🕐</div>
+              <div>
+                <h4>Horario de la sala</h4>
+                <p>Abre según la grilla de clases y arriendos — revisa los <a href="#horarios" style="color: var(--oro);">horarios</a> o escríbenos.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mapa revelar revelar--retraso-1">
+            <iframe
+              src="https://www.google.com/maps?q=Av.+Salvador+2302,+%C3%91u%C3%B1oa,+Santiago,+Chile&output=embed"
+              title="Mapa de la ubicación de Sala Crisol en Av. Salvador 2302, Ñuñoa"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HABLEMOS ===================== -->
+    <section class="seccion hablemos" id="hablemos">
+      <div class="contenedor hablemos__rejilla">
+        <div>
+          <h2 class="hablemos__titulo revelar">Hablemos,<br><em>en serio</em></h2>
+          <p class="bajada revelar" style="margin-top: 1.2rem;">
+            ¿Quieres probar una clase, proponer un taller, arrendar la sala o traer tu proyecto?
+            Escríbenos — respondemos rápido y sin letra chica.
+          </p>
+
+          <div class="portales">
+            <a class="portal revelar" data-ws="Hola! Vengo de la página web de Sala Crisol 🔥" href="#">
+              <span class="portal__nombre">WhatsApp <small>La vía más rápida para agendar</small></span>
+              <span class="portal__flecha">→</span>
+            </a>
+            <a class="portal revelar revelar--retraso-1" data-ig href="#">
+              <span class="portal__nombre">Instagram @sala.crisol <small>Novedades, talleres y tertulias</small></span>
+              <span class="portal__flecha">→</span>
+            </a>
+            <a class="portal revelar revelar--retraso-2" href="#talleres">
+              <span class="portal__nombre">Talleres del mes <small>Mira la grilla y elige tu clase</small></span>
+              <span class="portal__flecha">↑</span>
+            </a>
+          </div>
+        </div>
+
+        <form class="formulario revelar revelar--retraso-1" data-form-hablemos>
+          <h3>Cuestionario de inscripción</h3>
+          <p>Completa esto y tu mensaje llega directo a nuestro WhatsApp con todo lo que necesitamos saber.</p>
+
+          <div class="campo">
+            <label for="h-nombre">Tu nombre</label>
+            <input id="h-nombre" name="nombre" type="text" placeholder="¿Cómo te llamas?" required>
+          </div>
+
+          <div class="campo">
+            <label for="h-interes">Me interesa</label>
+            <select id="h-interes" name="interes" required>
+              <option value="" disabled selected>Elige una opción…</option>
+              <option>Agendar mi primera clase</option>
+              <option>Movimiento Flexible</option>
+              <option>Equilibrio de Manos</option>
+              <option>Pilates MatWork</option>
+              <option>Entrenamiento Integral</option>
+              <option>Chair Fusión / Femme Fatale</option>
+              <option>AcroYoga Lunar</option>
+              <option>Capoeira</option>
+              <option>Las tertulias de cine</option>
+              <option>Arrendar la sala</option>
+              <option>Otra cosa (te cuento en el mensaje)</option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="h-mensaje">Cuéntanos más <span style="text-transform: none; opacity: 0.6;">(opcional)</span></label>
+            <textarea id="h-mensaje" name="mensaje" placeholder="Horarios que te acomodan, experiencia previa, dudas…"></textarea>
+          </div>
+
+          <button class="boton boton--ws" type="submit">Enviar por WhatsApp →</button>
+          <p class="formulario__nota">Al enviar se abre WhatsApp con tu mensaje ya escrito — nada se guarda en esta página, tus datos van directo a la sala.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== PIE ===================== -->
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie__rejilla">
+        <div>
+          <div class="pie__marca">
+            <img src="img/logo.jpg" alt="">
+            <div>
+              <div class="pie__marca-nombre">Sala <span>Crisol</span></div>
+              <div class="pie__marca-lema">donde el movimiento se funde con el arte</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pie__columna">
+          <h5>Talleres</h5>
+          <ul>
+            <li><a href="talleres/movimiento-flexible.html">Movimiento Flexible</a></li>
+            <li><a href="talleres/equilibrio-de-manos.html">Equilibrio de Manos</a></li>
+            <li><a href="talleres/pilates-matwork.html">Pilates MatWork</a></li>
+            <li><a href="talleres/chair-fusion.html">Chair Fusión &amp; Femme Fatale</a></li>
+            <li><a href="talleres/acroyoga-lunar.html">AcroYoga Lunar</a></li>
+            <li><a href="talleres/capoeira.html">Capoeira</a></li>
+          </ul>
+        </div>
+
+        <div class="pie__columna">
+          <h5>La sala</h5>
+          <ul>
+            <li><a href="#tertulias">Tertulias</a></li>
+            <li><a href="#comunidad">Domingos Populares</a></li>
+            <li><a href="#espacio">Arriendo del espacio</a></li>
+            <li><a href="nosotros.html">Nosotras</a></li>
+            <li><a href="#ubicacion">Cómo llegar</a></li>
+          </ul>
+        </div>
+
+        <div class="pie__columna">
+          <h5>Contacto</h5>
+          <ul>
+            <li><a data-ws="Hola! Vengo de la página web de Sala Crisol 🔥" href="#">WhatsApp</a></li>
+            <li><a data-ig href="#">Instagram @sala.crisol</a></li>
+            <li><a href="https://maps.google.com/?q=Av.+Salvador+2302,+Ñuñoa,+Santiago" target="_blank" rel="noopener">Av. Salvador 2302, Ñuñoa</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pie__final">
+        <span>© <span data-anio>2026</span> Sala Crisol · Ñuñoa, Santiago de Chile</span>
+        <span>Espacio autogestionado de artes y movimiento 🔥</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
