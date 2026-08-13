@@ -16,8 +16,9 @@
 const CRISOL = {
 
   /* ---------- CONTACTO ---------- */
-  // ⚠️ REEMPLAZAR por el número real de WhatsApp de la sala:
-  whatsapp: "56900000000",
+  // WhatsApp de la sala (Consuelo Ongaro) · +56 9 9175 7042
+  // Formato: código de país + número, sin +, sin espacios.
+  whatsapp: "56991757042",
   instagram: "sala.crisol",
   correo: "", // opcional, ej: "salacrisol@gmail.com" (déjalo vacío si no)
 

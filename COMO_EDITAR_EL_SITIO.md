@@ -1,20 +1,20 @@
 # Cómo editar el sitio de Sala Crisol 🔥
 
 Este sitio es **estático**: no necesita servidor, base de datos ni mantenciones.
-Se puede subir gratis a Netlify, Vercel, GitHub Pages o cualquier hosting.
 
-## ⚠️ Lo ÚNICO obligatorio antes de publicar
+**Está publicado en:** https://langab.github.io/sala-crisol/
 
-Abre `js/config.js` con cualquier editor de texto (Bloc de notas sirve) y:
+## Dónde llegan las inscripciones
 
-1. **Reemplaza el número de WhatsApp** en la línea:
-   ```js
-   whatsapp: "56900000000",
-   ```
-   Pon el número real en formato `569XXXXXXXX` (sin +, sin espacios).
-   Todos los botones y formularios del sitio mandan los mensajes a ese número.
+Todos los botones y formularios abren WhatsApp con el mensaje ya escrito y lo
+mandan al número de la sala, configurado en `js/config.js`:
 
-2. Revisa que los horarios y cupos estén al día (ver abajo).
+```js
+whatsapp: "56991757042",   // +56 9 9175 7042 (Consuelo)
+```
+
+Si algún día cambia, edita esa línea: código de país + número, sin `+` y sin
+espacios. Con eso quedan actualizados los 11 botones y los formularios de una vez.
 
 ## Ediciones de cada mes (5 minutos)
 
@@ -72,13 +72,26 @@ sala_crisol_web/
 └── img/                  ← fotos, flyers y afiches
 ```
 
-## Cómo publicarlo gratis (Netlify, 10 minutos)
+## Cómo se publican los cambios
 
-1. Crea una cuenta en https://app.netlify.com (con tu correo).
-2. Arrastra la carpeta `sala_crisol_web` completa a la página de Netlify
-   ("Drag and drop your site folder here").
-3. Listo: te da una URL tipo `salacrisol.netlify.app`. Puedes cambiar el
-   nombre en Site settings → Change site name.
-4. Pon esa URL en la bio de Instagram. 🎯
+El sitio vive en GitHub Pages (repo `Langab/sala-crisol`). **Guardar el archivo
+no basta**: hay que subir los cambios. Desde la carpeta `sala_crisol_web`:
 
-Cuando edites algo, vuelve a arrastrar la carpeta y se actualiza.
+```bash
+git add -A && git commit -m "Actualizo horarios y cupos" && git push
+```
+
+En 1–2 minutos https://langab.github.io/sala-crisol/ queda actualizado.
+(Si no ves el cambio, recarga con Ctrl+Shift+R / Cmd+Shift+R.)
+
+### Si prefieres no usar la terminal
+
+En https://github.com/Langab/sala-crisol puedes abrir `js/config.js`, tocar el
+lápiz ✏️, editar ahí mismo y darle "Commit changes". Se publica solo.
+
+## Ojo con la vista previa al compartir
+
+Cuando pegues el link en Instagram o WhatsApp, la imagen que aparece está
+definida en cada página en la etiqueta `og:image`. Hoy la portada usa la foto
+grupal de flexibilidad. Si la cambias, usa una imagen horizontal — las
+cuadradas se ven chicas en la vista previa.
