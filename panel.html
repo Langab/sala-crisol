@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel · Sala Crisol</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   SALA CRISOL — PANEL ADMINISTRATIVO
+   Un solo archivo. Funciona sin internet (localStorage) y
+   se sincroniza con la planilla cuando hay conexión.
+   ============================================================ */
+
+:root{
+  --crema:       #FBF6EE;
+  --crema-2:     #F5EDE1;
+  --papel:       #FFFFFF;
+  --tinta:       #3B3129;
+  --tinta-suave: #7A6A5A;
+  --linea:       #E7DACA;
+  --rosa:        #E39AA6;
+  --terracota:   #D98E6A;
+  --mostaza:     #E8C583;
+  --salvia:      #9DBE9C;
+  --turquesa:    #8FC6C9;
+  --lila:        #B7A6D6;
+
+  /* derivados (solo bordes/sombras, no reemplazan los tokens) */
+  --borde-salvia:   #7DA57C;
+  --borde-turquesa: #64AAAE;
+  --sombra:  0 1px 2px rgba(59,49,41,.04), 0 6px 18px rgba(59,49,41,.055);
+  --sombra-alta: 0 10px 40px rgba(59,49,41,.16);
+  --radio: 14px;
+  --radio-sm: 10px;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{ -webkit-text-size-adjust:100%; }
+
+body{
+  margin:0;
+  background:var(--crema);
+  color:var(--tinta);
+  font-family:"Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size:16px;
+  line-height:1.5;
+}
+
+h1,h2,h3{ font-family:"Fraunces","Iowan Old Style",Georgia,serif; font-weight:600; margin:0; line-height:1.2; }
+
+button, input, select, textarea{ font:inherit; color:inherit; }
+
+a{ color:inherit; }
+
+:focus-visible{
+  outline:3px solid var(--borde-turquesa);
+  outline-offset:2px;
+  border-radius:4px;
+}
+
+.sr{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0;
+}
+
+.salto{
+  position:absolute; left:8px; top:-60px; z-index:60;
+  background:var(--papel); border:1px solid var(--linea); border-radius:var(--radio-sm);
+  padding:10px 14px; font-weight:600; text-decoration:none;
+  transition:top .15s ease;
+}
+.salto:focus{ top:8px; }
+
+.envoltura{ width:100%; max-width:1080px; margin:0 auto; padding:0 14px; }
+
+/* ---------- ENCABEZADO ---------- */
+.cabecera{ background:var(--crema-2); border-bottom:1px solid var(--linea); }
+
+.cabecera__fila{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:14px 0 12px;
+}
+
+.marca-sitio{ display:flex; align-items:baseline; gap:9px; min-width:0; flex:1 1 auto; }
+.marca-sitio h1{ font-size:1.32rem; letter-spacing:-.01em; }
+.marca-sitio span{
+  font-size:.72rem; text-transform:uppercase; letter-spacing:.12em;
+  color:var(--tinta-suave); font-weight:600; white-space:nowrap;
+}
+
+.guirnalda{ display:block; width:100%; height:30px; }
+
+/* píldora de sincronización */
+.pildora{
+  display:inline-flex; align-items:center; gap:7px;
+  border:1px solid var(--linea); background:var(--papel);
+  border-radius:999px; padding:6px 12px;
+  font-size:.8rem; font-weight:500; color:var(--tinta-suave);
+  max-width:100%;
+}
+.pildora__punto{ width:9px; height:9px; border-radius:50%; background:var(--linea); flex:none; }
+.pildora[data-estado="ok"] .pildora__punto{ background:var(--salvia); }
+.pildora[data-estado="error"] .pildora__punto{ background:var(--terracota); }
+.pildora[data-estado="sincronizando"] .pildora__punto{ background:var(--mostaza); }
+.pildora[data-estado="local"] .pildora__punto{ background:var(--lila); }
+.pildora__texto{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* ---------- PESTAÑAS ---------- */
+.pestanas-caja{
+  position:sticky; top:0; z-index:30;
+  background:var(--crema); border-bottom:1px solid var(--linea);
+}
+.pestanas{ display:flex; gap:6px; padding:8px 0; overflow-x:auto; scrollbar-width:none; }
+.pestanas::-webkit-scrollbar{ display:none; }
+
+.pestana{
+  flex:1 1 auto; min-height:44px; padding:9px 14px;
+  border:1px solid var(--linea); background:var(--papel);
+  border-radius:999px; cursor:pointer; white-space:nowrap;
+  font-weight:600; font-size:.92rem; color:var(--tinta-suave);
+}
+.pestana[aria-selected="true"]{
+  background:var(--tinta); border-color:var(--tinta); color:var(--crema);
+}
+
+/* ---------- ESTRUCTURA ---------- */
+main{ padding:16px 0 96px; }
+.vista[hidden]{ display:none; }
+
+.tarjeta{
+  background:var(--papel); border:1px solid var(--linea);
+  border-radius:var(--radio); box-shadow:var(--sombra);
+  padding:14px; margin-bottom:14px;
+}
+
+.titulo-seccion{
+  font-size:.76rem; text-transform:uppercase; letter-spacing:.11em;
+  color:var(--tinta-suave); font-weight:700; margin:0 0 10px;
+  font-family:"Archivo",sans-serif;
+}
+
+/* ---------- BOTONES ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:44px; padding:10px 16px;
+  border:1px solid var(--linea); background:var(--papel); color:var(--tinta);
+  border-radius:var(--radio-sm); cursor:pointer; font-weight:600; font-size:.94rem;
+  text-decoration:none;
+}
+.btn:hover{ background:var(--crema-2); }
+.btn--principal{ background:var(--terracota); border-color:var(--terracota); }
+.btn--principal:hover{ background:#cf8460; border-color:#cf8460; }
+.btn--tinta{ background:var(--tinta); border-color:var(--tinta); color:var(--crema); }
+.btn--tinta:hover{ background:#2c241d; }
+.btn--sm{ min-height:40px; padding:8px 12px; font-size:.87rem; }
+.btn--icono{ min-width:44px; padding:10px; }
+.btn--bloque{ width:100%; }
+.btn:disabled{ opacity:.5; cursor:not-allowed; }
+
+.fila-botones{ display:flex; gap:8px; flex-wrap:wrap; }
+
+/* ---------- FORMULARIOS ---------- */
+.campo{ margin-bottom:12px; min-width:0; }
+.campo > label,
+.campo > .campo__leyenda{
+  display:block; font-size:.82rem; font-weight:600;
+  color:var(--tinta-suave); margin-bottom:5px;
+}
+.campo__pista{ font-size:.78rem; color:var(--tinta-suave); margin:5px 0 0; }
+.campo__pista--aviso{ color:#9c5a34; font-weight:600; }
+
+input[type="text"], input[type="tel"], input[type="email"],
+input[type="date"], input[type="number"], input[type="url"],
+input[type="search"], select, textarea{
+  width:100%; min-height:46px; padding:10px 12px;
+  border:1.5px solid var(--linea); border-radius:var(--radio-sm);
+  background:var(--papel); color:var(--tinta);
+  -webkit-appearance:none; appearance:none;
+}
+select{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%237A6A5A' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 12px center; background-size:12px;
+  padding-right:34px;
+}
+textarea{ min-height:76px; resize:vertical; }
+input:focus, select:focus, textarea:focus{ border-color:var(--borde-turquesa); }
+input[aria-invalid="true"]{ border-color:var(--terracota); }
+
+.rejilla-campos{ display:grid; gap:0 12px; grid-template-columns:1fr; }
+@media (min-width:620px){ .rejilla-campos{ grid-template-columns:1fr 1fr; } .col-entera{ grid-column:1 / -1; } }
+
+/* segmento de radios (efectivo / transferencia) */
+.segmento{ display:flex; gap:8px; border:0; padding:0; margin:0; min-width:0; }
+.segmento__op{ flex:1 1 0; min-width:0; position:relative; }
+.segmento__op input{
+  position:absolute; opacity:0; width:100%; height:100%; margin:0; cursor:pointer;
+}
+.segmento__op span{
+  display:flex; align-items:center; justify-content:center;
+  min-height:44px; padding:8px 6px;
+  border:1.5px solid var(--linea); border-radius:var(--radio-sm);
+  background:var(--crema-2); font-size:.87rem; font-weight:600; text-align:center;
+  color:var(--tinta-suave);
+}
+.segmento__op input:checked + span{
+  background:var(--salvia); border-color:var(--borde-salvia); color:var(--tinta);
+}
+.segmento__op input:focus-visible + span{ outline:3px solid var(--borde-turquesa); outline-offset:2px; }
+
+/* ---------- VISTA SESIÓN: barra de fecha ---------- */
+.barra-fecha{ display:flex; gap:8px; align-items:center; }
+.barra-fecha input[type="date"]{ flex:1 1 auto; min-width:0; }
+
+.chips-fecha{ display:flex; gap:7px; flex-wrap:wrap; margin-top:10px; }
+.chip-fecha{
+  min-height:38px; padding:7px 11px; border-radius:999px;
+  border:1px solid var(--linea); background:var(--crema-2);
+  font-size:.82rem; font-weight:600; cursor:pointer; color:var(--tinta-suave);
+}
+.chip-fecha[aria-current="true"]{ background:var(--mostaza); border-color:#d9b164; color:var(--tinta); }
+
+.fecha-titulo{ font-size:1.18rem; margin:14px 0 2px; }
+.fecha-sub{ color:var(--tinta-suave); font-size:.88rem; margin:0 0 14px; }
+
+/* ---------- RESUMEN DE PLATA ---------- */
+.resumen{ background:var(--crema-2); }
+.resumen__rejilla{
+  display:grid; gap:10px;
+  grid-template-columns:repeat(2, minmax(0,1fr));   /* 2×2 en el teléfono */
+}
+@media (min-width:620px){
+  .resumen__rejilla{ grid-template-columns:repeat(4, minmax(0,1fr)); }
+}
+.dato{
+  background:var(--papel); border:1px solid var(--linea);
+  border-radius:var(--radio-sm); padding:10px 11px; min-width:0;
+}
+.dato__et{
+  display:block; font-size:.7rem; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--tinta-suave); font-weight:700; margin-bottom:3px;
+}
+.dato__val{
+  font-family:"Fraunces",Georgia,serif; font-size:1.16rem; font-weight:600;
+  display:block; overflow-wrap:anywhere;
+}
+.dato--recaudado{ border-color:var(--borde-salvia); background:#F3F8F2; }
+.dato--pendiente{ border-color:#e0b393; background:#FDF3EC; }
+
+.resumen__detalle{
+  display:flex; flex-wrap:wrap; gap:8px 14px; margin:11px 0 0;
+  font-size:.84rem; color:var(--tinta-suave);
+}
+.resumen__detalle b{ color:var(--tinta); font-weight:600; }
+
+/* ---------- GRUPOS DE CLASE ---------- */
+.grupo{ margin-bottom:16px; }
+.grupo__cabeza{
+  display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+  padding:0 2px 8px;
+}
+.grupo__hora{
+  font-family:"Fraunces",Georgia,serif; font-size:1.02rem; font-weight:600;
+  background:var(--papel); border:1px solid var(--linea); border-radius:999px;
+  padding:3px 11px;
+}
+.grupo__clase{ font-family:"Fraunces",Georgia,serif; font-size:1.06rem; font-weight:600; }
+.grupo__meta{ font-size:.82rem; color:var(--tinta-suave); margin-left:auto; }
+
+.persona{
+  background:var(--papel); border:1px solid var(--linea);
+  border-left:5px solid var(--linea);
+  border-radius:var(--radio); box-shadow:var(--sombra);
+  padding:12px; margin-bottom:10px;
+}
+.persona[data-asistio="si"]{ border-left-color:var(--turquesa); }
+.persona[data-pago="si"]{ border-left-color:var(--salvia); }
+.persona[data-cancelada="si"]{ opacity:.55; filter:saturate(.35); border-left-color:var(--linea); }
+.persona[data-cancelada="si"] .persona__nombre{ text-decoration:line-through; }
+
+.persona__alto{ display:flex; gap:10px; align-items:flex-start; }
+.persona__id{ min-width:0; flex:1 1 auto; }
+.persona__nombre{ font-family:"Fraunces",Georgia,serif; font-size:1.08rem; font-weight:600; overflow-wrap:anywhere; }
+.persona__linea{ font-size:.84rem; color:var(--tinta-suave); overflow-wrap:anywhere; }
+
+.etiquetas{ display:flex; gap:6px; flex-wrap:wrap; margin-top:7px; }
+.etiqueta{
+  font-size:.73rem; font-weight:700; letter-spacing:.02em;
+  padding:3px 9px; border-radius:999px;
+  background:var(--crema-2); border:1px solid var(--linea); color:var(--tinta-suave);
+}
+.etiqueta--nueva{ background:var(--mostaza); border-color:#d9b164; color:var(--tinta); }
+.etiqueta--mensual{ background:var(--lila); border-color:#9c88c4; color:var(--tinta); }
+.etiqueta--monto{ background:var(--papel); color:var(--tinta); }
+.etiqueta--cancelada{ background:var(--crema-2); text-decoration:line-through; }
+
+.persona__acciones{ display:flex; gap:8px; margin-top:11px; }
+
+.marca{
+  flex:1 1 0; min-width:0; min-height:52px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  border:1.5px solid var(--linea); background:var(--crema-2);
+  border-radius:12px; cursor:pointer; font-weight:700; font-size:.95rem;
+  color:var(--tinta-suave); padding:8px 6px;
+}
+.marca__caja{
+  width:20px; height:20px; flex:none; border-radius:6px;
+  border:1.5px solid var(--tinta-suave); background:var(--papel);
+  display:flex; align-items:center; justify-content:center;
+}
+.marca__caja svg{ width:13px; height:13px; opacity:0; }
+.marca[aria-pressed="true"]{ color:var(--tinta); }
+.marca[aria-pressed="true"] .marca__caja svg{ opacity:1; }
+.marca[aria-pressed="true"] .marca__caja{ border-color:var(--tinta); }
+.marca--asistio[aria-pressed="true"]{ background:var(--turquesa); border-color:var(--borde-turquesa); }
+.marca--pago[aria-pressed="true"]{ background:var(--salvia); border-color:var(--borde-salvia); }
+
+.persona__pago{
+  margin-top:10px; padding-top:10px; border-top:1px dashed var(--linea);
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+}
+.persona__pago .segmento{ flex:1 1 200px; }
+.persona__pie{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+.enlace-accion{
+  background:none; border:0; padding:9px 4px; min-height:40px;
+  font-size:.84rem; font-weight:600; color:var(--tinta-suave);
+  text-decoration:underline; text-underline-offset:3px; cursor:pointer;
+}
+.enlace-accion:hover{ color:var(--tinta); }
+
+.wa{
+  display:inline-flex; align-items:center; gap:6px;
+  min-height:40px; padding:6px 10px; margin-top:6px;
+  border:1px solid var(--linea); border-radius:999px;
+  background:var(--crema-2); text-decoration:none;
+  font-size:.85rem; font-weight:600;
+}
+.wa:hover{ background:var(--papel); }
+.wa svg{ width:15px; height:15px; flex:none; }
+
+/* ---------- VACÍOS ---------- */
+.vacio{
+  text-align:center; padding:26px 16px; color:var(--tinta-suave);
+  background:var(--papel); border:1px dashed var(--linea);
+  border-radius:var(--radio);
+}
+.vacio__titulo{ font-family:"Fraunces",Georgia,serif; font-size:1.06rem; color:var(--tinta); margin-bottom:5px; }
+.vacio--mini{ padding:16px; font-size:.9rem; }
+
+/* ---------- TABLA (vista todas) ---------- */
+.tabla-caja{ overflow-x:auto; }
+.tabla{ width:100%; border-collapse:collapse; font-size:.9rem; }
+.tabla th{
+  text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--tinta-suave); padding:8px 10px; border-bottom:1px solid var(--linea);
+  white-space:nowrap;
+}
+.tabla td{ padding:10px; border-bottom:1px solid var(--linea); vertical-align:top; }
+.celda{ min-width:0; }
+.celda--pila{ display:flex; flex-direction:column; gap:3px; }
+.celda__sub{ display:block; color:var(--tinta-suave); font-size:.85em; }
+.tabla tr[data-cancelada="si"]{ opacity:.55; filter:saturate(.35); }
+.tabla tr[data-cancelada="si"] .celda-nombre{ text-decoration:line-through; }
+.celda-nombre{ font-weight:600; }
+.punto-estado{
+  display:inline-block; width:9px; height:9px; border-radius:50%;
+  background:var(--linea); margin-right:6px; vertical-align:middle;
+}
+.punto-estado[data-v="pago"]{ background:var(--salvia); }
+.punto-estado[data-v="asistio"]{ background:var(--turquesa); }
+
+@media (max-width:759px){
+  .tabla thead{
+    position:absolute; width:1px; height:1px; overflow:hidden;
+    clip:rect(0 0 0 0); clip-path:inset(50%);
+  }
+  .tabla, .tabla tbody, .tabla tr, .tabla td{ display:block; width:100%; }
+  .tabla tr{
+    border:1px solid var(--linea); border-radius:var(--radio);
+    box-shadow:var(--sombra); background:var(--papel);
+    padding:6px 10px; margin-bottom:10px;
+  }
+  .tabla td{
+    border-bottom:1px dashed var(--linea); padding:7px 0;
+    display:grid; grid-template-columns:98px minmax(0,1fr); gap:10px; align-items:start;
+  }
+  .tabla td:last-child{ border-bottom:0; }
+  .tabla td::before{
+    content:attr(data-l); font-size:.73rem; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--tinta-suave); font-weight:700; padding-top:2px;
+  }
+}
+
+.recuento{ font-size:.85rem; color:var(--tinta-suave); margin:0 0 10px; }
+
+/* ---------- MODAL ---------- */
+.velo{
+  position:fixed; inset:0; z-index:50;
+  background:rgba(59,49,41,.42);
+  display:flex; align-items:flex-end; justify-content:center;
+  padding:0;
+}
+.velo[hidden]{ display:none; }
+.modal{
+  background:var(--papel); width:100%; max-width:640px;
+  border-radius:18px 18px 0 0; box-shadow:var(--sombra-alta);
+  max-height:92vh; max-height:92dvh; display:flex; flex-direction:column;
+}
+@media (min-width:620px){
+  .velo{ align-items:center; padding:20px; }
+  .modal{ border-radius:18px; max-height:88vh; }
+}
+.modal__cabeza{
+  display:flex; align-items:center; gap:10px;
+  padding:14px 16px; border-bottom:1px solid var(--linea);
+}
+.modal__cabeza h2{ font-size:1.12rem; flex:1 1 auto; min-width:0; }
+.modal__cuerpo{ padding:16px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.modal__pie{
+  display:flex; gap:8px; padding:12px 16px;
+  border-top:1px solid var(--linea); background:var(--crema-2);
+  border-radius:0 0 18px 18px; flex-wrap:wrap;
+}
+.modal__pie .btn{ flex:1 1 130px; }
+
+/* ---------- AVISOS ---------- */
+.avisos{
+  position:fixed; left:50%; transform:translateX(-50%);
+  bottom:78px; z-index:70; width:min(520px, calc(100% - 24px));
+  display:flex; flex-direction:column; gap:8px; pointer-events:none;
+}
+.aviso{
+  background:var(--tinta); color:var(--crema);
+  border-radius:var(--radio-sm); padding:12px 14px;
+  box-shadow:var(--sombra-alta); font-size:.9rem; font-weight:500;
+}
+.aviso--error{ background:#8d4a2c; }
+.aviso--ok{ background:#4d6b4c; }
+
+/* ---------- AJUSTES ---------- */
+.dl-estado{ margin:0; font-size:.9rem; }
+.dl-estado div{
+  display:flex; gap:10px; justify-content:space-between;
+  padding:9px 0; border-bottom:1px dashed var(--linea);
+}
+.dl-estado div:last-child{ border-bottom:0; }
+.dl-estado dt{ color:var(--tinta-suave); }
+.dl-estado dd{ margin:0; font-weight:600; text-align:right; overflow-wrap:anywhere; min-width:0; }
+.nota{
+  font-size:.85rem; color:var(--tinta-suave);
+  background:var(--crema-2); border:1px solid var(--linea);
+  border-radius:var(--radio-sm); padding:11px 12px;
+}
+.nota code{
+  font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size:.85em; background:var(--papel); padding:1px 5px;
+  border-radius:5px; border:1px solid var(--linea); overflow-wrap:anywhere;
+}
+.zona-riesgo{ border-color:#e0b393; }
+
+/* barra flotante para agregar */
+.flotante{
+  position:fixed; right:14px; bottom:14px; z-index:40;
+  box-shadow:var(--sombra-alta);
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{ animation:none !important; transition:none !important; }
+}
+</style>
+</head>
+<body>
+
+<a class="salto" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <div class="envoltura">
+    <div class="cabecera__fila">
+      <div class="marca-sitio">
+        <h1>Sala Crisol</h1>
+        <span>Panel</span>
+      </div>
+      <div class="pildora" id="pildora-sync" data-estado="local">
+        <span class="pildora__punto" aria-hidden="true"></span>
+        <span class="pildora__texto" id="pildora-texto">Solo local</span>
+      </div>
+    </div>
+  </div>
+  <!-- guirnalda de banderines (patrón que se repite, nunca se deforma) -->
+  <svg class="guirnalda" role="presentation" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+    <defs>
+      <pattern id="banderines" width="210" height="30" patternUnits="userSpaceOnUse">
+        <path d="M0 4 Q105 14 210 4" fill="none" stroke="#C9B79F" stroke-width="1.2"/>
+        <polygon points="5.5,5.5 30.5,5.5 18,24" fill="#E39AA6" opacity=".92"/>
+        <polygon points="40.5,7.75 65.5,7.75 53,26.25" fill="#E8C583" opacity=".92"/>
+        <polygon points="75.5,8.85 100.5,8.85 88,27.35" fill="#9DBE9C" opacity=".92"/>
+        <polygon points="110.5,8.85 135.5,8.85 123,27.35" fill="#8FC6C9" opacity=".92"/>
+        <polygon points="145.5,7.75 170.5,7.75 158,26.25" fill="#B7A6D6" opacity=".92"/>
+        <polygon points="180.5,5.5 205.5,5.5 193,24" fill="#D98E6A" opacity=".92"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="30" fill="url(#banderines)"/>
+  </svg>
+</header>
+
+<div class="pestanas-caja">
+  <div class="envoltura">
+    <div class="pestanas" role="tablist" aria-label="Secciones del panel">
+      <button class="pestana" role="tab" id="tab-sesion" aria-controls="vista-sesion" aria-selected="true" data-vista="sesion" type="button">Sesión del día</button>
+      <button class="pestana" role="tab" id="tab-todas" aria-controls="vista-todas" aria-selected="false" tabindex="-1" data-vista="todas" type="button">Todas</button>
+      <button class="pestana" role="tab" id="tab-ajustes" aria-controls="vista-ajustes" aria-selected="false" tabindex="-1" data-vista="ajustes" type="button">Ajustes</button>
+    </div>
+  </div>
+</div>
+
+<main id="contenido" class="envoltura">
+
+  <!-- ============ VISTA: SESIÓN DEL DÍA ============ -->
+  <section class="vista" id="vista-sesion" role="tabpanel" aria-labelledby="tab-sesion" tabindex="-1">
+    <div class="tarjeta">
+      <div class="campo" style="margin-bottom:0">
+        <label for="fecha-sesion">Fecha de la sesión</label>
+        <div class="barra-fecha">
+          <button class="btn btn--icono" type="button" id="dia-antes" aria-label="Día anterior">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 2 4 8l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <input type="date" id="fecha-sesion">
+          <button class="btn btn--icono" type="button" id="dia-despues" aria-label="Día siguiente">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="btn btn--sm" type="button" id="ir-hoy">Hoy</button>
+        </div>
+        <div class="chips-fecha" id="chips-fecha"></div>
+      </div>
+    </div>
+
+    <h2 class="fecha-titulo" id="titulo-fecha">—</h2>
+    <p class="fecha-sub" id="sub-fecha"></p>
+
+    <div class="tarjeta resumen" id="resumen-dia" aria-live="polite"></div>
+
+    <div class="fila-botones" style="margin-bottom:16px">
+      <button class="btn btn--principal" type="button" id="agregar-sesion">+ Agregar inscripción</button>
+      <button class="btn btn--sm" type="button" id="csv-sesion">Exportar CSV del día</button>
+    </div>
+
+    <div id="lista-sesion"></div>
+  </section>
+
+  <!-- ============ VISTA: TODAS ============ -->
+  <section class="vista" id="vista-todas" role="tabpanel" aria-labelledby="tab-todas" tabindex="-1" hidden>
+    <div class="tarjeta">
+      <h2 class="titulo-seccion">Buscar y filtrar</h2>
+      <div class="campo">
+        <label for="f-buscar">Buscar por nombre, teléfono o correo</label>
+        <input type="search" id="f-buscar" placeholder="Ej: Carolina" autocomplete="off">
+      </div>
+      <div class="rejilla-campos">
+        <div class="campo">
+          <label for="f-clase">Clase</label>
+          <select id="f-clase"><option value="">Todas las clases</option></select>
+        </div>
+        <div class="campo">
+          <label for="f-estado">Estado</label>
+          <select id="f-estado">
+            <option value="">Todos los estados</option>
+            <option value="pagadas">Pagadas</option>
+            <option value="impagas">Pendientes de pago</option>
+            <option value="asistio">Asistieron</option>
+            <option value="no-asistio">No asistieron</option>
+            <option value="activas">Solo activas</option>
+            <option value="canceladas">Solo canceladas</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="f-desde">Desde</label>
+          <input type="date" id="f-desde">
+        </div>
+        <div class="campo">
+          <label for="f-hasta">Hasta</label>
+          <input type="date" id="f-hasta">
+        </div>
+      </div>
+      <div class="fila-botones">
+        <button class="btn btn--sm" type="button" id="limpiar-filtros">Limpiar filtros</button>
+        <button class="btn btn--sm" type="button" id="csv-todas">Exportar CSV</button>
+        <button class="btn btn--sm btn--principal" type="button" id="agregar-todas">+ Agregar</button>
+      </div>
+    </div>
+
+    <div class="tarjeta resumen" id="resumen-todas" aria-live="polite"></div>
+
+    <p class="recuento" id="recuento-todas"></p>
+    <div class="tabla-caja" id="lista-todas"></div>
+  </section>
+
+  <!-- ============ VISTA: AJUSTES ============ -->
+  <section class="vista" id="vista-ajustes" role="tabpanel" aria-labelledby="tab-ajustes" tabindex="-1" hidden>
+    <div class="tarjeta">
+      <h2 class="titulo-seccion">Conexión con la planilla</h2>
+      <div class="campo">
+        <label for="a-url">URL del Apps Script (termina en <code>/exec</code>)</label>
+        <input type="url" id="a-url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" spellcheck="false">
+        <p class="campo__pista">Se guarda solo en este dispositivo. Si la dejas vacía, el panel funciona igual pero sin planilla.</p>
+      </div>
+      <div class="fila-botones">
+        <button class="btn btn--tinta" type="button" id="guardar-url">Guardar URL</button>
+        <button class="btn" type="button" id="sync-ahora">Sincronizar ahora</button>
+      </div>
+    </div>
+
+    <div class="tarjeta">
+      <h2 class="titulo-seccion">Estado</h2>
+      <dl class="dl-estado" id="estado-sync"></dl>
+      <div class="fila-botones" style="margin-top:12px">
+        <button class="btn btn--sm" type="button" id="subir-todo">Subir todo a la planilla</button>
+        <button class="btn btn--sm" type="button" id="csv-respaldo">Descargar respaldo CSV</button>
+      </div>
+    </div>
+
+    <div class="tarjeta">
+      <h2 class="titulo-seccion">Cómo funciona</h2>
+      <p class="nota">
+        El panel guarda todo primero en este teléfono o computador (<code>localStorage</code>), así
+        que funciona sin internet. Cada cambio se manda a la planilla apenas hay conexión;
+        si falla, queda en la fila de pendientes y se reintenta en la próxima sincronización.
+        <strong>Nada se pierde por un corte de red.</strong>
+      </p>
+    </div>
+
+    <div class="tarjeta zona-riesgo">
+      <h2 class="titulo-seccion">Zona delicada</h2>
+      <p class="campo__pista" style="margin-top:0">
+        Borra las inscripciones guardadas en este dispositivo. Si están sincronizadas en la
+        planilla, vuelven a bajar en la próxima sincronización. Las que estén pendientes se pierden.
+      </p>
+      <button class="btn btn--sm" type="button" id="borrar-local">Borrar datos de este dispositivo</button>
+    </div>
+  </section>
+
+</main>
+
+<button class="btn btn--principal flotante" type="button" id="flotante-agregar" aria-label="Agregar inscripción">
+  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  <span>Agregar</span>
+</button>
+
+<!-- ============ MODAL ============ -->
+<div class="velo" id="velo" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo" id="modal">
+    <div class="modal__cabeza">
+      <h2 id="modal-titulo">Nueva inscripción</h2>
+      <button class="btn btn--icono btn--sm" type="button" id="cerrar-modal" aria-label="Cerrar">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal__cuerpo">
+      <form id="form-ins" novalidate>
+        <div class="rejilla-campos">
+          <div class="campo col-entera">
+            <label for="i-nombre">Nombre y apellido *</label>
+            <input type="text" id="i-nombre" autocomplete="name" required>
+            <p class="campo__pista" id="err-nombre" hidden>Escribe al menos un nombre.</p>
+          </div>
+          <div class="campo">
+            <label for="i-telefono">Teléfono</label>
+            <input type="tel" id="i-telefono" inputmode="tel" placeholder="+56 9 1234 5678" autocomplete="tel">
+          </div>
+          <div class="campo">
+            <label for="i-correo">Correo</label>
+            <input type="email" id="i-correo" autocomplete="email">
+          </div>
+          <div class="campo">
+            <label for="i-clase">Clase</label>
+            <select id="i-clase"></select>
+          </div>
+          <div class="campo" id="caja-clase-otra" hidden>
+            <label for="i-clase-otra">Nombre de la clase</label>
+            <input type="text" id="i-clase-otra">
+          </div>
+          <div class="campo">
+            <label for="i-horario">Horario</label>
+            <select id="i-horario"></select>
+          </div>
+          <div class="campo" id="caja-horario-otro" hidden>
+            <label for="i-dia">Día</label>
+            <select id="i-dia"></select>
+          </div>
+          <div class="campo" id="caja-hora-otra" hidden>
+            <label for="i-hora">Hora</label>
+            <input type="text" id="i-hora" placeholder="19:00 – 20:00">
+          </div>
+          <div class="campo">
+            <label for="i-fecha">Fecha de la sesión *</label>
+            <input type="date" id="i-fecha" required>
+            <p class="campo__pista campo__pista--aviso" id="aviso-dia" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="i-experiencia">Experiencia</label>
+            <select id="i-experiencia">
+              <option value="primera-vez">Primera vez</option>
+              <option value="antigua">Ya venía antes</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="i-modalidad">Modalidad</label>
+            <select id="i-modalidad">
+              <option value="suelta">Clase suelta</option>
+              <option value="mensual">Mensual</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="i-monto">Monto (CLP)</label>
+            <input type="number" id="i-monto" min="0" step="500" inputmode="numeric">
+          </div>
+          <div class="campo">
+            <label for="i-metodo">Método de pago</label>
+            <select id="i-metodo">
+              <option value="">Sin definir</option>
+              <option value="efectivo">Efectivo</option>
+              <option value="transferencia">Transferencia</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="i-estado">Estado</label>
+            <select id="i-estado">
+              <option value="activa">Activa</option>
+              <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
+          <fieldset class="campo col-entera segmento" style="display:block">
+            <legend class="campo__leyenda">Marcas</legend>
+            <div style="display:flex; gap:8px">
+              <label class="segmento__op" style="cursor:pointer">
+                <input type="checkbox" id="i-asistio">
+                <span>Asistió</span>
+              </label>
+              <label class="segmento__op" style="cursor:pointer">
+                <input type="checkbox" id="i-pago">
+                <span>Pagó</span>
+              </label>
+            </div>
+          </fieldset>
+          <div class="campo col-entera">
+            <label for="i-notas">Notas</label>
+            <textarea id="i-notas" rows="2"></textarea>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal__pie">
+      <button class="btn" type="button" id="cancelar-modal">Cerrar</button>
+      <button class="btn btn--tinta" type="button" id="guardar-ins">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="avisos" id="avisos" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   1. CATÁLOGO DE CLASES
+   ------------------------------------------------------------
+   Copia de js/config.js (talleres + horarios). Va aquí adentro
+   para que el panel sea un archivo autocontenido: se puede
+   guardar en el escritorio o mandar por WhatsApp y funciona.
+   Si cambian los horarios en config.js, actualiza esta lista.
+   ============================================================ */
+var CATALOGO = [
+  { id:"pilates-mat", nombre:"Pilates Mat", profe:"Esperanza Fredes", horarios:[
+      { dia:"Lunes",   hora:"10:00 – 11:00" },
+      { dia:"Viernes", hora:"10:00 – 11:00" },
+      { dia:"Sábado",  hora:"17:30 – 18:30" } ] },
+  { id:"danza-contemporanea", nombre:"Danza Contemporánea", profe:"Esperanza Fredes", horarios:[
+      { dia:"Sábado",  hora:"10:30 – 11:30" } ] },
+  { id:"movimiento-flexible", nombre:"Movimiento Flexible", profe:"Consuelo Ongaro", horarios:[
+      { dia:"Lunes",   hora:"19:00 – 21:00" },
+      { dia:"Martes",  hora:"10:00 – 12:00" },
+      { dia:"Sábado",  hora:"12:30 – 14:30" } ] },
+  { id:"equilibrio-de-manos", nombre:"Equilibrio de Manos", profe:"Consuelo Ongaro", horarios:[
+      { dia:"Miércoles", hora:"10:00 – 11:30" } ] },
+  { id:"danza-filosofia", nombre:"Danza y Filosofía", profe:"Compañía Amor Expresamos", horarios:[
+      { dia:"Jueves",  hora:"18:45 – 20:00" } ] },
+  { id:"bellydance-fusion", nombre:"Bellydance Fusión", profe:"Kathia Luminus", horarios:[
+      { dia:"Viernes", hora:"19:00 – 20:00" } ] }
+];
+
+var PRECIOS = { suelta:10000, mensual:35000 };
+
+var DIAS  = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio",
+             "agosto","septiembre","octubre","noviembre","diciembre"];
+
+var LLAVE_INS = "crisol.panel.inscripciones.v1";
+var LLAVE_CFG = "crisol.panel.ajustes.v1";
+var LLAVE_PEN = "crisol.panel.pendientes.v1";
+
+/* ============================================================
+   2. UTILIDADES
+   ============================================================ */
+function $(sel, ctx){ return (ctx||document).querySelector(sel); }
+function crear(tag, clase){ var e=document.createElement(tag); if(clase) e.className=clase; return e; }
+
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+
+function uid(){
+  return "ins_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8);
+}
+
+function pesos(n){
+  var v = Math.round(Number(n) || 0);
+  var signo = v < 0 ? "-" : "";
+  return signo + "$" + Math.abs(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+/* --- fechas (siempre en horario local, nunca UTC) --- */
+function isoDe(d){
+  var m = String(d.getMonth()+1); if(m.length<2) m = "0"+m;
+  var dd = String(d.getDate());   if(dd.length<2) dd = "0"+dd;
+  return d.getFullYear() + "-" + m + "-" + dd;
+}
+function hoyISO(){ return isoDe(new Date()); }
+function esISO(s){ return typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s); }
+function desdeISO(s){
+  if(!esISO(s)) return null;
+  var p = s.split("-");
+  var d = new Date(Number(p[0]), Number(p[1])-1, Number(p[2]));
+  return isNaN(d.getTime()) ? null : d;
+}
+function sumarDias(iso, n){
+  var d = desdeISO(iso) || new Date();
+  d.setDate(d.getDate() + n);
+  return isoDe(d);
+}
+function diaDeISO(iso){ var d = desdeISO(iso); return d ? DIAS[d.getDay()] : ""; }
+function fechaLarga(iso){
+  var d = desdeISO(iso);
+  if(!d) return "Fecha sin definir";
+  return DIAS[d.getDay()] + " " + d.getDate() + " de " + MESES[d.getMonth()] + " de " + d.getFullYear();
+}
+function fechaCorta(iso){
+  var d = desdeISO(iso);
+  if(!d) return "—";
+  return d.getDate() + " " + MESES[d.getMonth()].slice(0,3) + " " + d.getFullYear();
+}
+function horaDeReloj(iso){
+  var d = new Date(iso);
+  if(isNaN(d.getTime())) return "";
+  var h = String(d.getHours()); if(h.length<2) h="0"+h;
+  var m = String(d.getMinutes()); if(m.length<2) m="0"+m;
+  return h + ":" + m;
+}
+/** Minutos desde medianoche del texto "19:00 – 20:00" (para ordenar). */
+function minutosDe(hora){
+  var m = /(\d{1,2})[:.](\d{2})/.exec(String(hora||""));
+  return m ? (Number(m[1])*60 + Number(m[2])) : 9999;
+}
+
+/** Deja el teléfono como lo quiere wa.me: solo dígitos, con código país. */
+function telWhatsApp(tel){
+  var d = String(tel||"").replace(/\D/g,"");
+  if(!d) return "";
+  if(d.indexOf("00") === 0) d = d.slice(2);
+  if(d.length === 8) return "569" + d;          // 1234 5678
+  if(d.length === 9 && d.charAt(0) === "9") return "56" + d;  // 9 1234 5678
+  if(d.length === 9) return "56" + d;
+  return d;                                      // ya trae código de país
+}
+
+function clasePorId(id){
+  for(var i=0;i<CATALOGO.length;i++){ if(CATALOGO[i].id === id) return CATALOGO[i]; }
+  return null;
+}
+
+/* ============================================================
+   3. ESTADO Y PERSISTENCIA
+   ============================================================ */
+var estado = {
+  inscripciones: [],
+  ajustes: { url:"", ultimaSync:null },
+  pendientes: [],
+  vista: "sesion",
+  fecha: hoyISO(),
+  editando: null,
+  sync: { estado:"local", detalle:"" }
+};
+
+function leerLS(llave, porDefecto){
+  try{
+    var crudo = window.localStorage.getItem(llave);
+    if(!crudo) return porDefecto;
+    var v = JSON.parse(crudo);
+    return (v === null || v === undefined) ? porDefecto : v;
+  }catch(e){ return porDefecto; }
+}
+function escribirLS(llave, valor){
+  try{ window.localStorage.setItem(llave, JSON.stringify(valor)); return true; }
+  catch(e){ avisar("No se pudo guardar en este dispositivo (¿memoria llena?).","error"); return false; }
+}
+
+/** Rellena campos faltantes para que ningún registro rompa la vista. */
+function normalizar(x){
+  x = x || {};
+  var cat = clasePorId(x.claseId);
+  return {
+    id:           x.id || uid(),
+    creado:       x.creado || new Date().toISOString(),
+    nombre:       String(x.nombre || "").trim() || "Sin nombre",
+    telefono:     String(x.telefono || "").trim(),
+    correo:       String(x.correo || "").trim(),
+    claseId:      String(x.claseId || ""),
+    claseNombre:  String(x.claseNombre || (cat ? cat.nombre : "") || "Sin clase"),
+    dia:          String(x.dia || ""),
+    hora:         String(x.hora || ""),
+    fechaSesion:  esISO(x.fechaSesion) ? x.fechaSesion : "",
+    experiencia:  x.experiencia === "antigua" ? "antigua" : "primera-vez",
+    modalidad:    x.modalidad === "mensual" ? "mensual" : "suelta",
+    monto:        Number(x.monto) || 0,
+    asistio:      x.asistio === true || x.asistio === "true" || x.asistio === 1,
+    pago:         x.pago === true || x.pago === "true" || x.pago === 1,
+    metodoPago:   (x.metodoPago === "efectivo" || x.metodoPago === "transferencia") ? x.metodoPago : "",
+    notas:        String(x.notas || ""),
+    estado:       x.estado === "cancelada" ? "cancelada" : "activa",
+    updatedAt:    x.updatedAt || x.creado || new Date().toISOString()
+  };
+}
+
+function cargarTodo(){
+  var ins = leerLS(LLAVE_INS, []);
+  estado.inscripciones = Array.isArray(ins) ? ins.map(normalizar) : [];
+  var cfg = leerLS(LLAVE_CFG, {});
+  estado.ajustes.url = (cfg && typeof cfg.url === "string") ? cfg.url : "";
+  estado.ajustes.ultimaSync = (cfg && cfg.ultimaSync) ? cfg.ultimaSync : null;
+  var pen = leerLS(LLAVE_PEN, []);
+  estado.pendientes = Array.isArray(pen) ? pen : [];
+}
+function guardarInscripciones(){ escribirLS(LLAVE_INS, estado.inscripciones); escribirLS(LLAVE_PEN, estado.pendientes); }
+function guardarAjustes(){ escribirLS(LLAVE_CFG, estado.ajustes); }
+
+function marcarPendiente(id){
+  if(estado.pendientes.indexOf(id) === -1) estado.pendientes.push(id);
+}
+
+/**
+ * Fusiona por id quedándose con el updatedAt más nuevo.
+ * `protegidos` = ids con cambios locales que todavía no se han subido:
+ * esos NO se pisan aunque la planilla diga que es más nueva (puede ser
+ * un reloj desajustado). Se suben primero y ahí la planilla decide.
+ */
+function fusionar(locales, remotas, protegidos){
+  var mapa = {}, orden = [], i, r, l;
+  var escudo = {};
+  if(protegidos){ for(i=0;i<protegidos.length;i++) escudo[protegidos[i]] = true; }
+
+  for(i=0;i<locales.length;i++){ mapa[locales[i].id] = locales[i]; orden.push(locales[i].id); }
+  for(i=0;i<remotas.length;i++){
+    r = normalizar(remotas[i]);
+    l = mapa[r.id];
+    if(!l){ mapa[r.id] = r; orden.push(r.id); continue; }
+    if(escudo[r.id]) continue;
+    var tr = Date.parse(r.updatedAt) || 0;
+    var tl = Date.parse(l.updatedAt) || 0;
+    if(tr > tl) mapa[r.id] = r;
+  }
+  return orden.map(function(id){ return mapa[id]; });
+}
+
+/* ============================================================
+   4. SINCRONIZACIÓN CON LA PLANILLA
+   ============================================================ */
+var temporizadorSync = null;
+
+function pintarSync(){
+  var pil = $("#pildora-sync"), txt = $("#pildora-texto");
+  var s = estado.sync.estado, t;
+  if(s === "sincronizando") t = "Sincronizando…";
+  else if(s === "ok") t = "Al día" + (estado.ajustes.ultimaSync ? " · " + horaDeReloj(estado.ajustes.ultimaSync) : "");
+  else if(s === "error") t = "Sin conexión · guardado aquí";
+  else t = estado.ajustes.url ? "Sin sincronizar" : "Solo en este equipo";
+  if(estado.pendientes.length && s !== "sincronizando"){
+    t += " · " + estado.pendientes.length + " por subir";
+  }
+  pil.setAttribute("data-estado", s);
+  txt.textContent = t;
+  pil.title = estado.sync.detalle || t;
+  if(estado.vista === "ajustes") pintarAjustes();
+}
+
+function setSync(s, detalle){
+  estado.sync.estado = s;
+  estado.sync.detalle = detalle || "";
+  pintarSync();
+}
+
+function sincronizar(opciones){
+  opciones = opciones || {};
+  var url = String(estado.ajustes.url || "").trim();
+  if(!url){ setSync("local"); if(opciones.manual) avisar("Primero pega la URL del Apps Script en Ajustes.","error"); return Promise.resolve(false); }
+  if(estado.sync.estado === "sincronizando") return Promise.resolve(false);
+
+  setSync("sincronizando");
+
+  return fetch(url, { method:"GET", redirect:"follow" })
+    .then(function(res){
+      if(!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(function(data){
+      if(data && Array.isArray(data.inscripciones)){
+        // lo que aún no se sube queda protegido en esta bajada
+        estado.inscripciones = fusionar(estado.inscripciones, data.inscripciones, estado.pendientes);
+        guardarInscripciones();   // por si la conexión se corta en el POST
+      }
+      var aEnviar;
+      if(opciones.todo){
+        aEnviar = estado.inscripciones.slice();
+      }else{
+        aEnviar = estado.inscripciones.filter(function(i){ return estado.pendientes.indexOf(i.id) !== -1; });
+      }
+      if(!aEnviar.length) return null;
+      return fetch(url, {
+        method: "POST",
+        redirect: "follow",
+        headers: { "Content-Type":"text/plain;charset=utf-8" },
+        body: JSON.stringify({ inscripciones: aEnviar })
+      }).then(function(res){
+        if(!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      });
+    })
+    .then(function(resp){
+      if(resp && resp.ok === false) throw new Error(resp.error || "la planilla rechazó los datos");
+      if(resp && Array.isArray(resp.inscripciones)){
+        estado.inscripciones = fusionar(estado.inscripciones, resp.inscripciones);
+      }
+      estado.pendientes = [];
+      estado.ajustes.ultimaSync = new Date().toISOString();
+      guardarInscripciones(); guardarAjustes();
+      setSync("ok");
+      render();
+      if(opciones.manual) avisar("Sincronizado con la planilla.","ok");
+      return true;
+    })
+    .catch(function(err){
+      // los datos siguen intactos en local; se reintenta después
+      setSync("error", String(err && err.message || err));
+      if(opciones.manual) avisar("No se pudo sincronizar: " + (err && err.message || err) + ". Los datos están guardados aquí.","error");
+      return false;
+    });
+}
+
+function sincronizarLuego(){
+  if(!String(estado.ajustes.url||"").trim()) return;
+  if(temporizadorSync) clearTimeout(temporizadorSync);
+  temporizadorSync = setTimeout(function(){ sincronizar({}); }, 1500);
+}
+
+/* ============================================================
+   5. AVISOS
+   ============================================================ */
+function avisar(texto, tipo){
+  var caja = $("#avisos");
+  var el = crear("div", "aviso" + (tipo ? " aviso--" + tipo : ""));
+  el.textContent = texto;
+  caja.appendChild(el);
+  setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 4200);
+}
+
+/* ============================================================
+   6. CÁLCULOS
+   ============================================================ */
+function activas(lista){ return lista.filter(function(i){ return i.estado !== "cancelada"; }); }
+
+function totales(lista){
+  var t = { n:0, canceladas:0, esperado:0, recaudado:0, pendiente:0,
+            efectivo:0, transferencia:0, sinMetodo:0,
+            asistieron:0, sueltas:0, mensuales:0 };
+  lista.forEach(function(i){
+    if(i.estado === "cancelada"){ t.canceladas++; return; }
+    t.n++;
+    t.esperado += i.monto;
+    if(i.asistio) t.asistieron++;
+    if(i.modalidad === "mensual") t.mensuales++; else t.sueltas++;
+    if(i.pago){
+      t.recaudado += i.monto;
+      if(i.metodoPago === "efectivo") t.efectivo += i.monto;
+      else if(i.metodoPago === "transferencia") t.transferencia += i.monto;
+      else t.sinMetodo += i.monto;
+    }
+  });
+  t.pendiente = t.esperado - t.recaudado;
+  return t;
+}
+
+function deLaFecha(iso){
+  return estado.inscripciones.filter(function(i){ return i.fechaSesion === iso; });
+}
+
+/* ============================================================
+   7. RENDER — VISTA SESIÓN
+   ============================================================ */
+function bloqueResumen(t, opciones){
+  opciones = opciones || {};
+  var partes = [];
+  partes.push('<h2 class="titulo-seccion">' + esc(opciones.titulo || "Resumen de plata") + '</h2>');
+  partes.push('<div class="resumen__rejilla">');
+  partes.push('<div class="dato"><span class="dato__et">Inscritas</span><span class="dato__val">' + t.n + '</span></div>');
+  partes.push('<div class="dato"><span class="dato__et">Esperado</span><span class="dato__val">' + pesos(t.esperado) + '</span></div>');
+  partes.push('<div class="dato dato--recaudado"><span class="dato__et">Recaudado</span><span class="dato__val">' + pesos(t.recaudado) + '</span></div>');
+  partes.push('<div class="dato dato--pendiente"><span class="dato__et">Pendiente</span><span class="dato__val">' + pesos(t.pendiente) + '</span></div>');
+  partes.push('</div>');
+
+  var det = [];
+  det.push('<span>Efectivo <b>' + pesos(t.efectivo) + '</b></span>');
+  det.push('<span>Transferencia <b>' + pesos(t.transferencia) + '</b></span>');
+  if(t.sinMetodo > 0) det.push('<span>Sin método <b>' + pesos(t.sinMetodo) + '</b></span>');
+  det.push('<span>Asistieron <b>' + t.asistieron + ' de ' + t.n + '</b></span>');
+  det.push('<span><b>' + t.sueltas + '</b> sueltas · <b>' + t.mensuales + '</b> mensuales</span>');
+  if(t.canceladas) det.push('<span><b>' + t.canceladas + '</b> cancelada' + (t.canceladas>1?'s':'') + '</span>');
+  partes.push('<p class="resumen__detalle">' + det.join("") + '</p>');
+  return partes.join("");
+}
+
+function iconoCheck(){
+  return '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5l3.2 3.2L12 3.6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function iconoWA(){
+  return '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5a6.4 6.4 0 0 0-5.5 9.7L1.6 14.5l3.4-.9A6.4 6.4 0 1 0 8 1.5Zm0 1.2a5.2 5.2 0 1 1-2.7 9.7l-.2-.1-2 .5.5-2-.1-.2A5.2 5.2 0 0 1 8 2.7Zm-2.4 2.6c-.1 0-.3 0-.5.2-.2.2-.6.6-.6 1.4 0 .8.6 1.6.7 1.8.1.1 1.2 2 3 2.7 1.5.6 1.8.5 2.1.4.3 0 1-.4 1.1-.8.1-.4.1-.7.1-.8l-.4-.2-1-.5c-.2 0-.3 0-.4.1l-.5.7c-.1.1-.2.1-.4 0-.2 0-.7-.3-1.3-.8-.5-.4-.8-1-.9-1.1 0-.2 0-.3.1-.4l.3-.4.2-.3v-.3l-.5-1.2c-.1-.4-.3-.3-.4-.3h-.3Z" fill="currentColor"/></svg>';
+}
+
+function tarjetaPersona(i){
+  var cancelada = i.estado === "cancelada";
+  var tel = telWhatsApp(i.telefono);
+  var h = [];
+
+  h.push('<article class="persona" data-asistio="' + (i.asistio && !cancelada ? "si":"no") + '" data-pago="' + (i.pago && !cancelada ? "si":"no") + '" data-cancelada="' + (cancelada?"si":"no") + '">');
+  h.push('<div class="persona__alto"><div class="persona__id">');
+  h.push('<div class="persona__nombre">' + esc(i.nombre) + '</div>');
+
+  var meta = [];
+  if(i.hora) meta.push(esc(i.hora));
+  if(i.correo) meta.push(esc(i.correo));
+  if(meta.length) h.push('<div class="persona__linea">' + meta.join(" · ") + '</div>');
+
+  h.push('<div class="etiquetas">');
+  if(i.experiencia === "primera-vez") h.push('<span class="etiqueta etiqueta--nueva">Primera vez</span>');
+  h.push('<span class="etiqueta' + (i.modalidad === "mensual" ? " etiqueta--mensual" : "") + '">' + (i.modalidad === "mensual" ? "Mensual" : "Clase suelta") + '</span>');
+  h.push('<span class="etiqueta etiqueta--monto">' + pesos(i.monto) + '</span>');
+  if(cancelada) h.push('<span class="etiqueta etiqueta--cancelada">Cancelada</span>');
+  h.push('</div>');
+
+  if(tel){
+    h.push('<a class="wa" href="https://wa.me/' + esc(tel) + '" target="_blank" rel="noopener">' + iconoWA() +
+           '<span>' + esc(i.telefono || tel) + '</span></a>');
+  }else{
+    h.push('<div class="persona__linea" style="margin-top:6px">Sin teléfono</div>');
+  }
+  h.push('</div></div>');
+
+  if(!cancelada){
+    h.push('<div class="persona__acciones">');
+    h.push('<button type="button" class="marca marca--asistio" data-accion="asistio" data-id="' + esc(i.id) + '" data-k="asistio-' + esc(i.id) + '" aria-pressed="' + (i.asistio?"true":"false") + '">' +
+           '<span class="marca__caja" aria-hidden="true">' + iconoCheck() + '</span>Asistió</button>');
+    h.push('<button type="button" class="marca marca--pago" data-accion="pago" data-id="' + esc(i.id) + '" data-k="pago-' + esc(i.id) + '" aria-pressed="' + (i.pago?"true":"false") + '">' +
+           '<span class="marca__caja" aria-hidden="true">' + iconoCheck() + '</span>Pagó</button>');
+    h.push('</div>');
+
+    if(i.pago){
+      var nm = "metodo-" + i.id;
+      h.push('<div class="persona__pago">');
+      h.push('<fieldset class="segmento"><legend class="sr">Método de pago de ' + esc(i.nombre) + '</legend>');
+      h.push('<label class="segmento__op"><input type="radio" name="' + esc(nm) + '" value="efectivo" data-accion="metodo" data-id="' + esc(i.id) + '"' + (i.metodoPago === "efectivo" ? " checked":"") + '><span>Efectivo</span></label>');
+      h.push('<label class="segmento__op"><input type="radio" name="' + esc(nm) + '" value="transferencia" data-accion="metodo" data-id="' + esc(i.id) + '"' + (i.metodoPago === "transferencia" ? " checked":"") + '><span>Transferencia</span></label>');
+      h.push('</fieldset></div>');
+    }
+  }
+
+  if(i.notas){
+    h.push('<p class="persona__linea" style="margin-top:9px"><strong>Nota:</strong> ' + esc(i.notas) + '</p>');
+  }
+
+  h.push('<div class="persona__pie">');
+  h.push('<button type="button" class="enlace-accion" data-accion="editar" data-id="' + esc(i.id) + '">Editar</button>');
+  if(cancelada){
+    h.push('<button type="button" class="enlace-accion" data-accion="reactivar" data-id="' + esc(i.id) + '">Reactivar</button>');
+  }else{
+    h.push('<button type="button" class="enlace-accion" data-accion="cancelar" data-id="' + esc(i.id) + '">Cancelar inscripción</button>');
+  }
+  h.push('</div>');
+  h.push('</article>');
+  return h.join("");
+}
+
+function renderSesion(){
+  var iso = estado.fecha;
+  $("#fecha-sesion").value = iso;
+
+  var texto = fechaLarga(iso);
+  $("#titulo-fecha").textContent = texto.charAt(0).toUpperCase() + texto.slice(1);
+
+  var lista = deLaFecha(iso);
+  var t = totales(lista);
+  var sub = [];
+  if(iso === hoyISO()) sub.push("Hoy");
+  sub.push(t.n + (t.n === 1 ? " inscrita activa" : " inscritas activas"));
+  if(t.canceladas) sub.push(t.canceladas + (t.canceladas === 1 ? " cancelada" : " canceladas"));
+  $("#sub-fecha").textContent = sub.join(" · ");
+
+  $("#resumen-dia").innerHTML = bloqueResumen(t, { titulo:"Plata del día" });
+
+  /* chips: próximas fechas con inscritas */
+  var vistos = {}, chips = [];
+  activas(estado.inscripciones).forEach(function(i){
+    if(!i.fechaSesion || i.fechaSesion < hoyISO()) return;
+    if(!vistos[i.fechaSesion]){ vistos[i.fechaSesion] = 0; chips.push(i.fechaSesion); }
+    vistos[i.fechaSesion]++;
+  });
+  chips.sort();
+  chips = chips.slice(0,6);
+  var cajaChips = $("#chips-fecha");
+  if(chips.length){
+    cajaChips.innerHTML = '<span class="sr">Fechas con inscritas</span>' + chips.map(function(f){
+      var d = desdeISO(f);
+      return '<button type="button" class="chip-fecha" data-fecha="' + esc(f) + '"' + (f === iso ? ' aria-current="true"' : '') + '>' +
+             DIAS[d.getDay()].slice(0,3) + ' ' + d.getDate() + '/' + (d.getMonth()+1) +
+             ' <span aria-hidden="true">·</span> ' + vistos[f] + '</button>';
+    }).join("");
+  }else{
+    cajaChips.innerHTML = "";
+  }
+
+  /* agrupar por clase + horario */
+  var grupos = {}, orden = [];
+  lista.forEach(function(i){
+    var k = (i.claseId || i.claseNombre) + "|" + i.hora;
+    if(!grupos[k]){
+      grupos[k] = { clase:i.claseNombre, hora:i.hora, gente:[] };
+      orden.push(k);
+    }
+    grupos[k].gente.push(i);
+  });
+
+  /* clases del catálogo que tocan ese día aunque no tengan inscritas */
+  var diaSem = diaDeISO(iso);
+  var clasesDelDia = 0;
+  CATALOGO.forEach(function(c){
+    c.horarios.forEach(function(h){
+      if(h.dia !== diaSem) return;
+      clasesDelDia++;
+      var k = c.id + "|" + h.hora;
+      if(!grupos[k]){
+        grupos[k] = { clase:c.nombre, hora:h.hora, gente:[] };
+        orden.push(k);
+      }
+    });
+  });
+
+  orden.sort(function(a,b){
+    var ga = grupos[a], gb = grupos[b];
+    var d = minutosDe(ga.hora) - minutosDe(gb.hora);
+    return d !== 0 ? d : ga.clase.localeCompare(gb.clase, "es");
+  });
+
+  var cont = $("#lista-sesion");
+
+  if(!orden.length){
+    cont.innerHTML = '<div class="vacio"><div class="vacio__titulo">No hay clases este día</div>' +
+      '<p>Los ' + esc(diaSem.toLowerCase()) + 's no hay taller en la grilla. Si igual llegó alguien, ' +
+      'puedes agregar la inscripción a mano con el botón de arriba.</p></div>';
+    return;
+  }
+
+  cont.innerHTML = orden.map(function(k){
+    var g = grupos[k];
+    var tg = totales(g.gente);
+    var h = [];
+    h.push('<section class="grupo">');
+    h.push('<div class="grupo__cabeza">');
+    h.push('<span class="grupo__hora">' + esc(g.hora || "Sin hora") + '</span>');
+    h.push('<h3 class="grupo__clase">' + esc(g.clase) + '</h3>');
+    h.push('<span class="grupo__meta">' + tg.n + ' · ' + pesos(tg.recaudado) + ' de ' + pesos(tg.esperado) + '</span>');
+    h.push('</div>');
+    if(!g.gente.length){
+      h.push('<div class="vacio vacio--mini">Nadie inscrita todavía en este horario.</div>');
+    }else{
+      g.gente.sort(function(a,b){
+        if((a.estado === "cancelada") !== (b.estado === "cancelada")) return a.estado === "cancelada" ? 1 : -1;
+        return a.nombre.localeCompare(b.nombre, "es");
+      });
+      h.push(g.gente.map(tarjetaPersona).join(""));
+    }
+    h.push('</section>');
+    return h.join("");
+  }).join("");
+}
+
+/* ============================================================
+   8. RENDER — VISTA TODAS
+   ============================================================ */
+function filtradas(){
+  var q = String($("#f-buscar").value || "").trim().toLowerCase();
+  var clase = $("#f-clase").value;
+  var est = $("#f-estado").value;
+  var desde = $("#f-desde").value;
+  var hasta = $("#f-hasta").value;
+
+  return estado.inscripciones.filter(function(i){
+    if(q){
+      var heno = (i.nombre + " " + i.telefono + " " + i.correo + " " + i.notas).toLowerCase();
+      if(heno.indexOf(q) === -1) return false;
+    }
+    if(clase && (i.claseId || i.claseNombre) !== clase) return false;
+    if(esISO(desde) && (!i.fechaSesion || i.fechaSesion < desde)) return false;
+    if(esISO(hasta) && (!i.fechaSesion || i.fechaSesion > hasta)) return false;
+
+    if(est === "pagadas")     return i.pago && i.estado !== "cancelada";
+    if(est === "impagas")     return !i.pago && i.estado !== "cancelada";
+    if(est === "asistio")     return i.asistio && i.estado !== "cancelada";
+    if(est === "no-asistio")  return !i.asistio && i.estado !== "cancelada";
+    if(est === "activas")     return i.estado !== "cancelada";
+    if(est === "canceladas")  return i.estado === "cancelada";
+    return true;
+  }).sort(function(a,b){
+    if(a.fechaSesion !== b.fechaSesion) return (b.fechaSesion || "").localeCompare(a.fechaSesion || "");
+    var d = minutosDe(a.hora) - minutosDe(b.hora);
+    return d !== 0 ? d : a.nombre.localeCompare(b.nombre, "es");
+  });
+}
+
+function renderTodas(){
+  /* opciones de clase (catálogo + lo que traiga la planilla) */
+  var sel = $("#f-clase");
+  var previo = sel.value;
+  var claves = {}, ops = [];
+  CATALOGO.forEach(function(c){ claves[c.id] = c.nombre; ops.push(c.id); });
+  estado.inscripciones.forEach(function(i){
+    var k = i.claseId || i.claseNombre;
+    if(k && !claves[k]){ claves[k] = i.claseNombre; ops.push(k); }
+  });
+  sel.innerHTML = '<option value="">Todas las clases</option>' + ops.map(function(k){
+    return '<option value="' + esc(k) + '">' + esc(claves[k]) + '</option>';
+  }).join("");
+  sel.value = previo;
+  if(sel.value !== previo) sel.value = "";
+
+  var lista = filtradas();
+  var t = totales(lista);
+  $("#resumen-todas").innerHTML = bloqueResumen(t, { titulo:"Resumen de lo filtrado" });
+  $("#recuento-todas").textContent = lista.length + (lista.length === 1 ? " inscripción" : " inscripciones") +
+    " de " + estado.inscripciones.length + " en total";
+
+  var cont = $("#lista-todas");
+  if(!lista.length){
+    cont.innerHTML = '<div class="vacio"><div class="vacio__titulo">Nada por aquí</div>' +
+      '<p>' + (estado.inscripciones.length ? "Ninguna inscripción calza con estos filtros. Prueba limpiarlos."
+                                           : "Todavía no hay inscripciones guardadas. Agrega la primera con el botón +.") + '</p></div>';
+    return;
+  }
+
+  var filas = lista.map(function(i){
+    var tel = telWhatsApp(i.telefono);
+    var contacto = tel
+      ? '<a class="wa" href="https://wa.me/' + esc(tel) + '" target="_blank" rel="noopener">' + iconoWA() + '<span>' + esc(i.telefono || tel) + '</span></a>'
+      : '<span style="color:var(--tinta-suave)">—</span>';
+    var marcas = [];
+    marcas.push('<span><span class="punto-estado" data-v="' + (i.asistio?"asistio":"") + '"></span>' + (i.asistio ? "Asistió" : "Sin marcar") + '</span>');
+    marcas.push('<span><span class="punto-estado" data-v="' + (i.pago?"pago":"") + '"></span>' + (i.pago ? ("Pagó" + (i.metodoPago ? " · " + i.metodoPago : "")) : "Debe") + '</span>');
+
+    // ojo: cada celda lleva UN solo hijo, si no la rejilla etiqueta/valor del móvil se desarma
+    return '<tr data-cancelada="' + (i.estado === "cancelada" ? "si":"no") + '">' +
+      '<td data-l="Fecha"><div class="celda">' + esc(fechaCorta(i.fechaSesion)) +
+        '<span class="celda__sub">' + esc(i.hora || "") + '</span></div></td>' +
+      '<td data-l="Nombre"><div class="celda celda-nombre">' + esc(i.nombre) +
+        (i.experiencia === "primera-vez" ? ' <span class="etiqueta etiqueta--nueva">1ª vez</span>' : '') + '</div></td>' +
+      '<td data-l="Clase"><div class="celda">' + esc(i.claseNombre) + '</div></td>' +
+      '<td data-l="Contacto"><div class="celda">' + contacto + '</div></td>' +
+      '<td data-l="Monto"><div class="celda">' + pesos(i.monto) +
+        '<span class="celda__sub">' + (i.modalidad === "mensual" ? "mensual" : "suelta") + '</span></div></td>' +
+      '<td data-l="Estado"><div class="celda celda--pila">' + marcas.join("") +
+        (i.estado === "cancelada" ? '<span class="celda__sub">Cancelada</span>' : '') + '</div></td>' +
+      '<td data-l="Acciones"><div class="celda fila-botones">' +
+        '<button type="button" class="btn btn--sm" data-accion="editar" data-id="' + esc(i.id) + '">Editar</button>' +
+        (i.estado === "cancelada"
+          ? '<button type="button" class="btn btn--sm" data-accion="reactivar" data-id="' + esc(i.id) + '">Reactivar</button>'
+          : '<button type="button" class="btn btn--sm" data-accion="cancelar" data-id="' + esc(i.id) + '">Cancelar</button>') +
+      '</div></td></tr>';
+  }).join("");
+
+  cont.innerHTML = '<table class="tabla"><caption class="sr">Todas las inscripciones filtradas</caption><thead><tr>' +
+    '<th scope="col">Fecha</th><th scope="col">Nombre</th><th scope="col">Clase</th>' +
+    '<th scope="col">Contacto</th><th scope="col">Monto</th><th scope="col">Estado</th><th scope="col">Acciones</th>' +
+    '</tr></thead><tbody>' + filas + '</tbody></table>';
+}
+
+/* ============================================================
+   9. RENDER — AJUSTES
+   ============================================================ */
+function pintarAjustes(){
+  var url = $("#a-url");
+  if(document.activeElement !== url) url.value = estado.ajustes.url;
+
+  var mapa = { ok:"Al día con la planilla", error:"Sin conexión (todo guardado aquí)",
+               sincronizando:"Sincronizando…", local: estado.ajustes.url ? "Sin sincronizar todavía" : "Sin URL configurada" };
+  var ult = estado.ajustes.ultimaSync;
+  var ultTxt = "Nunca";
+  if(ult){
+    var d = new Date(ult);
+    if(!isNaN(d.getTime())) ultTxt = fechaCorta(isoDe(d)) + " · " + horaDeReloj(ult);
+  }
+  $("#estado-sync").innerHTML =
+    '<div><dt>Estado</dt><dd>' + esc(mapa[estado.sync.estado] || "—") + '</dd></div>' +
+    '<div><dt>Última sincronización</dt><dd>' + esc(ultTxt) + '</dd></div>' +
+    '<div><dt>Inscripciones guardadas</dt><dd>' + estado.inscripciones.length + '</dd></div>' +
+    '<div><dt>Cambios por subir</dt><dd>' + estado.pendientes.length + '</dd></div>' +
+    (estado.sync.detalle ? '<div><dt>Último error</dt><dd>' + esc(estado.sync.detalle) + '</dd></div>' : '');
+}
+
+/* ============================================================
+   10. RENDER GENERAL
+   ============================================================ */
+function render(){
+  var foco = document.activeElement && document.activeElement.getAttribute
+    ? document.activeElement.getAttribute("data-k") : null;
+
+  if(estado.vista === "sesion") renderSesion();
+  else if(estado.vista === "todas") renderTodas();
+  else pintarAjustes();
+
+  if(foco){
+    var el = document.querySelector('[data-k="' + foco.replace(/"/g,'\\"') + '"]');
+    if(el) el.focus();
+  }
+}
+
+function cambiarVista(v){
+  estado.vista = v;
+  ["sesion","todas","ajustes"].forEach(function(n){
+    var tab = document.getElementById("tab-" + n);
+    var panel = document.getElementById("vista-" + n);
+    var activo = n === v;
+    tab.setAttribute("aria-selected", activo ? "true" : "false");
+    tab.setAttribute("tabindex", activo ? "0" : "-1");
+    panel.hidden = !activo;
+  });
+  $("#flotante-agregar").hidden = (v === "ajustes");
+  render();
+}
+
+/* ============================================================
+   11. ACCIONES SOBRE UNA INSCRIPCIÓN
+   ============================================================ */
+function buscarIns(id){
+  for(var i=0;i<estado.inscripciones.length;i++){ if(estado.inscripciones[i].id === id) return estado.inscripciones[i]; }
+  return null;
+}
+
+function actualizar(id, cambios){
+  var ins = buscarIns(id);
+  if(!ins) return;
+  for(var k in cambios){ if(Object.prototype.hasOwnProperty.call(cambios,k)) ins[k] = cambios[k]; }
+  ins.updatedAt = new Date().toISOString();
+  marcarPendiente(id);
+  guardarInscripciones();
+  render();
+  pintarSync();
+  sincronizarLuego();
+}
+
+function manejarAccion(e){
+  var btn = e.target.closest ? e.target.closest("[data-accion]") : null;
+  if(!btn) return;
+  var accion = btn.getAttribute("data-accion");
+  var id = btn.getAttribute("data-id");
+  var ins = buscarIns(id);
+  if(!ins) return;
+
+  if(accion === "asistio"){
+    actualizar(id, { asistio: !ins.asistio });
+  }else if(accion === "pago"){
+    var nuevo = !ins.pago;
+    var cambios = { pago: nuevo };
+    // al marcar pagado se propone efectivo (lo más común en la puerta); se puede cambiar
+    if(nuevo && !ins.metodoPago) cambios.metodoPago = "efectivo";
+    if(!nuevo) cambios.metodoPago = "";
+    actualizar(id, cambios);
+  }else if(accion === "cancelar"){
+    if(window.confirm("¿Cancelar la inscripción de " + ins.nombre + "?")){
+      actualizar(id, { estado:"cancelada" });
+      avisar("Inscripción cancelada.");
+    }
+  }else if(accion === "reactivar"){
+    actualizar(id, { estado:"activa" });
+    avisar("Inscripción reactivada.");
+  }else if(accion === "editar"){
+    abrirModal(ins);
+  }
+}
+
+function manejarCambio(e){
+  var el = e.target;
+  if(el && el.getAttribute && el.getAttribute("data-accion") === "metodo"){
+    actualizar(el.getAttribute("data-id"), { metodoPago: el.value, pago:true });
+  }
+}
+
+/* ============================================================
+   12. MODAL DE ALTA / EDICIÓN
+   ============================================================ */
+var focoPrevio = null;
+
+function llenarSelectClases(){
+  var sel = $("#i-clase");
+  sel.innerHTML = CATALOGO.map(function(c){
+    return '<option value="' + esc(c.id) + '">' + esc(c.nombre) + '</option>';
+  }).join("") + '<option value="__otra">Otra clase…</option>';
+
+  var selDia = $("#i-dia");
+  selDia.innerHTML = DIAS.map(function(d){ return '<option value="' + esc(d) + '">' + esc(d) + '</option>'; }).join("");
+}
+
+function llenarHorarios(claseId, seleccion){
+  var sel = $("#i-horario");
+  var c = clasePorId(claseId);
+  var ops = "";
+  if(c){
+    ops = c.horarios.map(function(h){
+      var v = h.dia + "|" + h.hora;
+      return '<option value="' + esc(v) + '">' + esc(h.dia + " · " + h.hora) + '</option>';
+    }).join("");
+  }
+  sel.innerHTML = ops + '<option value="__otro">Otro horario…</option>';
+  if(seleccion && sel.querySelector('option[value="' + seleccion.replace(/"/g,'') + '"]')){
+    sel.value = seleccion;
+  }else if(seleccion){
+    sel.value = "__otro";
+  }
+  aplicarHorarioPersonalizado();
+}
+
+function aplicarHorarioPersonalizado(){
+  var otro = $("#i-horario").value === "__otro";
+  $("#caja-horario-otro").hidden = !otro;
+  $("#caja-hora-otra").hidden = !otro;
+}
+
+function revisarDia(){
+  var iso = $("#i-fecha").value;
+  var aviso = $("#aviso-dia");
+  var dia;
+  if($("#i-horario").value === "__otro") dia = $("#i-dia").value;
+  else dia = ($("#i-horario").value || "").split("|")[0];
+
+  if(esISO(iso) && dia && diaDeISO(iso) !== dia){
+    var d = desdeISO(iso);
+    aviso.hidden = false;
+    aviso.textContent = "Ojo: el " + d.getDate() + " de " + MESES[d.getMonth()] + " cae " +
+                        diaDeISO(iso).toLowerCase() + ", y el horario elegido es de " + dia.toLowerCase() + ".";
+  }else{
+    aviso.hidden = true;
+    aviso.textContent = "";
+  }
+}
+
+/** Para una fecha, propone la primera clase de la grilla que toca ese día. */
+function sugerenciaParaFecha(iso){
+  var dia = diaDeISO(iso);
+  var mejor = null;
+  CATALOGO.forEach(function(c){
+    c.horarios.forEach(function(h){
+      if(h.dia !== dia) return;
+      if(!mejor || minutosDe(h.hora) < minutosDe(mejor.hora)){
+        mejor = { claseId:c.id, claseNombre:c.nombre, dia:h.dia, hora:h.hora };
+      }
+    });
+  });
+  if(mejor) return mejor;
+  var c0 = CATALOGO[0];
+  return { claseId:c0.id, claseNombre:c0.nombre, dia:c0.horarios[0].dia, hora:c0.horarios[0].hora };
+}
+
+function abrirModal(ins){
+  focoPrevio = document.activeElement;
+  estado.editando = ins ? ins.id : null;
+  $("#modal-titulo").textContent = ins ? "Editar inscripción" : "Nueva inscripción";
+
+  var sug = sugerenciaParaFecha(estado.fecha);
+  var base = ins || {
+    nombre:"", telefono:"", correo:"",
+    claseId: sug.claseId, claseNombre: sug.claseNombre,
+    dia: sug.dia, hora: sug.hora, fechaSesion: estado.fecha,
+    experiencia:"primera-vez", modalidad:"suelta", monto:PRECIOS.suelta,
+    asistio:false, pago:false, metodoPago:"", notas:"", estado:"activa"
+  };
+
+  $("#i-nombre").value = base.nombre;
+  $("#i-telefono").value = base.telefono;
+  $("#i-correo").value = base.correo;
+
+  var esDelCatalogo = !!clasePorId(base.claseId);
+  $("#i-clase").value = esDelCatalogo ? base.claseId : "__otra";
+  $("#caja-clase-otra").hidden = esDelCatalogo;
+  $("#i-clase-otra").value = esDelCatalogo ? "" : (base.claseNombre || "");
+
+  llenarHorarios(esDelCatalogo ? base.claseId : "", (base.dia && base.hora) ? (base.dia + "|" + base.hora) : "");
+  if($("#i-horario").value === "__otro"){
+    $("#i-dia").value = base.dia || diaDeISO(base.fechaSesion) || "Lunes";
+    $("#i-hora").value = base.hora || "";
+  }
+
+  $("#i-fecha").value = esISO(base.fechaSesion) ? base.fechaSesion : estado.fecha;
+  $("#i-experiencia").value = base.experiencia;
+  $("#i-modalidad").value = base.modalidad;
+  $("#i-monto").value = base.monto;
+  $("#i-metodo").value = base.metodoPago;
+  $("#i-estado").value = base.estado;
+  $("#i-asistio").checked = !!base.asistio;
+  $("#i-pago").checked = !!base.pago;
+  $("#i-notas").value = base.notas;
+  $("#err-nombre").hidden = true;
+  $("#i-nombre").removeAttribute("aria-invalid");
+  revisarDia();
+
+  $("#velo").hidden = false;
+  document.body.style.overflow = "hidden";
+  setTimeout(function(){ $("#i-nombre").focus(); }, 30);
+}
+
+function cerrarModal(){
+  $("#velo").hidden = true;
+  document.body.style.overflow = "";
+  estado.editando = null;
+  if(focoPrevio && focoPrevio.focus) focoPrevio.focus();
+}
+
+function guardarDesdeModal(){
+  var nombre = String($("#i-nombre").value || "").trim();
+  if(!nombre){
+    $("#err-nombre").hidden = false;
+    $("#i-nombre").setAttribute("aria-invalid","true");
+    $("#i-nombre").focus();
+    return;
+  }
+  var fecha = $("#i-fecha").value;
+  if(!esISO(fecha)) fecha = estado.fecha;
+
+  var claseVal = $("#i-clase").value;
+  var claseId = "", claseNombre = "";
+  if(claseVal === "__otra"){
+    claseNombre = String($("#i-clase-otra").value || "").trim() || "Otra clase";
+    claseId = "";
+  }else{
+    var c = clasePorId(claseVal);
+    claseId = claseVal;
+    claseNombre = c ? c.nombre : claseVal;
+  }
+
+  var dia = "", hora = "";
+  if($("#i-horario").value === "__otro"){
+    dia = $("#i-dia").value;
+    hora = String($("#i-hora").value || "").trim();
+  }else{
+    var partes = String($("#i-horario").value || "").split("|");
+    dia = partes[0] || "";
+    hora = partes[1] || "";
+  }
+  if(!dia) dia = diaDeISO(fecha);
+
+  var pago = $("#i-pago").checked;
+  var metodo = $("#i-metodo").value;
+  if(pago && !metodo) metodo = "efectivo";
+  if(!pago) metodo = "";
+
+  var datos = {
+    nombre: nombre,
+    telefono: String($("#i-telefono").value || "").trim(),
+    correo: String($("#i-correo").value || "").trim(),
+    claseId: claseId,
+    claseNombre: claseNombre,
+    dia: dia,
+    hora: hora,
+    fechaSesion: fecha,
+    experiencia: $("#i-experiencia").value,
+    modalidad: $("#i-modalidad").value,
+    monto: Number($("#i-monto").value) || 0,
+    asistio: $("#i-asistio").checked,
+    pago: pago,
+    metodoPago: metodo,
+    notas: String($("#i-notas").value || "").trim(),
+    estado: $("#i-estado").value
+  };
+
+  if(estado.editando){
+    actualizar(estado.editando, datos);
+    avisar("Inscripción actualizada.","ok");
+  }else{
+    datos.id = uid();
+    datos.creado = new Date().toISOString();
+    datos.updatedAt = datos.creado;
+    estado.inscripciones.push(normalizar(datos));
+    marcarPendiente(datos.id);
+    guardarInscripciones();
+    estado.fecha = fecha;
+    avisar("Inscripción agregada.","ok");
+    render();
+    pintarSync();
+    sincronizarLuego();
+  }
+  cerrarModal();
+}
+
+/* trampa de foco dentro del modal */
+function atraparFoco(e){
+  if($("#velo").hidden || e.key !== "Tab") return;
+  var focos = $("#modal").querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])');
+  var visibles = [];
+  for(var i=0;i<focos.length;i++){
+    if(focos[i].offsetParent !== null || focos[i] === document.activeElement) visibles.push(focos[i]);
+  }
+  if(!visibles.length) return;
+  var primero = visibles[0], ultimo = visibles[visibles.length-1];
+  if(e.shiftKey && document.activeElement === primero){ e.preventDefault(); ultimo.focus(); }
+  else if(!e.shiftKey && document.activeElement === ultimo){ e.preventDefault(); primero.focus(); }
+}
+
+/* ============================================================
+   13. CSV
+   ============================================================ */
+function celdaCSV(v){
+  var s = String(v == null ? "" : v);
+  return '"' + s.replace(/"/g,'""') + '"';
+}
+
+function exportarCSV(lista, nombreArchivo){
+  if(!lista.length){ avisar("No hay nada que exportar con esos filtros.","error"); return; }
+  var cab = ["Fecha sesión","Día","Hora","Clase","Nombre","Teléfono","Correo",
+             "Experiencia","Modalidad","Monto","Asistió","Pagó","Método de pago",
+             "Estado","Notas","Creado"];
+  var filas = lista.map(function(i){
+    return [ i.fechaSesion, i.dia, i.hora, i.claseNombre, i.nombre, i.telefono, i.correo,
+             i.experiencia === "primera-vez" ? "Primera vez" : "Antigua",
+             i.modalidad === "mensual" ? "Mensual" : "Suelta",
+             i.monto, i.asistio ? "Sí" : "No", i.pago ? "Sí" : "No", i.metodoPago,
+             i.estado === "cancelada" ? "Cancelada" : "Activa", i.notas, i.creado
+           ].map(celdaCSV).join(";");
+  });
+  // separador ";" y BOM: así Excel en español lo abre en columnas de una
+  var csv = "﻿" + cab.map(celdaCSV).join(";") + "\r\n" + filas.join("\r\n") + "\r\n";
+  var blob = new Blob([csv], { type:"text/csv;charset=utf-8;" });
+  var url = URL.createObjectURL(blob);
+  var a = crear("a");
+  a.href = url;
+  a.download = nombreArchivo;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+  avisar("CSV descargado (" + lista.length + " filas).","ok");
+}
+
+/* ============================================================
+   14. ARRANQUE Y EVENTOS
+   ============================================================ */
+function iniciar(){
+  cargarTodo();
+  llenarSelectClases();
+
+  estado.fecha = hoyISO();
+  $("#fecha-sesion").value = estado.fecha;
+
+  /* pestañas */
+  var tabs = document.querySelectorAll(".pestana");
+  Array.prototype.forEach.call(tabs, function(t){
+    t.addEventListener("click", function(){ cambiarVista(t.getAttribute("data-vista")); });
+    t.addEventListener("keydown", function(e){
+      var lista = Array.prototype.slice.call(tabs);
+      var i = lista.indexOf(t);
+      var siguiente = null;
+      if(e.key === "ArrowRight") siguiente = lista[(i+1) % lista.length];
+      if(e.key === "ArrowLeft")  siguiente = lista[(i-1+lista.length) % lista.length];
+      if(e.key === "Home")       siguiente = lista[0];
+      if(e.key === "End")        siguiente = lista[lista.length-1];
+      if(siguiente){ e.preventDefault(); siguiente.focus(); cambiarVista(siguiente.getAttribute("data-vista")); }
+    });
+  });
+
+  /* fecha */
+  $("#fecha-sesion").addEventListener("change", function(){
+    estado.fecha = esISO(this.value) ? this.value : hoyISO();
+    render();
+  });
+  $("#dia-antes").addEventListener("click", function(){ estado.fecha = sumarDias(estado.fecha, -1); render(); });
+  $("#dia-despues").addEventListener("click", function(){ estado.fecha = sumarDias(estado.fecha, 1); render(); });
+  $("#ir-hoy").addEventListener("click", function(){ estado.fecha = hoyISO(); render(); });
+  $("#chips-fecha").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("[data-fecha]") : null;
+    if(!b) return;
+    estado.fecha = b.getAttribute("data-fecha");
+    render();
+  });
+
+  /* acciones dentro de las listas */
+  $("#lista-sesion").addEventListener("click", manejarAccion);
+  $("#lista-sesion").addEventListener("change", manejarCambio);
+  $("#lista-todas").addEventListener("click", manejarAccion);
+
+  /* filtros */
+  ["#f-buscar","#f-clase","#f-estado","#f-desde","#f-hasta"].forEach(function(sel){
+    var el = $(sel);
+    el.addEventListener("input", function(){ if(estado.vista === "todas") renderTodas(); });
+    el.addEventListener("change", function(){ if(estado.vista === "todas") renderTodas(); });
+  });
+  $("#limpiar-filtros").addEventListener("click", function(){
+    $("#f-buscar").value = ""; $("#f-clase").value = ""; $("#f-estado").value = "";
+    $("#f-desde").value = ""; $("#f-hasta").value = "";
+    renderTodas();
+  });
+
+  /* agregar / exportar */
+  $("#agregar-sesion").addEventListener("click", function(){ abrirModal(null); });
+  $("#agregar-todas").addEventListener("click", function(){ abrirModal(null); });
+  $("#flotante-agregar").addEventListener("click", function(){ abrirModal(null); });
+  $("#csv-sesion").addEventListener("click", function(){
+    exportarCSV(deLaFecha(estado.fecha), "sala-crisol-" + estado.fecha + ".csv");
+  });
+  $("#csv-todas").addEventListener("click", function(){
+    exportarCSV(filtradas(), "sala-crisol-inscripciones-" + hoyISO() + ".csv");
+  });
+  $("#csv-respaldo").addEventListener("click", function(){
+    exportarCSV(estado.inscripciones, "sala-crisol-respaldo-" + hoyISO() + ".csv");
+  });
+
+  /* modal */
+  $("#cerrar-modal").addEventListener("click", cerrarModal);
+  $("#cancelar-modal").addEventListener("click", cerrarModal);
+  $("#guardar-ins").addEventListener("click", guardarDesdeModal);
+  $("#form-ins").addEventListener("submit", function(e){ e.preventDefault(); guardarDesdeModal(); });
+  $("#velo").addEventListener("mousedown", function(e){ if(e.target === $("#velo")) cerrarModal(); });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && !$("#velo").hidden) cerrarModal();
+    atraparFoco(e);
+  });
+
+  $("#i-clase").addEventListener("change", function(){
+    var otra = this.value === "__otra";
+    $("#caja-clase-otra").hidden = !otra;
+    llenarHorarios(otra ? "" : this.value, "");
+    if(otra) $("#i-horario").value = "__otro";
+    aplicarHorarioPersonalizado();
+    revisarDia();
+  });
+  $("#i-horario").addEventListener("change", function(){ aplicarHorarioPersonalizado(); revisarDia(); });
+  $("#i-dia").addEventListener("change", revisarDia);
+  $("#i-fecha").addEventListener("change", revisarDia);
+  $("#i-modalidad").addEventListener("change", function(){
+    var actual = Number($("#i-monto").value) || 0;
+    // solo autocompleta si el monto era el "de tabla" o estaba vacío
+    if(actual === 0 || actual === PRECIOS.suelta || actual === PRECIOS.mensual){
+      $("#i-monto").value = this.value === "mensual" ? PRECIOS.mensual : PRECIOS.suelta;
+    }
+  });
+  $("#i-pago").addEventListener("change", function(){
+    if(this.checked && !$("#i-metodo").value) $("#i-metodo").value = "efectivo";
+    if(!this.checked) $("#i-metodo").value = "";
+  });
+
+  /* ajustes */
+  $("#guardar-url").addEventListener("click", function(){
+    var v = String($("#a-url").value || "").trim();
+    if(v && v.indexOf("http") !== 0){ avisar("La URL debe empezar con https://","error"); return; }
+    estado.ajustes.url = v;
+    guardarAjustes();
+    avisar(v ? "URL guardada. Probando conexión…" : "URL borrada. El panel sigue funcionando local.","ok");
+    if(v) sincronizar({ manual:true }); else setSync("local");
+  });
+  $("#sync-ahora").addEventListener("click", function(){ sincronizar({ manual:true }); });
+  $("#subir-todo").addEventListener("click", function(){ sincronizar({ manual:true, todo:true }); });
+  $("#borrar-local").addEventListener("click", function(){
+    if(!window.confirm("Se borrarán las " + estado.inscripciones.length + " inscripciones guardadas en este dispositivo. ¿Seguro?")) return;
+    if(estado.pendientes.length && !window.confirm("Hay " + estado.pendientes.length + " cambios sin subir a la planilla. Si borras, se pierden. ¿Continuar?")) return;
+    estado.inscripciones = []; estado.pendientes = [];
+    guardarInscripciones();
+    render(); pintarSync();
+    avisar("Datos locales borrados.","ok");
+  });
+
+  /* reintento de sincronización cuando vuelve la red */
+  window.addEventListener("online", function(){ if(estado.pendientes.length) sincronizar({}); });
+
+  cambiarVista("sesion");
+  pintarSync();
+  if(String(estado.ajustes.url||"").trim()) sincronizar({});
+}
+
+if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciar);
+else iniciar();
+
+})();
+</script>
+</body>
+</html>
