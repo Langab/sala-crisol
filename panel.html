@@ -474,6 +474,29 @@ input[aria-invalid="true"]{ border-color:var(--terracota); }
 @media (prefers-reduced-motion:reduce){
   *{ animation:none !important; transition:none !important; }
 }
+
+/* ============================================================
+   AJUSTES FINOS DE ACCESIBILIDAD (van al final a propósito)
+   ============================================================ */
+
+/* --tinta-suave sobre --crema-2 queda en 4.48:1 y AA pide 4.5. Sobre las
+   zonas crema-2 el texto secundario va en --tinta; la jerarquía la marcan
+   el tamaño y el peso, no el color. */
+.marca-sitio span,
+.resumen .titulo-seccion,
+.resumen__detalle,
+.resumen__detalle span,
+.marca,
+.etiqueta,
+.chip-fecha,
+.segmento__op span,
+.nota{ color:var(--tinta); }
+
+/* Nada por debajo de 44×44: se usa con el dedo, de pie y con gente esperando. */
+.btn--sm{ min-height:44px; }
+.enlace-accion{ min-height:44px; min-width:44px; padding:11px 6px; }
+.wa{ min-height:44px; padding:8px 12px; }
+.chip-fecha{ min-height:44px; padding:9px 13px; }
 </style>
 </head>
 <body>

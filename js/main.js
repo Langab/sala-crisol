@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var itemsHtml = activos.map(function (t) {
       return '<a class="cinta__item" href="' + base + t.pagina + '">' + t.nombre + "</a>";
     }).join("");
-    itemsHtml = '<span class="cinta__item">Talleres ' + CRISOL.mesActual + "</span>" + itemsHtml;
+    itemsHtml = '<span class="cinta__item">Clases de ' + CRISOL.mesActual.toLowerCase() + "</span>" + itemsHtml;
     // se duplica para el loop infinito
     pista.innerHTML = itemsHtml + itemsHtml;
   }
