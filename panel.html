@@ -465,11 +465,15 @@ input[aria-invalid="true"]{ border-color:var(--terracota); }
 }
 .zona-riesgo{ border-color:#e0b393; }
 
-/* barra flotante para agregar */
+/* botón flotante para agregar (redondo: tapa lo mínimo de la lista) */
 .flotante{
   position:fixed; right:14px; bottom:14px; z-index:40;
+  width:56px; height:56px; padding:0; border-radius:50%;
   box-shadow:var(--sombra-alta);
 }
+/* aire al final para que el botón flotante nunca tape un control
+   de la última tarjeta (asistió / pagó / efectivo / transferencia) */
+main, .vista{ padding-bottom:86px; }
 
 @media (prefers-reduced-motion:reduce){
   *{ animation:none !important; transition:none !important; }
@@ -671,8 +675,8 @@ input[aria-invalid="true"]{ border-color:var(--terracota); }
 </main>
 
 <button class="btn btn--principal flotante" type="button" id="flotante-agregar" aria-label="Agregar inscripción">
-  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-  <span>Agregar</span>
+  <svg width="22" height="22" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  <span class="sr">Agregar inscripción</span>
 </button>
 
 <!-- ============ MODAL ============ -->
@@ -787,6 +791,10 @@ input[aria-invalid="true"]{ border-color:var(--terracota); }
 
 <div class="avisos" id="avisos" role="status" aria-live="polite"></div>
 
+<!-- Si el panel se abre junto al sitio, las clases salen de config.js
+     (misma fuente que la web publica). Si se abre suelto, no carga
+     y se usa la copia de respaldo que esta mas abajo. -->
+<script src="js/config.js"></script>
 <script>
 (function(){
 "use strict";
@@ -794,12 +802,12 @@ input[aria-invalid="true"]{ border-color:var(--terracota); }
 /* ============================================================
    1. CATÁLOGO DE CLASES
    ------------------------------------------------------------
-   Copia de js/config.js (talleres + horarios). Va aquí adentro
-   para que el panel sea un archivo autocontenido: se puede
-   guardar en el escritorio o mandar por WhatsApp y funciona.
-   Si cambian los horarios en config.js, actualiza esta lista.
+   El panel intenta leer js/config.js (la misma fuente que usa la
+   web pública), así que los horarios NO hay que actualizarlos en
+   dos partes. Esta lista es solo el respaldo para cuando el panel
+   se abre suelto, sin el resto del sitio al lado.
    ============================================================ */
-var CATALOGO = [
+var CATALOGO_RESPALDO = [
   { id:"pilates-mat", nombre:"Pilates Mat", profe:"Esperanza Fredes", horarios:[
       { dia:"Lunes",   hora:"10:00 – 11:00" },
       { dia:"Viernes", hora:"10:00 – 11:00" },
@@ -817,6 +825,28 @@ var CATALOGO = [
   { id:"bellydance-fusion", nombre:"Bellydance Fusión", profe:"Kathia Luminus", horarios:[
       { dia:"Viernes", hora:"19:00 – 20:00" } ] }
 ];
+
+/* Si config.js cargó, esa es la verdad. Si no, el respaldo de arriba. */
+var CATALOGO = (function () {
+  try {
+    if (typeof CRISOL === "undefined" || !CRISOL || !CRISOL.talleres) return CATALOGO_RESPALDO;
+    var derivado = CRISOL.talleres
+      .filter(function (t) { return t.estado === "activo"; })
+      .map(function (t) {
+        return {
+          id: t.id,
+          nombre: t.nombre,
+          profe: t.profe,
+          horarios: (t.horarios || []).map(function (h) {
+            return { dia: h.dia, hora: h.hora };
+          })
+        };
+      });
+    return derivado.length ? derivado : CATALOGO_RESPALDO;
+  } catch (e) {
+    return CATALOGO_RESPALDO;
+  }
+})();
 
 var PRECIOS = { suelta:10000, mensual:35000 };
 
@@ -1315,7 +1345,10 @@ function renderSesion(){
     h.push('<div class="grupo__cabeza">');
     h.push('<span class="grupo__hora">' + esc(g.hora || "Sin hora") + '</span>');
     h.push('<h3 class="grupo__clase">' + esc(g.clase) + '</h3>');
-    h.push('<span class="grupo__meta">' + tg.n + ' · ' + pesos(tg.recaudado) + ' de ' + pesos(tg.esperado) + '</span>');
+    if(tg.n){
+      h.push('<span class="grupo__meta">' + tg.n + (tg.n === 1 ? " inscrita · " : " inscritas · ") +
+             pesos(tg.recaudado) + ' de ' + pesos(tg.esperado) + '</span>');
+    }
     h.push('</div>');
     if(!g.gente.length){
       h.push('<div class="vacio vacio--mini">Nadie inscrita todavía en este horario.</div>');
