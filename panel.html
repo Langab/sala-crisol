@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
 <meta name="robots" content="noindex, nofollow">
-<title>Panel · Sala Crisol</title>
+<title>Administración · Sala Crisol</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -118,14 +118,20 @@ a{ color:inherit; }
   position:sticky; top:0; z-index:30;
   background:var(--crema); border-bottom:1px solid var(--linea);
 }
-.pestanas{ display:flex; gap:6px; padding:8px 0; overflow-x:auto; scrollbar-width:none; }
+.pestanas{
+  display:flex; gap:6px; padding:8px 0; overflow-x:auto;
+  scrollbar-width:none; scroll-behavior:smooth; scroll-padding-inline:12px;
+}
 .pestanas::-webkit-scrollbar{ display:none; }
 
 .pestana{
-  flex:1 1 auto; min-height:44px; padding:9px 14px;
+  flex:0 0 auto; min-height:44px; padding:9px 14px;
   border:1px solid var(--linea); background:var(--papel);
   border-radius:999px; cursor:pointer; white-space:nowrap;
   font-weight:600; font-size:.92rem; color:var(--tinta-suave);
+}
+@media (max-width:520px){
+  .pestana{ padding:9px 12px; font-size:.85rem; }
 }
 .pestana[aria-selected="true"]{
   background:var(--tinta); border-color:var(--tinta); color:var(--crema);
@@ -179,7 +185,7 @@ main{ padding:16px 0 96px; }
 
 input[type="text"], input[type="tel"], input[type="email"],
 input[type="date"], input[type="number"], input[type="url"],
-input[type="search"], select, textarea{
+input[type="search"], input[type="password"], select, textarea{
   width:100%; min-height:46px; padding:10px 12px;
   border:1.5px solid var(--linea); border-radius:var(--radio-sm);
   background:var(--papel); color:var(--tinta);
@@ -465,6 +471,166 @@ input[aria-invalid="true"]{ border-color:var(--terracota); }
 }
 .zona-riesgo{ border-color:#e0b393; }
 
+
+/* ============================================================
+   VISTAS SEMANA / MES / MÉTRICAS
+   ============================================================ */
+.periodo{
+  display:grid;
+  grid-template-columns:auto 1fr auto auto;
+  align-items:center; gap:8px;
+  background:var(--papel); border:1px solid var(--linea); border-radius:14px;
+  padding:10px 12px; margin-bottom:14px; box-shadow:var(--sombra);
+}
+.periodo__centro{ min-width:0; text-align:center; }
+
+/* en pantallas angostas el título manda: ocupa toda la fila de arriba
+   y los controles quedan debajo, sin quebrarse a media línea */
+@media (max-width:520px){
+  .periodo{ grid-template-columns:auto 1fr auto; }
+  .periodo__centro{ order:-1; grid-column:1 / -1; }
+  .periodo .btn--sm{ grid-column:3; }
+}
+.periodo__titulo{
+  font-family:var(--display); font-weight:600; font-size:1.15rem;
+  line-height:1.15; margin:0; color:var(--tinta);
+}
+.periodo__sub{ font-size:.8rem; color:var(--tinta-suave); margin:2px 0 0; }
+.periodo .btn--sm{ flex:0 0 auto; }
+
+/* --- día dentro de la semana --- */
+.dia-sem{ margin-bottom:16px; }
+.dia-sem__tit{
+  display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+  font-family:var(--display); font-weight:600; font-size:1rem; margin:0 0 8px;
+  padding-bottom:6px; border-bottom:1px solid var(--linea);
+}
+.dia-sem__tit small{ font-family:var(--texto); font-weight:400; font-size:.82rem; color:var(--tinta-suave); }
+.dia-sem--hoy .dia-sem__tit{ border-bottom-color:var(--frambuesa); }
+.dia-sem--hoy .dia-sem__tit span{ color:var(--frambuesa); }
+
+/* --- sesión plegable --- */
+.sesion{
+  background:var(--papel); border:1px solid var(--linea); border-radius:14px;
+  margin-bottom:8px; overflow:hidden; box-shadow:var(--sombra);
+}
+.sesion__cab{
+  display:flex; align-items:center; gap:10px; width:100%;
+  background:none; border:0; padding:12px; cursor:pointer; text-align:left;
+  font-family:var(--texto); color:var(--tinta); min-height:56px;
+}
+.sesion__cab:hover{ background:var(--crema-2); }
+.sesion__color{ width:6px; align-self:stretch; border-radius:3px; flex:0 0 auto; }
+.sesion__id{ flex:1 1 auto; min-width:0; }
+.sesion__clase{ display:block; font-weight:700; font-size:.95rem; }
+.sesion__meta{ display:block; font-size:.8rem; color:var(--tinta-suave); }
+.sesion__meta em{ color:var(--terracota); font-style:normal; }
+.sesion__cupos{ display:flex; align-items:center; gap:6px; flex:0 0 auto; }
+.sesion__flecha{ color:var(--tinta-suave); transition:transform .15s ease; flex:0 0 auto; }
+.sesion[data-abierta="si"] .sesion__flecha{ transform:rotate(180deg); }
+.sesion__cuerpo{ padding:0 12px 12px; border-top:1px solid var(--linea); }
+.sesion__cifras{
+  display:flex; flex-wrap:wrap; gap:12px; padding:10px 0;
+  font-size:.84rem; color:var(--tinta-suave);
+}
+.sesion__cifras b{ color:var(--tinta); }
+.sesion__cifras .pend b{ color:var(--terracota); }
+
+/* --- barra de cupos --- */
+.cupos-barra{
+  display:inline-block; width:46px; height:7px; border-radius:4px;
+  background:var(--crema-2); overflow:hidden; vertical-align:middle;
+}
+.cupos-barra__relleno{ display:block; height:100%; background:var(--salvia); }
+.cupos-barra[data-nivel="casi"] .cupos-barra__relleno{ background:var(--mostaza); }
+.cupos-barra[data-nivel="lleno"] .cupos-barra__relleno{ background:var(--frambuesa); }
+.cupo-txt{ font-size:.78rem; font-weight:700; color:var(--tinta-suave); white-space:nowrap; }
+
+/* --- calendario del mes --- */
+.cal{ display:grid; grid-template-columns:repeat(7,1fr); gap:4px; min-width:0; }
+.cal__nom{ min-width:0; }
+.cal__cab{
+  font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--tinta-suave); text-align:center; padding:4px 0;
+}
+.cal__celda{
+  min-height:76px; border:1px solid var(--linea); border-radius:9px;
+  padding:4px; background:var(--papel); display:flex; flex-direction:column; gap:2px;
+  width:100%; text-align:left; font-family:var(--texto); color:var(--tinta);
+}
+button.cal__celda{ cursor:pointer; }
+button.cal__celda:hover{ border-color:var(--tinta-suave); background:var(--crema-2); }
+button.cal__celda:focus-visible{ outline:3px solid var(--frambuesa); outline-offset:2px; }
+.cal__celda--fuera{ border:0; background:none; min-height:0; }
+.cal__celda--vacia{ background:var(--crema-2); }
+.cal__celda--hoy{ border-color:var(--frambuesa); box-shadow:0 0 0 1px var(--frambuesa); }
+.cal__num{ font-size:.74rem; font-weight:700; color:var(--tinta-suave); }
+.cal__celda--hoy .cal__num{ color:var(--frambuesa); }
+.cal__clase{
+  display:flex; align-items:center; gap:3px; width:100%;
+  background:var(--crema); border:1px solid var(--linea); border-radius:6px;
+  padding:3px 4px; font-size:.66rem; color:var(--tinta); text-align:left; min-height:22px;
+}
+.cal__clase--lleno{ background:#F7E6E9; border-color:#EFD3D8; }
+.cal__punto{ width:6px; height:6px; border-radius:50%; flex:0 0 auto; display:inline-block; }
+.cal__nom{ flex:1 1 auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cal__n{ font-weight:700; color:var(--tinta-suave); flex:0 0 auto; }
+.cal__pie{ font-size:.78rem; color:var(--tinta-suave); margin:10px 0 0; }
+
+@media (max-width:900px){
+  .cal{ gap:2px; }
+  .cal__celda{ min-height:60px; padding:3px; }
+  .cal__nom{ display:none; }           /* en móvil manda el color y el número */
+  .cal__clase{ justify-content:center; gap:4px; }
+}
+
+/* --- KPIs --- */
+.kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px; margin-bottom:14px; }
+.kpi{
+  background:var(--papel); border:1px solid var(--linea); border-radius:14px;
+  padding:14px; box-shadow:var(--sombra);
+}
+.kpi__et{
+  display:block; font-size:.68rem; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--tinta-suave); margin-bottom:4px;
+}
+.kpi__val{ display:block; font-family:var(--display); font-weight:600; font-size:1.55rem; line-height:1.05; }
+.kpi__pie{ display:block; font-size:.75rem; color:var(--tinta-suave); margin-top:3px; }
+.kpi--pend .kpi__val{ color:var(--terracota); }
+
+/* --- gráficos --- */
+.grafico{ margin-bottom:12px; }
+.grafico__tit{
+  font-family:var(--display); font-weight:600; font-size:1.02rem; margin:0 0 10px;
+}
+.grafico__nota{ font-size:.78rem; color:var(--tinta-suave); margin:8px 0 0; }
+.grafico svg{ width:100%; height:auto; display:block; }
+
+/* --- tabla de detalle --- */
+.tabla-envoltura{ overflow-x:auto; }
+.tabla{ width:100%; border-collapse:collapse; font-size:.86rem; }
+.tabla th, .tabla td{ padding:8px 10px; text-align:left; border-bottom:1px solid var(--linea); }
+.tabla th{
+  font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--tinta-suave); white-space:nowrap;
+}
+.tabla tbody tr:last-child td{ border-bottom:0; }
+
+@media (max-width:640px){
+  .tabla thead{ display:none; }
+  .tabla tr{ display:block; border:1px solid var(--linea); border-radius:10px; margin-bottom:8px; padding:6px; }
+  .tabla td{ display:flex; justify-content:space-between; gap:12px; border-bottom:0; padding:5px 6px; }
+  .tabla td::before{
+    content:attr(data-et); font-size:.7rem; font-weight:700; letter-spacing:.05em;
+    text-transform:uppercase; color:var(--tinta-suave);
+  }
+}
+
+.vacio-min{ font-size:.85rem; color:var(--tinta-suave); font-style:italic; padding:8px 0; margin:0; }
+
+/* el atributo hidden debe ganarle a cualquier display de .btn */
+[hidden]{ display:none !important; }
+
 /* botón flotante para agregar (redondo: tapa lo mínimo de la lista) */
 .flotante{
   position:fixed; right:14px; bottom:14px; z-index:40;
@@ -512,7 +678,7 @@ main, .vista{ padding-bottom:86px; }
     <div class="cabecera__fila">
       <div class="marca-sitio">
         <h1>Sala Crisol</h1>
-        <span>Panel</span>
+        <span>Administración</span>
       </div>
       <div class="pildora" id="pildora-sync" data-estado="local">
         <span class="pildora__punto" aria-hidden="true"></span>
@@ -540,8 +706,11 @@ main, .vista{ padding-bottom:86px; }
 <div class="pestanas-caja">
   <div class="envoltura">
     <div class="pestanas" role="tablist" aria-label="Secciones del panel">
-      <button class="pestana" role="tab" id="tab-sesion" aria-controls="vista-sesion" aria-selected="true" data-vista="sesion" type="button">Sesión del día</button>
-      <button class="pestana" role="tab" id="tab-todas" aria-controls="vista-todas" aria-selected="false" tabindex="-1" data-vista="todas" type="button">Todas</button>
+      <button class="pestana" role="tab" id="tab-semana" aria-controls="vista-semana" aria-selected="true" data-vista="semana" type="button">Semana</button>
+      <button class="pestana" role="tab" id="tab-mes" aria-controls="vista-mes" aria-selected="false" tabindex="-1" data-vista="mes" type="button">Mes</button>
+      <button class="pestana" role="tab" id="tab-metricas" aria-controls="vista-metricas" aria-selected="false" tabindex="-1" data-vista="metricas" type="button">Métricas</button>
+      <button class="pestana" role="tab" id="tab-sesion" aria-controls="vista-sesion" aria-selected="false" tabindex="-1" data-vista="sesion" type="button">Día</button>
+      <button class="pestana" role="tab" id="tab-todas" aria-controls="vista-todas" aria-selected="false" tabindex="-1" data-vista="todas" type="button">Inscritas</button>
       <button class="pestana" role="tab" id="tab-ajustes" aria-controls="vista-ajustes" aria-selected="false" tabindex="-1" data-vista="ajustes" type="button">Ajustes</button>
     </div>
   </div>
@@ -549,8 +718,68 @@ main, .vista{ padding-bottom:86px; }
 
 <main id="contenido" class="envoltura">
 
+
+  <!-- ============ VISTA: SEMANA ============ -->
+  <section class="vista" id="vista-semana" role="tabpanel" aria-labelledby="tab-semana" tabindex="-1">
+    <div class="periodo">
+      <button class="btn btn--icono" type="button" id="sem-antes" aria-label="Semana anterior">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 2 4 8l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="periodo__centro">
+        <h2 class="periodo__titulo" id="sem-titulo">—</h2>
+        <p class="periodo__sub" id="sem-sub"></p>
+      </div>
+      <button class="btn btn--icono" type="button" id="sem-despues" aria-label="Semana siguiente">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn btn--sm" type="button" id="sem-hoy">Esta semana</button>
+    </div>
+    <div id="sem-resumen"></div>
+    <div id="sem-cuerpo"></div>
+  </section>
+
+  <!-- ============ VISTA: MES ============ -->
+  <section class="vista" id="vista-mes" role="tabpanel" aria-labelledby="tab-mes" tabindex="-1" hidden>
+    <div class="periodo">
+      <button class="btn btn--icono" type="button" id="mes-antes" aria-label="Mes anterior">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 2 4 8l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="periodo__centro">
+        <h2 class="periodo__titulo" id="mes-titulo">—</h2>
+        <p class="periodo__sub" id="mes-sub"></p>
+      </div>
+      <button class="btn btn--icono" type="button" id="mes-despues" aria-label="Mes siguiente">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn btn--sm" type="button" id="mes-hoy">Este mes</button>
+    </div>
+    <div id="mes-resumen"></div>
+    <div id="mes-calendario"></div>
+    <div id="mes-detalle"></div>
+  </section>
+
+  <!-- ============ VISTA: MÉTRICAS ============ -->
+  <section class="vista" id="vista-metricas" role="tabpanel" aria-labelledby="tab-metricas" tabindex="-1" hidden>
+    <div class="periodo">
+      <button class="btn btn--icono" type="button" id="met-antes" aria-label="Mes anterior">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 2 4 8l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="periodo__centro">
+        <h2 class="periodo__titulo" id="met-titulo">—</h2>
+        <p class="periodo__sub" id="met-sub"></p>
+      </div>
+      <button class="btn btn--icono" type="button" id="met-despues" aria-label="Mes siguiente">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn btn--sm" type="button" id="met-hoy">Este mes</button>
+    </div>
+    <div id="met-kpis"></div>
+    <div id="met-graficos"></div>
+    <div id="met-tabla"></div>
+  </section>
+
   <!-- ============ VISTA: SESIÓN DEL DÍA ============ -->
-  <section class="vista" id="vista-sesion" role="tabpanel" aria-labelledby="tab-sesion" tabindex="-1">
+  <section class="vista" id="vista-sesion" role="tabpanel" aria-labelledby="tab-sesion" tabindex="-1" hidden>
     <div class="tarjeta">
       <div class="campo" style="margin-bottom:0">
         <label for="fecha-sesion">Fecha de la sesión</label>
@@ -593,6 +822,14 @@ main, .vista{ padding-bottom:86px; }
         <div class="campo">
           <label for="f-clase">Clase</label>
           <select id="f-clase"><option value="">Todas las clases</option></select>
+        </div>
+        <div class="campo">
+          <label for="f-modalidad">Modalidad</label>
+          <select id="f-modalidad">
+            <option value="">Sueltas y mensuales</option>
+            <option value="mensual">Solo mensuales</option>
+            <option value="suelta">Solo clases sueltas</option>
+          </select>
         </div>
         <div class="campo">
           <label for="f-estado">Estado</label>
@@ -800,6 +1037,7 @@ main, .vista{ padding-bottom:86px; }
      (misma fuente que la web publica). Si se abre suelto, no carga
      y se usa la copia de respaldo que esta mas abajo. -->
 <script src="js/config.js"></script>
+<script src="js/graficos.js" onerror="window.__sinGraficos=true"></script>
 <script>
 (function(){
 "use strict";
@@ -842,8 +1080,9 @@ var CATALOGO = (function () {
           id: t.id,
           nombre: t.nombre,
           profe: t.profe,
+          precios: t.precios || [],
           horarios: (t.horarios || []).map(function (h) {
-            return { dia: h.dia, hora: h.hora };
+            return { dia: h.dia, hora: h.hora, cuposTotal: h.cuposTotal || null };
           })
         };
       });
@@ -951,8 +1190,11 @@ var estado = {
   inscripciones: [],
   ajustes: { url:"", ultimaSync:null },
   pendientes: [],
-  vista: "sesion",
+  vista: "semana",
   fecha: hoyISO(),
+  semana: "",        // lunes de la semana visible
+  mes: hoyISO(),     // cualquier día del mes visible
+  abiertas: {},      // qué sesiones están desplegadas
   editando: null,
   sync: { estado:"local", detalle:"" }
 };
@@ -1045,9 +1287,15 @@ var temporizadorSync = null;
 function pintarSync(){
   var pil = $("#pildora-sync"), txt = $("#pildora-texto");
   var s = estado.sync.estado, t;
+  var det = String(estado.sync.detalle || "");
   if(s === "sincronizando") t = "Sincronizando…";
   else if(s === "ok") t = "Al día" + (estado.ajustes.ultimaSync ? " · " + horaDeReloj(estado.ajustes.ultimaSync) : "");
-  else if(s === "error") t = "Sin conexión · guardado aquí";
+  else if(s === "error"){
+    // no todo "error" es falta de internet: separar las causas
+    if(/clave|autoriz/i.test(det)) t = "Falta la clave de lectura";
+    else if(/HTTP 40[13]/i.test(det)) t = "La planilla no acepta la conexión";
+    else t = "Sin conexión · guardado aquí";
+  }
   else t = estado.ajustes.url ? "Sin sincronizar" : "Solo en este equipo";
   if(estado.pendientes.length && s !== "sincronizando"){
     t += " · " + estado.pendientes.length + " por subir";
@@ -1382,6 +1630,7 @@ function filtradas(){
   var q = String($("#f-buscar").value || "").trim().toLowerCase();
   var clase = $("#f-clase").value;
   var est = $("#f-estado").value;
+  var modal = $("#f-modalidad") ? $("#f-modalidad").value : "";
   var desde = $("#f-desde").value;
   var hasta = $("#f-hasta").value;
 
@@ -1391,6 +1640,7 @@ function filtradas(){
       if(heno.indexOf(q) === -1) return false;
     }
     if(clase && (i.claseId || i.claseNombre) !== clase) return false;
+    if(modal && (i.modalidad || "suelta") !== modal) return false;
     if(esISO(desde) && (!i.fechaSesion || i.fechaSesion < desde)) return false;
     if(esISO(hasta) && (!i.fechaSesion || i.fechaSesion > hasta)) return false;
 
@@ -1473,6 +1723,372 @@ function renderTodas(){
     '</tr></thead><tbody>' + filas + '</tbody></table>';
 }
 
+
+/* ============================================================
+   10. SESIONES — cruzar la grilla de clases con las inscripciones
+   ============================================================ */
+
+var COLOR_CLASE = ["#E39AA6","#8FC6C9","#E8C583","#9DBE9C","#B7A6D6","#D98E6A"];
+function colorClase(id){
+  for(var i=0;i<CATALOGO.length;i++){ if(CATALOGO[i].id === id) return COLOR_CLASE[i % COLOR_CLASE.length]; }
+  return "#B9A894";
+}
+
+/* Devuelve las sesiones (clase + horario + fecha) entre dos fechas,
+   con las inscritas de cada una. Si hay inscripciones en una fecha que
+   ya no calzan con la grilla (porque cambió el horario), igual aparecen
+   marcadas como fuera de grilla: nadie se pierde. */
+function sesionesDeRango(desde, hasta){
+  var porFecha = {};
+  estado.inscripciones.forEach(function(i){
+    if(i.fechaSesion < desde || i.fechaSesion > hasta) return;
+    (porFecha[i.fechaSesion] = porFecha[i.fechaSesion] || []).push(i);
+  });
+
+  var out = [], iso = desde, guarda = 0;
+  while(iso <= hasta && guarda++ < 400){
+    var dia = diaDeISO(iso);
+    var delDia = porFecha[iso] || [];
+    var usadas = {};
+
+    CATALOGO.forEach(function(c){
+      c.horarios.forEach(function(h){
+        if(h.dia !== dia) return;
+        var ins = delDia.filter(function(i){ return i.claseId === c.id && i.hora === h.hora; });
+        ins.forEach(function(i){ usadas[i.id] = true; });
+        out.push({ fecha: iso, dia: dia, claseId: c.id, clase: c.nombre, profe: c.profe,
+                   hora: h.hora, cupos: h.cuposTotal, inscripciones: ins, fueraGrilla: false });
+      });
+    });
+
+    // inscripciones de ese día que no calzaron con ninguna sesión de la grilla
+    var sueltas = {};
+    delDia.forEach(function(i){
+      if(usadas[i.id]) return;
+      var k = i.claseId + "|" + i.hora;
+      (sueltas[k] = sueltas[k] || []).push(i);
+    });
+    Object.keys(sueltas).forEach(function(k){
+      var g = sueltas[k];
+      out.push({ fecha: iso, dia: dia, claseId: g[0].claseId, clase: g[0].claseNombre,
+                 profe: "", hora: g[0].hora, cupos: null, inscripciones: g, fueraGrilla: true });
+    });
+
+    iso = sumarDias(iso, 1);
+  }
+
+  out.sort(function(a,b){
+    if(a.fecha !== b.fecha) return a.fecha < b.fecha ? -1 : 1;
+    return minutosDe(a.hora) - minutosDe(b.hora);
+  });
+  return out;
+}
+
+function lunesDe(iso){
+  var d = desdeISO(iso); if(!d) return iso;
+  var off = (d.getDay() + 6) % 7;          // lunes = 0
+  return sumarDias(iso, -off);
+}
+function primerDiaMes(iso){ return iso.slice(0,8) + "01"; }
+function ultimoDiaMes(iso){
+  var d = desdeISO(iso);
+  return isoDe(new Date(d.getFullYear(), d.getMonth() + 1, 0));
+}
+var MESES = ["enero","febrero","marzo","abril","mayo","junio","julio",
+             "agosto","septiembre","octubre","noviembre","diciembre"];
+function nombreMes(iso){
+  var d = desdeISO(iso);
+  return MESES[d.getMonth()] + " " + d.getFullYear();
+}
+
+/* barra de cupos: cuántas inscritas sobre el total */
+function barraCupos(n, total){
+  if(!total) return '<span class="cupo-txt">' + n + (n === 1 ? " inscrita" : " inscritas") + '</span>';
+  var pct = Math.min(100, Math.round(n / total * 100));
+  var nivel = pct >= 100 ? "lleno" : (pct >= 70 ? "casi" : "ok");
+  return '<span class="cupos-barra" data-nivel="' + nivel + '" title="' + n + ' de ' + total + ' cupos">' +
+           '<span class="cupos-barra__relleno" style="width:' + pct + '%"></span>' +
+         '</span><span class="cupo-txt">' + n + "/" + total + '</span>';
+}
+
+/* ============================================================
+   11. RENDER — SEMANA
+   ============================================================ */
+function tarjetaSesion(ses, abierta){
+  var t = totales(ses.inscripciones);
+  var k = ses.fecha + "|" + ses.claseId + "|" + ses.hora;
+  var h = [];
+  h.push('<article class="sesion" data-k="' + esc(k) + '"' + (abierta ? ' data-abierta="si"' : '') + '>');
+  h.push('<button type="button" class="sesion__cab" data-accion="abrir-sesion" data-k="' + esc(k) + '" aria-expanded="' + (abierta?"true":"false") + '">');
+  h.push('<span class="sesion__color" aria-hidden="true" style="background:' + colorClase(ses.claseId) + '"></span>');
+  h.push('<span class="sesion__id">');
+  h.push('<span class="sesion__clase">' + esc(ses.clase) + '</span>');
+  h.push('<span class="sesion__meta">' + esc(ses.hora) + (ses.profe ? " · " + esc(ses.profe) : "") +
+         (ses.fueraGrilla ? ' · <em>fuera de la grilla</em>' : "") + '</span>');
+  h.push('</span>');
+  h.push('<span class="sesion__cupos">' + barraCupos(t.n, ses.cupos) + '</span>');
+  h.push('<span class="sesion__flecha" aria-hidden="true">▾</span>');
+  h.push('</button>');
+
+  if(abierta){
+    h.push('<div class="sesion__cuerpo">');
+    if(!ses.inscripciones.length){
+      h.push('<p class="vacio-min">Nadie inscrita todavía en este horario.</p>');
+    }else{
+      h.push('<div class="sesion__cifras">');
+      h.push('<span>Asistieron <b>' + t.asistieron + " de " + t.n + '</b></span>');
+      h.push('<span>Recaudado <b>' + pesos(t.recaudado) + '</b></span>');
+      if(t.pendiente > 0) h.push('<span class="pend">Pendiente <b>' + pesos(t.pendiente) + '</b></span>');
+      h.push('</div>');
+      ses.inscripciones.forEach(function(i){ h.push(tarjetaPersona(i)); });
+    }
+    h.push('<button type="button" class="btn btn--sm" data-accion="agregar-en" data-fecha="' + esc(ses.fecha) +
+           '" data-clase="' + esc(ses.claseId) + '" data-hora="' + esc(ses.hora) + '">+ Agregar a esta clase</button>');
+    h.push('</div>');
+  }
+  h.push('</article>');
+  return h.join("");
+}
+
+function renderSemana(){
+  var ini = estado.semana, fin = sumarDias(ini, 6);
+  var ses = sesionesDeRango(ini, fin);
+
+  var di = desdeISO(ini), df = desdeISO(fin);
+  var titulo = di.getDate() + (di.getMonth() !== df.getMonth() ? " de " + MESES[di.getMonth()] : "") +
+               " al " + df.getDate() + " de " + MESES[df.getMonth()];
+  $("#sem-titulo").textContent = titulo.charAt(0).toUpperCase() + titulo.slice(1);
+
+  var todas = [];
+  ses.forEach(function(x){ todas = todas.concat(x.inscripciones); });
+  var t = totales(todas);
+  var esActual = lunesDe(hoyISO()) === ini;
+  $("#sem-sub").textContent = (esActual ? "Esta semana · " : "") +
+    t.n + (t.n === 1 ? " inscrita" : " inscritas") + " · " + ses.length + " clases";
+
+  $("#sem-resumen").innerHTML = '<div class="tarjeta resumen">' + bloqueResumen(t, { titulo:"Plata de la semana" }) + '</div>';
+
+  var h = [];
+  var porDia = {};
+  ses.forEach(function(x){ (porDia[x.fecha] = porDia[x.fecha] || []).push(x); });
+
+  for(var d = 0; d < 7; d++){
+    var iso = sumarDias(ini, d);
+    var lista = porDia[iso] || [];
+    var esHoy = iso === hoyISO();
+    h.push('<section class="dia-sem' + (esHoy ? " dia-sem--hoy" : "") + '">');
+    var dd = desdeISO(iso);
+    h.push('<h3 class="dia-sem__tit"><span>' + esc(diaDeISO(iso)) + '</span><small>' + dd.getDate() + " " + MESES[dd.getMonth()].slice(0,3) +
+           (esHoy ? ' · <b>hoy</b>' : "") + '</small></h3>');
+    if(!lista.length){
+      h.push('<p class="vacio-min">Sin clases. Sala libre para arriendo.</p>');
+    }else{
+      lista.forEach(function(x){
+        var k = x.fecha + "|" + x.claseId + "|" + x.hora;
+        h.push(tarjetaSesion(x, estado.abiertas[k] === true));
+      });
+    }
+    h.push('</section>');
+  }
+  $("#sem-cuerpo").innerHTML = h.join("");
+}
+
+/* ============================================================
+   12. RENDER — MES (calendario)
+   ============================================================ */
+function renderMes(){
+  var ini = primerDiaMes(estado.mes), fin = ultimoDiaMes(estado.mes);
+  var ses = sesionesDeRango(ini, fin);
+
+  $("#mes-titulo").textContent = nombreMes(ini).charAt(0).toUpperCase() + nombreMes(ini).slice(1);
+
+  var todas = [];
+  ses.forEach(function(x){ todas = todas.concat(x.inscripciones); });
+  var t = totales(todas);
+  $("#mes-sub").textContent = t.n + (t.n === 1 ? " inscrita" : " inscritas") + " · " +
+     t.mensuales + " mensuales · " + t.sueltas + " sueltas";
+  $("#mes-resumen").innerHTML = '<div class="tarjeta resumen">' + bloqueResumen(t, { titulo:"Plata del mes" }) + '</div>';
+
+  var porFecha = {};
+  ses.forEach(function(x){ (porFecha[x.fecha] = porFecha[x.fecha] || []).push(x); });
+
+  var h = [];
+  h.push('<div class="tarjeta">');
+  h.push('<div class="cal">');
+  ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"].forEach(function(d){
+    h.push('<div class="cal__cab">' + d + '</div>');
+  });
+  // huecos hasta el primer día
+  var primero = desdeISO(ini);
+  var off = (primero.getDay() + 6) % 7;
+  for(var i = 0; i < off; i++) h.push('<div class="cal__celda cal__celda--fuera"></div>');
+
+  var iso = ini;
+  while(iso <= fin){
+    var lista = porFecha[iso] || [];
+    var dd = desdeISO(iso);
+    var esHoy = iso === hoyISO();
+    // la celda completa es el objetivo táctil: en el celular, apuntar a un
+    // chip de 22px es imposible. Los chips quedan como información.
+    var resumen = lista.map(function(x){
+      return x.clase + " " + activas(x.inscripciones).length + (x.cupos ? " de " + x.cupos : "");
+    }).join(", ");
+    var etiqueta = dd.getDate() + " de " + MESES[dd.getMonth()] + (lista.length ? ": " + resumen : ": sin clases");
+
+    h.push('<' + (lista.length ? "button type=\"button\"" : "div") +
+           ' class="cal__celda' + (esHoy ? " cal__celda--hoy" : "") + (lista.length ? "" : " cal__celda--vacia") + '"' +
+           (lista.length ? ' data-accion="ver-dia" data-fecha="' + esc(iso) + '" aria-label="' + esc(etiqueta) + '"' : "") + '>');
+    h.push('<span class="cal__num">' + dd.getDate() + '</span>');
+    lista.forEach(function(x){
+      var n = activas(x.inscripciones).length;
+      var lleno = x.cupos && n >= x.cupos;
+      h.push('<span class="cal__clase' + (lleno ? " cal__clase--lleno" : "") + '" aria-hidden="true">' +
+             '<span class="cal__punto" style="background:' + colorClase(x.claseId) + '"></span>' +
+             '<span class="cal__nom">' + esc(x.clase) + '</span>' +
+             '<span class="cal__n">' + n + (x.cupos ? "/" + x.cupos : "") + '</span>' +
+             '</span>');
+    });
+    h.push('</' + (lista.length ? "button" : "div") + '>');
+    iso = sumarDias(iso, 1);
+  }
+  h.push('</div>');
+  h.push('<p class="cal__pie">Cada barra es una clase. El número son las inscritas sobre los cupos. Toca una para ver quiénes van.</p>');
+  h.push('</div>');
+  $("#mes-calendario").innerHTML = h.join("");
+  $("#mes-detalle").innerHTML = "";
+}
+
+/* ============================================================
+   13. RENDER — MÉTRICAS
+   ============================================================ */
+function metricasDeMes(isoMes){
+  var ini = primerDiaMes(isoMes), fin = ultimoDiaMes(isoMes);
+  var ins = activas(estado.inscripciones.filter(function(i){
+    return i.fechaSesion >= ini && i.fechaSesion <= fin;
+  }));
+  var porClase = {};
+  ins.forEach(function(i){
+    var c = porClase[i.claseId] || (porClase[i.claseId] = {
+      id: i.claseId, nombre: i.claseNombre || i.claseId,
+      n:0, asistieron:0, recaudado:0, pendiente:0, mensuales:0, sueltas:0 });
+    c.n++;
+    if(i.asistio) c.asistieron++;
+    if(i.pago) c.recaudado += i.monto; else c.pendiente += i.monto;
+    if(i.modalidad === "mensual") c.mensuales++; else c.sueltas++;
+  });
+  var lista = Object.keys(porClase).map(function(k){ return porClase[k]; });
+  lista.sort(function(a,b){ return b.recaudado - a.recaudado; });
+
+  // por semana del mes
+  var semanas = {};
+  ins.forEach(function(i){
+    var l = lunesDe(i.fechaSesion);
+    var w = semanas[l] || (semanas[l] = { lunes:l, n:0, asistieron:0, recaudado:0 });
+    w.n++; if(i.asistio) w.asistieron++; if(i.pago) w.recaudado += i.monto;
+  });
+  var porSemana = Object.keys(semanas).sort().map(function(k){ return semanas[k]; });
+
+  return { ini:ini, fin:fin, ins:ins, total: totales(ins), porClase: lista, porSemana: porSemana };
+}
+
+function tarjetaGrafico(titulo, svg, nota){
+  return '<div class="tarjeta grafico">' +
+         '<h3 class="grafico__tit">' + esc(titulo) + '</h3>' + svg +
+         (nota ? '<p class="grafico__nota">' + esc(nota) + '</p>' : "") + '</div>';
+}
+
+function renderMetricas(){
+  var m = metricasDeMes(estado.mes);
+  $("#met-titulo").textContent = nombreMes(m.ini).charAt(0).toUpperCase() + nombreMes(m.ini).slice(1);
+  $("#met-sub").textContent = m.total.n + (m.total.n === 1 ? " inscrita en el mes" : " inscritas en el mes");
+
+  var t = m.total;
+  var pctAsis = t.n ? Math.round(t.asistieron / t.n * 100) : 0;
+  var pctPago = t.esperado ? Math.round(t.recaudado / t.esperado * 100) : 0;
+  var k = [];
+  k.push('<div class="kpis">');
+  k.push('<div class="kpi"><span class="kpi__et">Recaudado</span><span class="kpi__val">' + pesos(t.recaudado) + '</span><span class="kpi__pie">' + pctPago + '% de lo esperado</span></div>');
+  k.push('<div class="kpi kpi--pend"><span class="kpi__et">Por cobrar</span><span class="kpi__val">' + pesos(t.pendiente) + '</span><span class="kpi__pie">de ' + pesos(t.esperado) + ' esperados</span></div>');
+  k.push('<div class="kpi"><span class="kpi__et">Asistencia</span><span class="kpi__val">' + pctAsis + '%</span><span class="kpi__pie">' + t.asistieron + ' de ' + t.n + '</span></div>');
+  k.push('<div class="kpi"><span class="kpi__et">Mensuales</span><span class="kpi__val">' + t.mensuales + '</span><span class="kpi__pie">' + t.sueltas + ' clases sueltas</span></div>');
+  k.push('</div>');
+  $("#met-kpis").innerHTML = k.join("");
+
+  var g = [];
+  var hayGraficos = (typeof Graficos !== "undefined" && Graficos && typeof Graficos.barrasApiladas === "function");
+
+  if(!m.ins.length){
+    g.push('<div class="tarjeta"><p class="vacio">Todavía no hay inscripciones en este mes. Cuando lleguen, acá aparecen los gráficos.</p></div>');
+  }else if(hayGraficos){
+    g.push(tarjetaGrafico("Recaudado y pendiente por clase",
+      Graficos.barrasApiladas({
+        datos: m.porClase.map(function(c){
+          return { etiqueta: c.nombre, series: [
+            { nombre:"Pagado", valor:c.recaudado, color:"#9DBE9C" },
+            { nombre:"Pendiente", valor:c.pendiente, color:"#E8C583" } ] };
+        }), formato:"clp", titulo:"Recaudado y pendiente por clase" }),
+      "Verde es plata que ya entró. Amarillo es lo que falta cobrar."));
+
+    g.push(tarjetaGrafico("Asistencia por clase",
+      Graficos.barras({
+        datos: m.porClase.map(function(c){
+          return { etiqueta: c.nombre, valor: c.asistieron, color: colorClase(c.id) }; }),
+        formato:"numero", titulo:"Personas que asistieron por clase" }),
+      "Cuántas personas llegaron efectivamente a cada clase."));
+
+    if(m.porSemana.length > 1){
+      g.push(tarjetaGrafico("Cómo avanzó el mes",
+        Graficos.lineas({
+          series: [{ nombre:"Inscritas", color:"#C4626F",
+                     puntos: m.porSemana.map(function(w){
+                       var d = desdeISO(w.lunes);
+                       return { x: d.getDate() + " " + MESES[d.getMonth()].slice(0,3), y: w.n }; }) }],
+          formato:"numero", titulo:"Inscritas por semana" }),
+        "Cada punto es una semana del mes."));
+    }
+
+    if(t.recaudado > 0){
+      g.push(tarjetaGrafico("Cómo pagaron",
+        Graficos.dona({
+          datos: [
+            { etiqueta:"Efectivo", valor:t.efectivo, color:"#9DBE9C" },
+            { etiqueta:"Transferencia", valor:t.transferencia, color:"#8FC6C9" },
+            { etiqueta:"Sin registrar", valor:t.sinMetodo, color:"#E7DACA" }
+          ].filter(function(x){ return x.valor > 0; }),
+          formato:"clp", centro: pesos(t.recaudado), titulo:"Reparto de los pagos" }),
+        "Del total ya cobrado."));
+    }
+  }else{
+    g.push('<div class="tarjeta"><p class="vacio">No se pudo cargar el módulo de gráficos. Los números de abajo igual están al día.</p></div>');
+  }
+  $("#met-graficos").innerHTML = g.join("");
+
+  var tb = [];
+  tb.push('<div class="tarjeta">');
+  tb.push('<h3 class="grafico__tit">Detalle por clase</h3>');
+  if(!m.porClase.length){
+    tb.push('<p class="vacio-min">Sin datos este mes.</p>');
+  }else{
+    tb.push('<div class="tabla-envoltura"><table class="tabla"><thead><tr>' +
+            '<th scope="col">Clase</th><th scope="col">Inscritas</th><th scope="col">Asistieron</th>' +
+            '<th scope="col">Mensuales</th><th scope="col">Recaudado</th><th scope="col">Por cobrar</th>' +
+            '</tr></thead><tbody>');
+    m.porClase.forEach(function(c){
+      tb.push('<tr>' +
+        '<td data-et="Clase"><span class="cal__punto" style="background:' + colorClase(c.id) + '" aria-hidden="true"></span> ' + esc(c.nombre) + '</td>' +
+        '<td data-et="Inscritas">' + c.n + '</td>' +
+        '<td data-et="Asistieron">' + c.asistieron + '</td>' +
+        '<td data-et="Mensuales">' + c.mensuales + '</td>' +
+        '<td data-et="Recaudado">' + pesos(c.recaudado) + '</td>' +
+        '<td data-et="Por cobrar">' + pesos(c.pendiente) + '</td>' +
+        '</tr>');
+    });
+    tb.push('</tbody></table></div>');
+  }
+  tb.push('</div>');
+  $("#met-tabla").innerHTML = tb.join("");
+}
+
 /* ============================================================
    9. RENDER — AJUSTES
    ============================================================ */
@@ -1506,7 +2122,10 @@ function render(){
   var foco = document.activeElement && document.activeElement.getAttribute
     ? document.activeElement.getAttribute("data-k") : null;
 
-  if(estado.vista === "sesion") renderSesion();
+  if(estado.vista === "semana") renderSemana();
+  else if(estado.vista === "mes") renderMes();
+  else if(estado.vista === "metricas") renderMetricas();
+  else if(estado.vista === "sesion") renderSesion();
   else if(estado.vista === "todas") renderTodas();
   else pintarAjustes();
 
@@ -1518,15 +2137,18 @@ function render(){
 
 function cambiarVista(v){
   estado.vista = v;
-  ["sesion","todas","ajustes"].forEach(function(n){
+  ["semana","mes","metricas","sesion","todas","ajustes"].forEach(function(n){
     var tab = document.getElementById("tab-" + n);
     var panel = document.getElementById("vista-" + n);
     var activo = n === v;
     tab.setAttribute("aria-selected", activo ? "true" : "false");
     tab.setAttribute("tabindex", activo ? "0" : "-1");
     panel.hidden = !activo;
+    if(activo && tab.scrollIntoView){
+      try{ tab.scrollIntoView({ block:"nearest", inline:"nearest" }); }catch(e){}
+    }
   });
-  $("#flotante-agregar").hidden = (v === "ajustes");
+  $("#flotante-agregar").hidden = (v === "ajustes" || v === "metricas" || v === "mes");
   render();
 }
 
@@ -1554,6 +2176,41 @@ function manejarAccion(e){
   var btn = e.target.closest ? e.target.closest("[data-accion]") : null;
   if(!btn) return;
   var accion = btn.getAttribute("data-accion");
+
+  // acciones de navegación / creación: no cuelgan de una inscripción
+  if(accion === "abrir-sesion"){
+    var k = btn.getAttribute("data-k");
+    estado.abiertas[k] = !estado.abiertas[k];
+    render();
+    return;
+  }
+  if(accion === "ver-dia"){
+    estado.fecha = btn.getAttribute("data-fecha");
+    cambiarVista("sesion");
+    return;
+  }
+  if(accion === "agregar-en"){
+    abrirModal(null);
+    var f = btn.getAttribute("data-fecha");
+    var c = btn.getAttribute("data-clase");
+    var hr = btn.getAttribute("data-hora");
+    var campoF = $("#i-fecha"); if(campoF && f){ campoF.value = f; }
+    var campoC = $("#i-clase");
+    if(campoC && c){
+      campoC.value = c;
+      campoC.dispatchEvent(new Event("change", { bubbles:true }));
+      var campoH = $("#i-horario");
+      if(campoH && hr){
+        for(var q=0;q<campoH.options.length;q++){
+          if(campoH.options[q].textContent.indexOf(hr) !== -1){ campoH.selectedIndex = q; break; }
+        }
+        campoH.dispatchEvent(new Event("change", { bubbles:true }));
+      }
+      if(campoF && f) campoF.value = f;   // el change de clase puede recalcular la fecha
+    }
+    return;
+  }
+
   var id = btn.getAttribute("data-id");
   var ins = buscarIns(id);
   if(!ins) return;
@@ -1849,7 +2506,27 @@ function iniciar(){
   llenarSelectClases();
 
   estado.fecha = hoyISO();
+  estado.semana = lunesDe(hoyISO());
+  estado.mes = hoyISO();
   $("#fecha-sesion").value = estado.fecha;
+
+  /* navegación por periodo */
+  function nav(id, fn){ var b = $(id); if(b) b.addEventListener("click", fn); }
+  nav("#sem-antes",   function(){ estado.semana = sumarDias(estado.semana, -7); render(); });
+  nav("#sem-despues", function(){ estado.semana = sumarDias(estado.semana,  7); render(); });
+  nav("#sem-hoy",     function(){ estado.semana = lunesDe(hoyISO()); render(); });
+
+  function moverMes(n){
+    var d = desdeISO(estado.mes);
+    estado.mes = isoDe(new Date(d.getFullYear(), d.getMonth() + n, 1));
+    render();
+  }
+  nav("#mes-antes",   function(){ moverMes(-1); });
+  nav("#mes-despues", function(){ moverMes(1); });
+  nav("#mes-hoy",     function(){ estado.mes = hoyISO(); render(); });
+  nav("#met-antes",   function(){ moverMes(-1); });
+  nav("#met-despues", function(){ moverMes(1); });
+  nav("#met-hoy",     function(){ estado.mes = hoyISO(); render(); });
 
   /* pestañas */
   var tabs = document.querySelectorAll(".pestana");
@@ -1883,12 +2560,13 @@ function iniciar(){
   });
 
   /* acciones dentro de las listas */
-  $("#lista-sesion").addEventListener("click", manejarAccion);
-  $("#lista-sesion").addEventListener("change", manejarCambio);
-  $("#lista-todas").addEventListener("click", manejarAccion);
+  /* delegación en el contenedor principal: cubre todas las vistas
+     (semana, mes, métricas, día e inscritas) con un solo enganche */
+  $("#contenido").addEventListener("click", manejarAccion);
+  $("#contenido").addEventListener("change", manejarCambio);
 
   /* filtros */
-  ["#f-buscar","#f-clase","#f-estado","#f-desde","#f-hasta"].forEach(function(sel){
+  ["#f-buscar","#f-clase","#f-modalidad","#f-estado","#f-desde","#f-hasta"].forEach(function(sel){
     var el = $(sel);
     el.addEventListener("input", function(){ if(estado.vista === "todas") renderTodas(); });
     el.addEventListener("change", function(){ if(estado.vista === "todas") renderTodas(); });
@@ -1971,7 +2649,7 @@ function iniciar(){
   /* reintento de sincronización cuando vuelve la red */
   window.addEventListener("online", function(){ if(estado.pendientes.length) sincronizar({}); });
 
-  cambiarVista("sesion");
+  cambiarVista("semana");
   pintarSync();
   if(String(estado.ajustes.url||"").trim()) sincronizar({});
 }
