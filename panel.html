@@ -631,6 +631,20 @@ button.cal__celda:focus-visible{ outline:3px solid var(--frambuesa); outline-off
 /* el atributo hidden debe ganarle a cualquier display de .btn */
 [hidden]{ display:none !important; }
 
+.diagnostico{
+  margin-top:12px; padding:12px; border-radius:var(--radio-sm);
+  background:var(--crema-2); border:1px solid var(--linea); font-size:.85rem;
+}
+.diagnostico ol{ margin:0; padding-left:18px; }
+.diagnostico li{ margin-bottom:6px; }
+.diagnostico b{ font-weight:700; }
+.diag-ok{ color:#3F6B45; }
+.diag-mal{ color:#9A4A56; }
+.diagnostico .pista{
+  margin:10px 0 0; padding:10px; border-radius:8px;
+  background:var(--papel); border:1px solid var(--linea); color:var(--tinta);
+}
+
 /* botón flotante para agregar (redondo: tapa lo mínimo de la lista) */
 .flotante{
   position:fixed; right:14px; bottom:14px; z-index:40;
@@ -882,7 +896,9 @@ main, .vista{ padding-bottom:86px; }
       <div class="fila-botones">
         <button class="btn btn--tinta" type="button" id="guardar-url">Guardar URL</button>
         <button class="btn" type="button" id="sync-ahora">Sincronizar ahora</button>
+        <button class="btn" type="button" id="probar-conexion">Probar conexión</button>
       </div>
+      <div id="diagnostico" class="diagnostico" hidden></div>
     </div>
 
     <div class="tarjeta">
@@ -2535,6 +2551,54 @@ function aplicarEnlaceDeConfig(){
   }catch(e){ return false; }
 }
 
+/* Dice exactamente en qué paso se cae la conexión, en vez de dejar un
+   "sin conexión" que puede significar cinco cosas distintas. */
+function probarConexion(){
+  var caja = $("#diagnostico");
+  var url = String(estado.ajustes.url || "").trim();
+  var token = String(estado.ajustes.token || "").trim();
+  var pasos = [];
+  var pintar = function(pista){
+    caja.hidden = false;
+    caja.innerHTML = "<ol>" + pasos.join("") + "</ol>" + (pista ? '<p class="pista">' + pista + "</p>" : "");
+  };
+  var ok = function(t){ pasos.push('<li><b class="diag-ok">✓</b> ' + t + "</li>"); };
+  var mal = function(t){ pasos.push('<li><b class="diag-mal">✗</b> ' + t + "</li>"); };
+
+  if(!url){ mal("No hay URL de la planilla guardada."); return pintar("Abre el enlace de configuración que te pasaron, o pega la URL aquí arriba."); }
+  ok("URL guardada.");
+  if(!token) mal("No hay clave de lectura guardada.");
+  else ok("Clave guardada (" + token.length + " caracteres).");
+  pintar("Probando…");
+
+  var sep = url.indexOf("?") === -1 ? "?" : "&";
+  fetch(url + sep + "token=" + encodeURIComponent(token), { method:"GET", redirect:"follow" })
+    .then(function(r){
+      ok("Google respondió (HTTP " + r.status + ").");
+      return r.text();
+    })
+    .then(function(txt){
+      var datos = null;
+      try{ datos = JSON.parse(txt); }catch(e){}
+      if(!datos){
+        mal("La respuesta no es JSON. Suele pasar cuando la implementación no está abierta a <b>cualquier persona</b>.");
+        return pintar("En la planilla: Extensiones → Apps Script → Implementar → Administrar implementaciones → editar → Quién tiene acceso: <b>Cualquier persona</b>.");
+      }
+      if(datos.ok === false){
+        mal("La planilla respondió: <b>" + esc(String(datos.error || "error")) + "</b>");
+        return pintar(/autoriz/i.test(String(datos.error||""))
+          ? "La clave de lectura está mala o vacía. Vuelve a abrir el enlace de configuración."
+          : "Revisa el script en la planilla.");
+      }
+      ok("Leí la planilla: <b>" + (datos.inscripciones ? datos.inscripciones.length : 0) + "</b> inscripciones.");
+      pintar("Todo en orden. Si el panel seguía vacío, toca «Sincronizar ahora».");
+    })
+    .catch(function(e){
+      mal("No se pudo llegar a Google: <b>" + esc(String(e && e.message ? e.message : e)) + "</b>");
+      pintar("Esto casi siempre es el navegador bloqueando la petición. En <b>Brave</b>: toca el león 🦁 de la barra de direcciones y pon los escudos <b>abajo</b> para este sitio. También puede ser un bloqueador de anuncios o una VPN.");
+    });
+}
+
 function iniciar(){
   cargarTodo();
   var vinoDeEnlace = aplicarEnlaceDeConfig();
@@ -2671,6 +2735,7 @@ function iniciar(){
     if(v) sincronizar({ manual:true }); else setSync("local");
   });
   $("#sync-ahora").addEventListener("click", function(){ sincronizar({ manual:true }); });
+  $("#probar-conexion").addEventListener("click", probarConexion);
   $("#subir-todo").addEventListener("click", function(){ sincronizar({ manual:true, todo:true }); });
   $("#borrar-local").addEventListener("click", function(){
     if(!window.confirm("Se borrarán las " + estado.inscripciones.length + " inscripciones guardadas en este dispositivo. ¿Seguro?")) return;
