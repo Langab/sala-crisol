@@ -1244,7 +1244,16 @@ function cargarTodo(){
   estado.inscripciones = Array.isArray(ins) ? ins.map(normalizar) : [];
   var cfg = leerLS(LLAVE_CFG, {});
   estado.ajustes.url = (cfg && typeof cfg.url === "string") ? cfg.url : "";
+  estado.ajustes.token = (cfg && typeof cfg.token === "string") ? cfg.token : "";
   estado.ajustes.ultimaSync = (cfg && cfg.ultimaSync) ? cfg.ultimaSync : null;
+
+  /* La URL de la planilla ya es pública (está en js/config.js, que
+     cualquiera puede leer). No tiene sentido obligar a escribirla a mano
+     en cada teléfono: si no hay una guardada, se hereda de ahí.
+     La CLAVE no se hereda nunca: esa es la que protege los datos. */
+  if(!estado.ajustes.url && typeof CRISOL !== "undefined" && CRISOL && CRISOL.inscripcionesURL){
+    estado.ajustes.url = String(CRISOL.inscripcionesURL);
+  }
   var pen = leerLS(LLAVE_PEN, []);
   estado.pendientes = Array.isArray(pen) ? pen : [];
 }
@@ -2507,8 +2516,28 @@ function exportarCSV(lista, nombreArchivo){
 /* ============================================================
    14. ARRANQUE Y EVENTOS
    ============================================================ */
+/* Un enlace tipo panel.html#config=xxxx deja configurado el aparato de
+   una sola vez: se guarda, se limpia la dirección para que la clave no
+   quede visible ni en el historial, y se sincroniza. Así el equipo no
+   tiene que escribir nada a mano en cada teléfono. */
+function aplicarEnlaceDeConfig(){
+  var h = String(location.hash || "");
+  var m = h.match(/[#&]config=([^&]+)/);
+  if(!m) return false;
+  try{
+    var datos = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1])))));
+    if(datos && datos.url) estado.ajustes.url = String(datos.url);
+    if(datos && datos.token) estado.ajustes.token = String(datos.token);
+    guardarAjustes();
+    if(history.replaceState) history.replaceState(null, "", location.pathname + location.search);
+    else location.hash = "";
+    return true;
+  }catch(e){ return false; }
+}
+
 function iniciar(){
   cargarTodo();
+  var vinoDeEnlace = aplicarEnlaceDeConfig();
   llenarSelectClases();
 
   estado.fecha = hoyISO();
@@ -2666,6 +2695,7 @@ function iniciar(){
 
   cambiarVista("semana");
   pintarSync();
+  if(vinoDeEnlace) avisar("Listo, este aparato quedó conectado a la planilla.","ok");
   if(String(estado.ajustes.url||"").trim()) sincronizar({});
 }
 
