@@ -2017,6 +2017,12 @@ function renderMetricas(){
   var g = [];
   var hayGraficos = (typeof Graficos !== "undefined" && Graficos && typeof Graficos.barrasApiladas === "function");
 
+  /* el ancho del viewBox tiene que parecerse al ancho real del contenedor:
+     si no, el SVG se escala y el texto queda ilegible (640 dibujado en
+     330px deja las cifras en 8px). 26px es el padding de la tarjeta. */
+  var cont = $("#met-graficos");
+  var anchoG = Math.max(280, Math.min(720, (cont && cont.clientWidth ? cont.clientWidth : 640) - 26));
+
   if(!m.ins.length){
     g.push('<div class="tarjeta"><p class="vacio">Todavía no hay inscripciones en este mes. Cuando lleguen, acá aparecen los gráficos.</p></div>');
   }else if(hayGraficos){
@@ -2026,14 +2032,14 @@ function renderMetricas(){
           return { etiqueta: c.nombre, series: [
             { nombre:"Pagado", valor:c.recaudado, color:"#9DBE9C" },
             { nombre:"Pendiente", valor:c.pendiente, color:"#E8C583" } ] };
-        }), formato:"clp", titulo:"Recaudado y pendiente por clase" }),
+        }), ancho: anchoG, formato:"clp", titulo:"Recaudado y pendiente por clase" }),
       "Verde es plata que ya entró. Amarillo es lo que falta cobrar."));
 
     g.push(tarjetaGrafico("Asistencia por clase",
       Graficos.barras({
         datos: m.porClase.map(function(c){
           return { etiqueta: c.nombre, valor: c.asistieron, color: colorClase(c.id) }; }),
-        formato:"numero", titulo:"Personas que asistieron por clase" }),
+        ancho: anchoG, orden:"valor", formato:"numero", titulo:"Personas que asistieron por clase" }),
       "Cuántas personas llegaron efectivamente a cada clase."));
 
     if(m.porSemana.length > 1){
@@ -2043,7 +2049,7 @@ function renderMetricas(){
                      puntos: m.porSemana.map(function(w){
                        var d = desdeISO(w.lunes);
                        return { x: d.getDate() + " " + MESES[d.getMonth()].slice(0,3), y: w.n }; }) }],
-          formato:"numero", titulo:"Inscritas por semana" }),
+          ancho: anchoG, formato:"numero", titulo:"Inscritas por semana" }),
         "Cada punto es una semana del mes."));
     }
 
@@ -2055,7 +2061,7 @@ function renderMetricas(){
             { etiqueta:"Transferencia", valor:t.transferencia, color:"#8FC6C9" },
             { etiqueta:"Sin registrar", valor:t.sinMetodo, color:"#E7DACA" }
           ].filter(function(x){ return x.valor > 0; }),
-          formato:"clp", centro: pesos(t.recaudado), titulo:"Reparto de los pagos" }),
+          ancho: anchoG, formato:"clp", centro: pesos(t.recaudado), titulo:"Reparto de los pagos" }),
         "Del total ya cobrado."));
     }
   }else{
@@ -2644,6 +2650,15 @@ function iniciar(){
     guardarInscripciones();
     render(); pintarSync();
     avisar("Datos locales borrados.","ok");
+  });
+
+  /* los gráficos se dibujan al ancho del contenedor: hay que rehacerlos al girar el teléfono */
+  var relojAncho, anchoPrevio = window.innerWidth;
+  window.addEventListener("resize", function(){
+    if(Math.abs(window.innerWidth - anchoPrevio) < 40) return;
+    anchoPrevio = window.innerWidth;
+    clearTimeout(relojAncho);
+    relojAncho = setTimeout(function(){ if(estado.vista === "metricas") renderMetricas(); }, 200);
   });
 
   /* reintento de sincronización cuando vuelve la red */
