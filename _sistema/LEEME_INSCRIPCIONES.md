@@ -78,10 +78,40 @@ Si la haces a mano, quedan mal puestas.
       inscripcionesURL: "https://script.google.com/macros/s/AKfy.....A/exec",
       ```
 
-    - En la **página administrativa**, en el campo donde te pide la misma URL.
+    - En la **página administrativa** (`panel.html`), pestaña **Ajustes**, en el
+      campo "URL del Apps Script".
 
 15. Guarda, sube los cambios y listo. Prueba inscribiéndote tú misma a una
     clase: en unos segundos deberías ver tu nombre aparecer en la planilla.
+
+---
+
+### 5. La clave de lectura (esto protege los datos de las alumnas)
+
+La URL `/exec` tiene que estar abierta a *cualquier persona*, si no el
+formulario de la web no puede anotar a nadie. Y como esa URL vive en
+`js/config.js`, que es un archivo público, **cualquiera que mire el código
+de la página la puede encontrar**.
+
+Por eso el script pide una clave para *leer* la lista. Sin ella, quien tenga
+la URL solo puede inscribirse; no puede ver los nombres, teléfonos ni correos
+de nadie, ni marcarse como pagado.
+
+La clave está dentro de `inscripciones_sheets.gs`, arriba del todo:
+
+```js
+var TOKEN_LECTURA = 'HCOA3upzmTG5zewYjc82ijMF';
+```
+
+16. Cópiala y pégala en la **página administrativa → Ajustes → "Clave de
+    lectura"**. Hay que hacerlo **una vez en cada dispositivo** que use el
+    panel (tu teléfono, el de Esperanza, el computador de la sala).
+17. **Nunca la pongas en `js/config.js`** ni en ningún archivo de la web
+    pública: ahí se vería.
+
+Si alguna vez sospechas que se filtró, cambia ese texto por otro cualquiera,
+vuelve a implementar (ver más abajo) y pégalo de nuevo en los paneles. Las
+inscripciones no se pierden.
 
 ---
 

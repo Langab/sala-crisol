@@ -637,6 +637,11 @@ main, .vista{ padding-bottom:86px; }
         <input type="url" id="a-url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" spellcheck="false">
         <p class="campo__pista">Se guarda solo en este dispositivo. Si la dejas vacía, el panel funciona igual pero sin planilla.</p>
       </div>
+      <div class="campo">
+        <label for="a-token">Clave de lectura</label>
+        <input type="password" id="a-token" placeholder="la clave que está en el script" autocomplete="off" spellcheck="false">
+        <p class="campo__pista">Sin esta clave el panel no puede ver la lista de inscritas. Está en <code>_sistema/inscripciones_sheets.gs</code>, en la línea <code>TOKEN_LECTURA</code>. No la pegues en la web pública.</p>
+      </div>
       <div class="fila-botones">
         <button class="btn btn--tinta" type="button" id="guardar-url">Guardar URL</button>
         <button class="btn" type="button" id="sync-ahora">Sincronizar ahora</button>
@@ -1067,12 +1072,18 @@ function sincronizar(opciones){
 
   setSync("sincronizando");
 
-  return fetch(url, { method:"GET", redirect:"follow" })
+  var token = String(estado.ajustes.token || "").trim();
+  var urlGet = url + (url.indexOf("?") === -1 ? "?" : "&") + "token=" + encodeURIComponent(token);
+
+  return fetch(urlGet, { method:"GET", redirect:"follow" })
     .then(function(res){
       if(!res.ok) throw new Error("HTTP " + res.status);
       return res.json();
     })
     .then(function(data){
+      if(data && data.ok === false && /autoriz/i.test(String(data.error||""))){
+        throw new Error("clave de lectura incorrecta o vacía (revísala en Ajustes)");
+      }
       if(data && Array.isArray(data.inscripciones)){
         // lo que aún no se sube queda protegido en esta bajada
         estado.inscripciones = fusionar(estado.inscripciones, data.inscripciones, estado.pendientes);
@@ -1089,7 +1100,7 @@ function sincronizar(opciones){
         method: "POST",
         redirect: "follow",
         headers: { "Content-Type":"text/plain;charset=utf-8" },
-        body: JSON.stringify({ inscripciones: aEnviar })
+        body: JSON.stringify({ token: token, inscripciones: aEnviar })
       }).then(function(res){
         if(!res.ok) throw new Error("HTTP " + res.status);
         return res.json();
@@ -1468,6 +1479,9 @@ function renderTodas(){
 function pintarAjustes(){
   var url = $("#a-url");
   if(document.activeElement !== url) url.value = estado.ajustes.url;
+
+  var tok = $("#a-token");
+  if(tok && document.activeElement !== tok) tok.value = estado.ajustes.token || "";
 
   var mapa = { ok:"Al día con la planilla", error:"Sin conexión (todo guardado aquí)",
                sincronizando:"Sincronizando…", local: estado.ajustes.url ? "Sin sincronizar todavía" : "Sin URL configurada" };
@@ -1938,6 +1952,7 @@ function iniciar(){
     var v = String($("#a-url").value || "").trim();
     if(v && v.indexOf("http") !== 0){ avisar("La URL debe empezar con https://","error"); return; }
     estado.ajustes.url = v;
+    estado.ajustes.token = String($("#a-token").value || "").trim();
     guardarAjustes();
     avisar(v ? "URL guardada. Probando conexión…" : "URL borrada. El panel sigue funcionando local.","ok");
     if(v) sincronizar({ manual:true }); else setSync("local");

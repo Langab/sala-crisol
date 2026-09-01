@@ -36,7 +36,7 @@ const CRISOL = {
      Si la dejas vacía, el formulario sigue funcionando pero manda
      la inscripción solo por WhatsApp, sin guardarla en la planilla.
      ============================================================ */
-  inscripcionesURL: "",
+  inscripcionesURL: "https://script.google.com/macros/s/AKfycbxLhPr_MxAqzy3wkGhhvl_NzH6L4dqFpo-SN3otKnWjuNL7wNzDR8CcAuDlaBNrJIiaXg/exec",
 
   /* ============================================================
      CLASES

@@ -29,6 +29,23 @@
 
 var HOJA = 'Inscripciones';
 
+/* ============================================================
+   TOKEN DE LECTURA
+   ------------------------------------------------------------
+   La URL /exec tiene que estar abierta a "cualquier persona" para
+   que el formulario de la web pueda anotar inscripciones. Eso
+   significa que la URL es pública: está en js/config.js, que
+   cualquiera puede leer.
+
+   Por eso, LEER la lista (con nombres, teléfonos y correos) exige
+   este token. El formulario público no lo necesita, porque solo
+   escribe. El panel sí: se pega una vez en su pestaña Ajustes.
+
+   Si alguna vez se filtra, cambia este texto por otro y vuelve a
+   implementar: las inscripciones no se pierden.
+   ============================================================ */
+var TOKEN_LECTURA = 'HCOA3upzmTG5zewYjc82ijMF';
+
 // Orden EXACTO de las columnas. No tocar.
 var COLS = ['id', 'creado', 'nombre', 'telefono', 'correo', 'claseId',
             'claseNombre', 'dia', 'hora', 'fechaSesion', 'experiencia',
@@ -179,6 +196,9 @@ function respuesta_(obj) {
 function doGet(e) {
   try {
     var p = (e && e.parameter) || {};
+    if (String(p.token || '') !== TOKEN_LECTURA) {
+      return respuesta_({ ok: false, error: 'no autorizado' });
+    }
     var fecha = String(p.fecha || '').trim();
     var clase = String(p.clase || '').trim();
     var lista = leer_();
@@ -203,9 +223,36 @@ function doPost(e) {
   lock.waitLock(20000);
   try {
     var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
-    var merged = fusionar_(leer_(), body.inscripciones);
-    escribir_(merged);
-    return respuesta_({ ok: true, inscripciones: merged });
+    var entrantes = body.inscripciones || [];
+    var actuales = leer_();
+    var confianza = String(body.token || '') === TOKEN_LECTURA;
+
+    if (confianza) {
+      // El panel: puede actualizar asistencia, pagos y cancelaciones,
+      // y recibe la lista completa de vuelta para sincronizarse.
+      var merged = fusionar_(actuales, entrantes);
+      escribir_(merged);
+      return respuesta_({ ok: true, inscripciones: merged });
+    }
+
+    // El formulario público: solo puede AGREGAR inscripciones nuevas.
+    // No puede pisar una existente (nadie va a marcarse como pagado
+    // desde fuera) y no recibe de vuelta los datos de nadie.
+    var vistos = {};
+    actuales.forEach(function (x) { vistos[x.id] = true; });
+    var nuevas = 0;
+    entrantes.forEach(function (n) {
+      if (!n || !n.id || vistos[n.id]) return;
+      n.asistio = false;
+      n.pago = false;
+      n.metodoPago = '';
+      n.estado = 'activa';
+      actuales.push(n);
+      vistos[n.id] = true;
+      nuevas++;
+    });
+    if (nuevas) escribir_(actuales);
+    return respuesta_({ ok: true, guardadas: nuevas });
   } catch (err) {
     return respuesta_({ ok: false, error: String(err) });
   } finally {
