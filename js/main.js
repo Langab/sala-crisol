@@ -327,7 +327,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
 
-      // formulario → registra la inscripción y abre WhatsApp
+      // formulario → registra la inscripción en la planilla
       var form = panel.querySelector("[data-form-inscripcion]");
       if (form) {
         form.addEventListener("submit", function (e) {
@@ -352,7 +352,6 @@ document.addEventListener("DOMContentLoaded", function () {
           var hSel = taller.horarios[iSel] || null;
           var dia = hSel ? hSel.dia : "";
           var hora = hSel ? hSel.hora : "";
-          var horario = hSel ? (dia + " · " + hora) : "";
 
           var precio = (taller.precios || []).filter(function (pr) {
             return modalidad === "mensual"
@@ -361,6 +360,7 @@ document.addEventListener("DOMContentLoaded", function () {
           })[0];
           var monto = precio ? (parseInt(String(precio.valor).replace(/[^0-9]/g, ""), 10) || 0) : 0;
 
+          var fechaSesion = proximaFecha(dia);
           var ahora = new Date().toISOString();
           var inscripcion = {
             id: "insc_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
@@ -372,7 +372,7 @@ document.addEventListener("DOMContentLoaded", function () {
             claseNombre: taller.nombre,
             dia: dia,
             hora: hora,
-            fechaSesion: proximaFecha(dia),
+            fechaSesion: fechaSesion,
             experiencia: marcado("experiencia") || "primera-vez",
             modalidad: modalidad,
             monto: monto,
@@ -384,27 +384,57 @@ document.addEventListener("DOMContentLoaded", function () {
             updatedAt: ahora
           };
 
-          var msj = "Hola! Soy " + nombre + " y quiero inscribirme en " + taller.nombre;
-          if (horario) msj += " — " + horario;
-          if (comentario) msj += ". " + comentario;
+          var msj = "Hola! Soy " + nombre + " y me inscribí en " + taller.nombre;
+          if (dia) msj += " — " + dia + " " + hora;
           msj += ". Quiero tomar clases con ustedes ✨";
           var urlWs = enlaceWhatsApp(msj);
 
-          var seguir = function (ok) {
-            if (aviso) {
-              aviso.className = "aviso aviso--" + (ok ? "ok" : "error");
-              aviso.textContent = ok
-                ? "Listo, quedaste anotada. Te abrimos WhatsApp para confirmar."
-                : "No pudimos guardar la inscripción, pero te abrimos WhatsApp igual: mándanos el mensaje y te anotamos a mano.";
-            }
-            if (boton) { boton.disabled = false; boton.textContent = "Inscribirme →"; }
-            window.open(urlWs, "_blank", "noopener");
+          // pantalla de confirmación, en la misma página
+          var confirmar = function () {
+            var f = new Date(fechaSesion + "T12:00:00");
+            var meses = ["enero","febrero","marzo","abril","mayo","junio","julio",
+                         "agosto","septiembre","octubre","noviembre","diciembre"];
+            var cuando = dia + " " + f.getDate() + " de " + meses[f.getMonth()];
+            panel.innerHTML =
+              '<div class="inscrita">' +
+                '<div class="inscrita__marca">✓</div>' +
+                "<h3>Listo, " + nombre.split(" ")[0] + "</h3>" +
+                "<p>Quedaste inscrita. Te esperamos:</p>" +
+                '<dl class="inscrita__datos">' +
+                  "<dt>Clase</dt><dd>" + taller.nombre + "</dd>" +
+                  "<dt>Cuándo</dt><dd>" + cuando + " · " + hora + "</dd>" +
+                  "<dt>Valor</dt><dd>" + (precio ? precio.valor + " · " + precio.nombre : "por confirmar") + "</dd>" +
+                "</dl>" +
+                "<p class=\"inscrita__nota\">La sala te confirma el cupo por WhatsApp. " +
+                  "Si tienes alguna duda antes, escríbenos.</p>" +
+                '<a class="boton boton--ws" target="_blank" rel="noopener" href="' + urlWs + '">Escribir por WhatsApp</a>' +
+                '<button class="inscrita__otra" type="button">Inscribir a otra persona</button>' +
+              "</div>";
+            panel.querySelector(".inscrita__otra").addEventListener("click", function () {
+              location.reload();
+            });
+            panel.scrollIntoView({ behavior: "smooth", block: "center" });
           };
 
-          var destino = (typeof CRISOL !== "undefined" && CRISOL.inscripcionesURL) || "";
-          if (!destino) { seguir(true); form.reset(); return; }
+          var fallar = function () {
+            if (aviso) {
+              aviso.className = "aviso aviso--error";
+              aviso.innerHTML = "No pudimos guardar tu inscripción. " +
+                '<a href="' + urlWs + '" target="_blank" rel="noopener"><strong>Escríbenos por WhatsApp</strong></a>' +
+                " y te anotamos a mano.";
+            }
+            if (boton) { boton.disabled = false; boton.textContent = "Inscribirme"; }
+          };
 
-          if (boton) { boton.disabled = true; boton.textContent = "Guardando..."; }
+          if (!nombre || !hSel) { fallar(); return; }
+
+          var destino = (typeof CRISOL !== "undefined" && CRISOL.inscripcionesURL) || "";
+          if (!destino) { confirmar(); return; }
+
+          // bloquea el doble envío mientras viaja
+          if (boton) { boton.disabled = true; boton.textContent = "Guardando…"; }
+          if (aviso) { aviso.className = "aviso"; aviso.textContent = ""; }
+
           fetch(destino, {
             method: "POST",
             redirect: "follow",
@@ -412,8 +442,8 @@ document.addEventListener("DOMContentLoaded", function () {
             body: JSON.stringify({ inscripciones: [inscripcion] })
           })
             .then(function (r) { return r.json(); })
-            .then(function (r) { seguir(!!(r && r.ok)); form.reset(); })
-            .catch(function () { seguir(false); });
+            .then(function (r) { if (r && r.ok) confirmar(); else fallar(); })
+            .catch(fallar);
         });
       }
     }

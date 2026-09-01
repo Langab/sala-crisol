@@ -1461,3 +1461,75 @@ body[data-subpagina] { padding-top: 0; }
 
 /* si el JS no corre, que igual se vea todo */
 .no-js .revelar { opacity: 1; transform: none; }
+
+/* ---- confirmación de inscripción (reemplaza al formulario) ---- */
+.inscrita { text-align: center; padding: 0.5rem 0; }
+
+.inscrita__marca {
+  width: 54px; height: 54px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--salvia-velo);
+  color: #3F6B45;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.inscrita h3 {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: 1.6rem;
+  margin-bottom: 0.3rem;
+}
+.inscrita > p { color: var(--tinta-suave); font-size: 0.92rem; margin-bottom: 1.1rem; }
+
+.inscrita__datos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 1rem;
+  text-align: left;
+  background: var(--crema);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.1rem;
+}
+.inscrita__datos dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+  align-self: center;
+}
+.inscrita__datos dd { font-size: 0.95rem; font-weight: 600; }
+
+.inscrita__nota {
+  font-size: 0.85rem;
+  color: var(--tinta-suave);
+  margin-bottom: 1.1rem;
+  line-height: 1.5;
+}
+
+.inscrita .boton { width: 100%; }
+
+.inscrita__otra {
+  display: block;
+  width: 100%;
+  margin-top: 0.7rem;
+  padding: 0.7em;
+  min-height: 44px;
+  background: none;
+  border: none;
+  color: var(--tinta-suave);
+  font-family: var(--fuente-texto);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  border-radius: var(--radio-chico);
+}
+.inscrita__otra:hover { color: var(--frambuesa); }
