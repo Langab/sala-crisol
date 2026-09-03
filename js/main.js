@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
   /* ---------- cinta / marquesina de talleres ---------- */
   var pista = document.querySelector("[data-cinta]");
   if (pista && typeof CRISOL !== "undefined") {
-    var activos = CRISOL.talleres.filter(function (t) { return t.estado === "activo"; });
+    var activos = CRISOL.talleres.filter(function (t) { return t.estado === "activo" && t.tipo !== "evento"; });
     var itemsHtml = activos.map(function (t) {
       return '<a class="cinta__item" href="' + base + t.pagina + '">' + t.nombre + "</a>";
     }).join("");
@@ -156,38 +156,48 @@ document.addEventListener("DOMContentLoaded", function () {
   /* ---------- tarjetas de talleres en la portada ---------- */
   var rejilla = document.querySelector("[data-rejilla-talleres]");
   if (rejilla && typeof CRISOL !== "undefined") {
-    rejilla.innerHTML = CRISOL.talleres.map(function (t, idx) {
+    rejilla.innerHTML = CRISOL.talleres.filter(function (t) { return t.tipo !== "evento"; }).map(function (t, idx) {
       var diasResumen = t.horarios.map(function (h) { return h.dia; })
         .filter(function (v, i, arr) { return arr.indexOf(v) === i; })
         .join(" · ");
       var esPronto = t.estado === "pronto";
-      var media;
-      if (t.img) {
-        media = '<img src="' + base + t.img + '" alt="' + t.nombre + ' en Sala Crisol" loading="lazy">';
-      } else {
-        // portada generada: tela del color de la clase
-        var iniciales = t.nombre.split(" ").map(function (p) { return p[0]; }).slice(0, 2).join("");
-        var mapaColor = {
-          rosa: "#E39AA6", terracota: "#D98E6A", mostaza: "#E8C583",
-          salvia: "#9DBE9C", turquesa: "#8FC6C9", lila: "#B7A6D6"
-        };
-        var tono = mapaColor[t.color] || "#E39AA6";
-        media =
-          '<div class="portada-gen" style="background:' + tono + '">' +
-          '<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%">' +
-          '<defs><pattern id="tela-' + t.id + '" width="18" height="18" patternUnits="userSpaceOnUse">' +
-          '<rect width="18" height="18" fill="' + tono + '"/>' +
-          '<circle cx="9" cy="9" r="3.4" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>' +
-          '<circle cx="9" cy="9" r="1" fill="rgba(255,255,255,0.5)"/>' +
-          "</pattern></defs>" +
-          '<rect width="400" height="300" fill="url(#tela-' + t.id + ')"/>' +
-          "</svg>" +
-          '<span style="position:relative">' + iniciales + "</span>" +
-          "</div>";
-      }
+      /* La portada es el flyer del taller, por convención:
+         img/talleres/<id>/flyer.jpg. Si esa clase todavía no tiene
+         flyer, cae a su primera foto; y si tampoco hay, queda la
+         portada de tela generada que está debajo. Así las dueñas
+         solo tienen que reemplazar el archivo. */
+      var mapaColor = {
+        rosa: "#E39AA6", terracota: "#D98E6A", mostaza: "#E8C583",
+        salvia: "#9DBE9C", turquesa: "#8FC6C9", lila: "#B7A6D6"
+      };
+      var tono = mapaColor[t.color] || "#E39AA6";
+      var iniciales = t.nombre.split(" ").map(function (p) { return p[0]; }).slice(0, 2).join("");
+      var respaldo =
+        '<div class="portada-gen" style="background:' + tono + '">' +
+        '<svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%">' +
+        '<defs><pattern id="tela-' + t.id + '" width="18" height="18" patternUnits="userSpaceOnUse">' +
+        '<rect width="18" height="18" fill="' + tono + '"/>' +
+        '<circle cx="9" cy="9" r="3.4" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>' +
+        '<circle cx="9" cy="9" r="1" fill="rgba(255,255,255,0.5)"/>' +
+        "</pattern></defs>" +
+        '<rect width="400" height="500" fill="url(#tela-' + t.id + ')"/>' +
+        "</svg>" +
+        '<span style="position:relative">' + iniciales + "</span></div>";
+
+      var flyer = base + "img/talleres/" + t.id + "/flyer.jpg";
+      var foto1 = (t.fotos && t.fotos[0]) ? base + t.fotos[0] : "";
+      // si falla el flyer probamos la foto; si falla la foto, se quita y queda el respaldo
+      var alFallar = foto1
+        ? "this.onerror=function(){this.remove()};this.src='" + foto1 + "';" +
+          "this.closest('.tarjeta-taller__media').classList.remove('es-flyer');"
+        : "this.remove()";
+      var media = respaldo +
+        '<img class="portada-img" src="' + flyer + '" alt="Flyer de ' + t.nombre + '" loading="lazy" ' +
+        'onerror="this.onerror=null;' + alFallar + '">';
+
       return (
         '<a class="tarjeta-taller revelar revelar--retraso-' + (idx % 3 + 1) + '" href="' + base + t.pagina + '">' +
-        '<div class="tarjeta-taller__media">' + media +
+        '<div class="tarjeta-taller__media es-flyer">' + media +
         '<span class="tarjeta-taller__dia">' +
         (esPronto ? "Nueva fecha pronto" : diasResumen) + "</span></div>" +
         '<div class="tarjeta-taller__cuerpo">' +
@@ -327,6 +337,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
 
+      /* galería de fotos de la clase (sale de `fotos` en config.js) */
+      var galeria = document.querySelector("[data-galeria]");
+      var contFotos = document.querySelector("[data-galeria-fotos]");
+      if (galeria && contFotos && taller.fotos && taller.fotos.length) {
+        contFotos.innerHTML = taller.fotos.map(function (ruta, i) {
+          return '<figure class="galeria__foto"><img src="' + base + ruta +
+                 '" alt="' + taller.nombre + ' en Sala Crisol, foto ' + (i + 1) +
+                 '" loading="lazy"></figure>';
+        }).join("");
+        galeria.hidden = false;
+      }
+
       // formulario → registra la inscripción en la planilla
       var form = panel.querySelector("[data-form-inscripcion]");
       if (form) {
@@ -360,7 +382,8 @@ document.addEventListener("DOMContentLoaded", function () {
           })[0];
           var monto = precio ? (parseInt(String(precio.valor).replace(/[^0-9]/g, ""), 10) || 0) : 0;
 
-          var fechaSesion = proximaFecha(dia);
+          // un evento con fecha anunciada usa esa fecha; una clase semanal, la próxima
+          var fechaSesion = taller.fechaFija || proximaFecha(dia);
           var ahora = new Date().toISOString();
           var inscripcion = {
             id: "insc_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
@@ -446,6 +469,75 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(fallar);
         });
       }
+    }
+  }
+
+  /* ---------- inscripción al Domingo Popular ---------- */
+  var cajaDP = document.querySelector("[data-form-domingo]");
+  if (cajaDP && typeof CRISOL !== "undefined") {
+    var dp = buscarTaller("domingo-popular");
+    if (!dp || dp.estado !== "activo") {
+      cajaDP.remove();
+    } else {
+      var h0 = dp.horarios[0] || { dia: "Domingo", hora: "" };
+      var meses = ["enero","febrero","marzo","abril","mayo","junio","julio",
+                   "agosto","septiembre","octubre","noviembre","diciembre"];
+      var fdp = dp.fechaFija ? new Date(dp.fechaFija + "T12:00:00") : null;
+      var cuando = fdp
+        ? "Domingo " + fdp.getDate() + " de " + meses[fdp.getMonth()]
+        : "Próxima fecha por anunciar";
+
+      cajaDP.innerHTML =
+        '<h3>Ven al próximo</h3>' +
+        '<p class="dp-cuando">' + cuando + (h0.hora ? " · " + h0.hora : "") + "</p>" +
+        '<form data-form-dp>' +
+          '<div class="campo"><label for="dp-nombre">Tu nombre</label>' +
+          '<input id="dp-nombre" name="nombre" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" required></div>' +
+          '<div class="campo"><label for="dp-telefono">WhatsApp</label>' +
+          '<input id="dp-telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 ..." required></div>' +
+          '<div class="campo"><label for="dp-cuantos">¿Vienen más contigo?</label>' +
+          '<input id="dp-cuantos" name="cuantos" type="text" placeholder="Ej: voy con una amiga"></div>' +
+          '<p class="aviso" data-aviso-dp role="status" aria-live="polite"></p>' +
+          '<button class="boton boton--fuego" type="submit">Anotarme</button>' +
+          '<p class="formulario__nota">Quedas en la lista del día. Es de aporte voluntario.</p>' +
+        "</form>";
+
+      var formDP = cajaDP.querySelector("[data-form-dp]");
+      formDP.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var v = function (n) { var el = formDP.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ""; };
+        var nombre = v("nombre");
+        var aviso = cajaDP.querySelector("[data-aviso-dp]");
+        var boton = formDP.querySelector('button[type="submit"]');
+        var ahora = new Date().toISOString();
+        var ins = {
+          id: "insc_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+          creado: ahora, nombre: nombre, telefono: v("telefono"), correo: "",
+          claseId: dp.id, claseNombre: dp.nombre, dia: h0.dia, hora: h0.hora,
+          fechaSesion: dp.fechaFija || proximaFecha(h0.dia),
+          experiencia: "primera-vez", modalidad: "suelta", monto: 0,
+          asistio: false, pago: false, metodoPago: "",
+          notas: v("cuantos"), estado: "activa", updatedAt: ahora
+        };
+        var listo = function (ok) {
+          if (boton) { boton.disabled = false; boton.textContent = "Anotarme"; }
+          aviso.className = "aviso aviso--" + (ok ? "ok" : "error");
+          aviso.textContent = ok
+            ? "Listo, " + nombre.split(" ")[0] + ". Te esperamos el " + cuando.toLowerCase() + "."
+            : "No pudimos anotarte. Escríbenos por WhatsApp y te sumamos a mano.";
+          if (ok) formDP.reset();
+        };
+        var destino = CRISOL.inscripcionesURL || "";
+        if (!destino) return listo(true);
+        boton.disabled = true; boton.textContent = "Guardando…";
+        fetch(destino, {
+          method: "POST", redirect: "follow",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ inscripciones: [ins] })
+        }).then(function (r) { return r.json(); })
+          .then(function (r) { listo(!!(r && r.ok)); })
+          .catch(function () { listo(false); });
+      });
     }
   }
 

@@ -530,11 +530,16 @@ a { color: inherit; }
 
 .tarjeta-taller__media {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 4 / 5;      /* proporción de afiche: los flyers son verticales */
   overflow: hidden;
   background: var(--crema-2);
 }
 .tarjeta-taller__media img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Un flyer se mira entero: recortarlo se come el título y los horarios.
+   Va contenido, sobre el color de la clase. Las fotos sí recortan. */
+.tarjeta-taller__media.es-flyer .portada-img { object-fit: contain; }
+.portada-img { position: relative; z-index: 1; }
 
 /* portada generada cuando la clase no tiene foto */
 .portada-gen {
@@ -908,7 +913,15 @@ a { color: inherit; }
   padding: 1rem;
   box-shadow: var(--sombra);
 }
-.spec__icono { font-size: 1.2rem; margin-bottom: 0.4rem; }
+.spec__icono {
+  width: 40px; height: 40px;
+  margin-bottom: 0.7rem;
+  display: grid; place-items: center;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--ico, var(--rosa)) 16%, var(--papel));
+  color: color-mix(in srgb, var(--ico, var(--rosa)) 72%, var(--tinta));
+}
+.spec__icono svg { width: 23px; height: 23px; }
 .spec__nombre { font-weight: 700; font-size: 0.92rem; margin-bottom: 0.15rem; }
 .spec__dato { font-size: 0.82rem; color: var(--tinta-suave); }
 
@@ -990,14 +1003,15 @@ a { color: inherit; }
   box-shadow: var(--sombra);
 }
 .dato-ubicacion__icono {
-  width: 38px; height: 38px;
+  width: 40px; height: 40px;
   flex: 0 0 auto;
   display: grid;
   place-items: center;
-  border-radius: 10px;
-  background: var(--crema-2);
-  font-size: 1.05rem;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--ico, var(--rosa)) 16%, var(--papel));
+  color: color-mix(in srgb, var(--ico, var(--rosa)) 72%, var(--tinta));
 }
+.dato-ubicacion__icono svg { width: 22px; height: 22px; }
 .dato-ubicacion h4 { font-size: 0.95rem; margin-bottom: 0.15rem; }
 .dato-ubicacion p { font-size: 0.87rem; color: var(--tinta-suave); }
 .dato-ubicacion a { color: var(--frambuesa); }
@@ -1533,3 +1547,52 @@ body[data-subpagina] { padding-top: 0; }
   border-radius: var(--radio-chico);
 }
 .inscrita__otra:hover { color: var(--frambuesa); }
+
+/* ---- galería de fotos dentro de la página de cada clase ---- */
+.galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.8rem;
+}
+.galeria__foto {
+  margin: 0;
+  border-radius: var(--radio);
+  overflow: hidden;
+  border: 1px solid var(--linea);
+  box-shadow: var(--sombra);
+  background: var(--crema-2);
+}
+.galeria__foto img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.galeria__foto:hover img { transform: scale(1.03); }
+
+/* una sola foto: que no ocupe todo el ancho como un cartel */
+.galeria:has(.galeria__foto:only-child) { grid-template-columns: minmax(0, 340px); }
+
+/* ---- inscripción al Domingo Popular ---- */
+.dp-caja {
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 1.3rem;
+  box-shadow: var(--sombra);
+  max-width: 420px;
+}
+.dp-caja h3 {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: 1.3rem;
+}
+.dp-cuando {
+  font-weight: 700;
+  color: var(--terracota);
+  font-size: 0.92rem;
+  margin-bottom: 1rem;
+}
+.dp-caja form { display: grid; gap: 0.8rem; }
+.dp-caja .boton { width: 100%; }

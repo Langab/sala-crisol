@@ -61,7 +61,9 @@ const CRISOL = {
       nivel: "Todos los niveles",
       duracion: "1 hora",
       pagina: "talleres/pilates-mat.html",
-      img: null,
+      // La portada es el flyer: img/talleres/pilates-mat/flyer.jpg
+      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
+      fotos: ["img/talleres/pilates-mat/fotos/01.jpg"],
       color: "salvia",
       estado: "activo",
       horarios: [
@@ -83,7 +85,9 @@ const CRISOL = {
       nivel: "Todos los niveles",
       duracion: "1 hora",
       pagina: "talleres/danza-contemporanea.html",
-      img: "img/foto-clase-danza.jpg",
+      // La portada es el flyer: img/talleres/danza-contemporanea/flyer.jpg
+      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
+      fotos: ["img/talleres/danza-contemporanea/fotos/01.jpg", "img/talleres/danza-contemporanea/fotos/02.jpg", "img/talleres/danza-contemporanea/fotos/03.jpg"],
       color: "turquesa",
       estado: "activo",
       horarios: [
@@ -103,7 +107,9 @@ const CRISOL = {
       nivel: "Todos los niveles",
       duracion: "2 horas",
       pagina: "talleres/movimiento-flexible.html",
-      img: "img/flyer-movimiento-flexible.jpg",
+      // La portada es el flyer: img/talleres/movimiento-flexible/flyer.jpg
+      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
+      fotos: ["img/talleres/movimiento-flexible/fotos/01.jpg"],
       color: "rosa",
       estado: "activo",
       horarios: [
@@ -125,7 +131,9 @@ const CRISOL = {
       nivel: "Inicial · sin experiencia",
       duracion: "1,5 horas",
       pagina: "talleres/equilibrio-de-manos.html",
-      img: "img/flyer-equilibrio-manos.jpg",
+      // La portada es el flyer: img/talleres/equilibrio-de-manos/flyer.jpg
+      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
+      fotos: ["img/talleres/equilibrio-de-manos/fotos/01.jpg"],
       color: "mostaza",
       estado: "activo",
       horarios: [
@@ -139,22 +147,26 @@ const CRISOL = {
     {
       id: "danza-filosofia",
       nombre: "Danza y Filosofía",
-      subtitulo: "Experiencia sensualstyle",
-      profe: "Compañía Amor Expresamos",
+      subtitulo: "Experiencia Sensuallstyle",
+      profe: "Amar Estefanía",
       profeIg: "",
       frase: "Mover el cuerpo también es una forma de pensar.",
       nivel: "Todos los niveles",
       duracion: "1 hora 15 min",
       pagina: "talleres/danza-filosofia.html",
-      img: "img/foto-tertulia-performance.jpg",
+      // La portada es el flyer: img/talleres/danza-filosofia/flyer.jpg
+      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
+      fotos: ["img/talleres/danza-filosofia/fotos/01.jpg", "img/talleres/danza-filosofia/fotos/02.jpg"],
       color: "lila",
       estado: "activo",
       horarios: [
         { dia: "Jueves", hora: "18:45 – 20:00", cuposTotal: 12, cuposDisponibles: 9 },
       ],
+      // precios del flyer de Amar Estefanía (sep · oct · nov · dic)
       precios: [
-        { nombre: "Clase suelta", valor: "$10.000" },
-        { nombre: "Mensual (4 clases)", valor: "$35.000" },
+        { nombre: "Clase suelta", valor: "$8.000" },
+        { nombre: "Mensualidad", valor: "$28.000" },
+        { nombre: "2 meses", valor: "$50.000" },
       ],
     },
     {
@@ -166,7 +178,9 @@ const CRISOL = {
       nivel: "Todos los niveles",
       duracion: "1 hora",
       pagina: "talleres/bellydance-fusion.html",
-      img: "img/foto-tertulia-musica.jpg",
+      // La portada es el flyer: img/talleres/bellydance-fusion/flyer.jpg
+      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
+      fotos: ["img/talleres/bellydance-fusion/fotos/01.jpg", "img/talleres/bellydance-fusion/fotos/02.jpg"],
       color: "terracota",
       estado: "activo",
       horarios: [
@@ -175,6 +189,33 @@ const CRISOL = {
       precios: [
         { nombre: "Clase suelta", valor: "$10.000" },
         { nombre: "Mensual (4 clases)", valor: "$35.000" },
+      ],
+    },
+    {
+      /* ------------------------------------------------------------
+         DOMINGO POPULAR — no es una clase semanal, es la jornada
+         mensual. Va acá para que la gente pueda inscribirse y quede
+         en la misma planilla que el resto.
+         ⚠️ CADA MES hay que actualizar `fechaFija` con la fecha real.
+         ------------------------------------------------------------ */
+      id: "domingo-popular",
+      tipo: "evento",
+      nombre: "Domingo Popular",
+      profe: "Sala Crisol",
+      profeIg: "sala.crisol",
+      frase: "Una jornada completa: entrenar, cocinar y quedarse.",
+      nivel: "Abierto a todas y todos",
+      duracion: "Jornada completa",
+      pagina: "index.html#comunidad",
+      fechaFija: "2026-09-28",
+      fotos: [],
+      color: "terracota",
+      estado: "activo",
+      horarios: [
+        { dia: "Domingo", hora: "11:00 – 18:00", cuposTotal: 30, cuposDisponibles: 30 },
+      ],
+      precios: [
+        { nombre: "Aporte voluntario", valor: "Desde $3.000" },
       ],
     },
   ],
@@ -207,7 +248,7 @@ const CRISOL = {
       { hora: "17:30", clase: "Pilates Mat", profe: "Esperanza", id: "pilates-mat", tipo: "semanal" },
     ],
     "Domingo": [
-      { hora: "Mensual", clase: "Domingo Popular", profe: "Sala Crisol", id: null, tipo: "mensual" },
+      { hora: "Mensual", clase: "Domingo Popular", profe: "Sala Crisol", id: "domingo-popular", tipo: "mensual" },
     ],
   },
 
@@ -222,7 +263,7 @@ const CRISOL = {
       subtitulo: "(Salão de Baile)",
       fecha: "Viernes 1 de mayo · 19:00",
       detalle: "Apertura de ciclo. Proyección + tertulia con artistas invitadxs: música y danza en vivo, cruce entre disciplinas.",
-      img: "img/poster-tertulia-1.jpg",
+      img: "img/tertulias/afiche-01.jpg",
       acento: "#E39AA6",
     },
     {
@@ -231,7 +272,7 @@ const CRISOL = {
       subtitulo: "de Juan Cáceres · Chile",
       fecha: "Viernes 29 de mayo · 20:00",
       detalle: "Proyección + tertulia en un espacio más íntimo: música, danza y expresiones artísticas en atmósfera de escucha.",
-      img: "img/poster-tertulia-2.jpg",
+      img: "img/tertulias/afiche-02.jpg",
       acento: "#8FC6C9",
     },
     {
@@ -240,7 +281,7 @@ const CRISOL = {
       subtitulo: "de Elefante Gonorrea y sus amigxs",
       fecha: "Viernes 26 de junio · 19:30",
       detalle: "Tercer ciclo. Proyección + tertulia con intervención artística. Espacio íntimo, cupos limitados.",
-      img: "img/poster-tertulia-3.jpg",
+      img: "img/tertulias/afiche-03.jpg",
       acento: "#E8C583",
     },
   ],
