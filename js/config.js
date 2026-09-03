@@ -71,9 +71,11 @@ const CRISOL = {
         { dia: "Viernes", hora: "10:00 – 11:00", cuposTotal: 10, cuposDisponibles: 6 },
         { dia: "Sábado", hora: "17:30 – 18:30", cuposTotal: 10, cuposDisponibles: 8 },
       ],
+      // Valores de Esperanza
       precios: [
-        { nombre: "Clase suelta", valor: "$10.000" },
-        { nombre: "Mensual (4 clases)", valor: "$35.000" },
+        { nombre: "Clase suelta", valor: "$10.000", monto: 10000 },
+        { nombre: "4 clases al mes", valor: "$35.000", monto: 35000 },
+        { nombre: "8 clases al mes", valor: "$45.000", monto: 45000 },
       ],
     },
     {
@@ -93,9 +95,11 @@ const CRISOL = {
       horarios: [
         { dia: "Sábado", hora: "10:30 – 11:30", cuposTotal: 12, cuposDisponibles: 8 },
       ],
+      // Valores de Esperanza
       precios: [
-        { nombre: "Clase suelta", valor: "$10.000" },
-        { nombre: "Mensual (4 clases)", valor: "$35.000" },
+        { nombre: "Clase suelta", valor: "$10.000", monto: 10000 },
+        { nombre: "4 clases al mes", valor: "$35.000", monto: 35000 },
+        { nombre: "8 clases al mes", valor: "$45.000", monto: 45000 },
       ],
     },
     {
@@ -117,9 +121,11 @@ const CRISOL = {
         { dia: "Martes", hora: "10:00 – 12:00", cuposTotal: 10, cuposDisponibles: 7 },
         { dia: "Sábado", hora: "12:30 – 14:30", cuposTotal: 10, cuposDisponibles: 6 },
       ],
+      // Valores de Consuelo
       precios: [
-        { nombre: "Clase suelta", valor: "$10.000" },
-        { nombre: "Mensual (4 clases)", valor: "$35.000" },
+        { nombre: "Clase suelta", valor: "$12.000", monto: 12000 },
+        { nombre: "4 clases al mes", valor: "$40.000", monto: 40000 },
+        { nombre: "8 clases al mes", valor: "$50.000", monto: 50000 },
       ],
     },
     {
@@ -141,9 +147,11 @@ const CRISOL = {
         { dia: "Miércoles", hora: "10:00 – 12:00", cuposTotal: 8, cuposDisponibles: 3 },
         { dia: "Sábado", hora: "15:30 – 17:30", cuposTotal: 8, cuposDisponibles: 6 },
       ],
+      // Valores de Consuelo
       precios: [
-        { nombre: "Clase suelta", valor: "$10.000" },
-        { nombre: "Mensual (4 clases)", valor: "$35.000" },
+        { nombre: "Clase suelta", valor: "$12.000", monto: 12000 },
+        { nombre: "4 clases al mes", valor: "$40.000", monto: 40000 },
+        { nombre: "8 clases al mes", valor: "$50.000", monto: 50000 },
       ],
     },
     {
@@ -166,9 +174,9 @@ const CRISOL = {
       ],
       // precios del flyer de Amar Estefanía (sep · oct · nov · dic)
       precios: [
-        { nombre: "Clase suelta", valor: "$8.000" },
-        { nombre: "Mensualidad", valor: "$28.000" },
-        { nombre: "2 meses", valor: "$50.000" },
+        { nombre: "Clase suelta", valor: "$8.000", monto: 8000 },
+        { nombre: "Mensualidad", valor: "$28.000", monto: 28000 },
+        { nombre: "2 meses", valor: "$50.000", monto: 50000 },
       ],
     },
     {
@@ -188,9 +196,10 @@ const CRISOL = {
       horarios: [
         { dia: "Viernes", hora: "19:00 – 20:00", cuposTotal: 12, cuposDisponibles: 9 },
       ],
+      // ⚠️ Kathia no nos ha pasado sus valores: estos son provisorios
       precios: [
-        { nombre: "Clase suelta", valor: "$10.000" },
-        { nombre: "Mensual (4 clases)", valor: "$35.000" },
+        { nombre: "Clase suelta", valor: "$10.000", monto: 10000 },
+        { nombre: "4 clases al mes", valor: "$35.000", monto: 35000 },
       ],
     },
     {
@@ -217,7 +226,7 @@ const CRISOL = {
         { dia: "Domingo", hora: "11:00 – 18:00", cuposTotal: 30, cuposDisponibles: 30 },
       ],
       precios: [
-        { nombre: "Aporte voluntario", valor: "Desde $3.000" },
+        { nombre: "Aporte voluntario", valor: "Desde $3.000", monto: 3000 },
       ],
     },
   ],

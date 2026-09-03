@@ -1708,3 +1708,31 @@ body[data-subpagina] { padding-top: 0; }
 }
 .dp-caja form { display: grid; gap: 0.8rem; }
 .dp-caja .boton { width: 100%; }
+
+/* ---- opciones de precio en el formulario de inscripción ---- */
+.opciones--precios { flex-direction: column; gap: 0.45rem; }
+.opciones--precios .opcion { flex: 1 1 auto; width: 100%; }
+.opciones--precios .opcion span {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  text-align: left;
+  padding: 0.7em 0.9em;
+}
+.opciones--precios .opcion b { font-weight: 700; font-size: 0.88rem; }
+.opciones--precios .opcion em {
+  font-style: normal;
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+/* "ya pagué el pase" no es una compra: se distingue del resto */
+.opcion--pagada span { border-style: dashed; }
+.opcion--pagada input:checked + span {
+  background: var(--salvia-velo);
+  border-color: var(--salvia);
+  border-style: solid;
+  color: #3F6B45;
+}

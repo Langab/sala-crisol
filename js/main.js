@@ -378,6 +378,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
 
+      /* opciones de pago: salen de los precios de ESTA clase, porque
+         no todas valen lo mismo. La última deja decir que el pase del
+         mes ya está pagado, para no cobrarlo dos veces. */
+      var contMod = panel.querySelector("[data-modalidades]");
+      if (contMod) {
+        var ops = (taller.precios || []).map(function (pr, i) {
+          return '<label class="opcion"><input type="radio" name="modalidad" value="' + i + '"' +
+                 (i === 0 ? " checked" : "") + '>' +
+                 '<span><b>' + pr.nombre + "</b><em>" + pr.valor + "</em></span></label>";
+        });
+        ops.push('<label class="opcion opcion--pagada"><input type="radio" name="modalidad" value="pagada">' +
+                 '<span><b>Ya pagué el pase del mes</b><em>No pago hoy</em></span></label>');
+        contMod.innerHTML = ops.join("");
+      }
+
       /* galería de fotos de la clase (sale de `fotos` en config.js) */
       var galeria = document.querySelector("[data-galeria]");
       var contFotos = document.querySelector("[data-galeria-fotos]");
@@ -408,7 +423,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
           var nombre = val("nombre");
           var comentario = val("comentario");
-          var modalidad = marcado("modalidad") || "suelta";
 
           // el select guarda el índice del horario: nada de parsear texto
           var iSel = selector ? parseInt(selector.value, 10) : -1;
@@ -416,14 +430,14 @@ document.addEventListener("DOMContentLoaded", function () {
           var dia = hSel ? hSel.dia : "";
           var hora = hSel ? hSel.hora : "";
 
-          var precio = (taller.precios || []).filter(function (pr) {
-            return modalidad === "mensual"
-              ? /mensual/i.test(pr.nombre)
-              : /suelta/i.test(pr.nombre);
-          })[0];
-          var monto = precio ? (parseInt(String(precio.valor).replace(/[^0-9]/g, ""), 10) || 0) : 0;
+          var elegida = marcado("modalidad");
+          var yaPagado = elegida === "pagada";
+          var precio = yaPagado ? null : (taller.precios || [])[parseInt(elegida, 10) || 0];
 
-          // un evento con fecha anunciada usa esa fecha; una clase semanal, la próxima
+          // el contrato de la planilla solo distingue suelta de mensual
+          var modalidad = (precio && /suelta/i.test(precio.nombre)) ? "suelta" : "mensual";
+          var monto = yaPagado ? 0 : (precio ? (precio.monto || 0) : 0);
+
           var fechaSesion = taller.fechaFija || proximaFecha(dia);
           var ahora = new Date().toISOString();
           var inscripcion = {
@@ -443,7 +457,7 @@ document.addEventListener("DOMContentLoaded", function () {
             asistio: false,
             pago: false,
             metodoPago: "",
-            notas: comentario,
+            notas: (yaPagado ? "Dice tener el pase del mes al día — confirmar. " : "") + comentario,
             estado: "activa",
             updatedAt: ahora
           };
@@ -467,7 +481,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 '<dl class="inscrita__datos">' +
                   "<dt>Clase</dt><dd>" + taller.nombre + "</dd>" +
                   "<dt>Cuándo</dt><dd>" + cuando + " · " + hora + "</dd>" +
-                  "<dt>Valor</dt><dd>" + (precio ? precio.valor + " · " + precio.nombre : "por confirmar") + "</dd>" +
+                  "<dt>Valor</dt><dd>" + (yaPagado
+                      ? "Pase del mes ya pagado"
+                      : (precio ? precio.valor + " · " + precio.nombre : "por confirmar")) + "</dd>" +
                 "</dl>" +
                 "<p class=\"inscrita__nota\">La sala te confirma el cupo por WhatsApp. " +
                   "Si tienes alguna duda antes, escríbenos.</p>" +
