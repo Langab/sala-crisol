@@ -129,15 +129,17 @@ const CRISOL = {
       profeIg: "_consuelidad_",
       frase: "El mundo se ve mejor al revés.",
       nivel: "Inicial · sin experiencia",
-      duracion: "1,5 horas",
+      duracion: "2 horas",
       pagina: "talleres/equilibrio-de-manos.html",
       // La portada es el flyer: img/talleres/equilibrio-de-manos/flyer.jpg
       // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
       fotos: ["img/talleres/equilibrio-de-manos/fotos/01.jpg"],
       color: "mostaza",
       estado: "activo",
+      // horarios del flyer "Taller regular / Inicial"
       horarios: [
-        { dia: "Miércoles", hora: "10:00 – 11:30", cuposTotal: 8, cuposDisponibles: 3 },
+        { dia: "Miércoles", hora: "10:00 – 12:00", cuposTotal: 8, cuposDisponibles: 3 },
+        { dia: "Sábado", hora: "15:30 – 17:30", cuposTotal: 8, cuposDisponibles: 6 },
       ],
       precios: [
         { nombre: "Clase suelta", valor: "$10.000" },
@@ -245,6 +247,7 @@ const CRISOL = {
     "Sábado": [
       { hora: "10:30", clase: "Danza Contemporánea", profe: "Esperanza", id: "danza-contemporanea", tipo: "semanal" },
       { hora: "12:30", clase: "Movimiento Flexible", profe: "Consuelo", id: "movimiento-flexible", tipo: "semanal" },
+      { hora: "15:30", clase: "Equilibrio de Manos", profe: "Consuelo", id: "equilibrio-de-manos", tipo: "semanal" },
       { hora: "17:30", clase: "Pilates Mat", profe: "Esperanza", id: "pilates-mat", tipo: "semanal" },
     ],
     "Domingo": [

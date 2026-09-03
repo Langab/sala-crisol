@@ -355,6 +355,110 @@ a { color: inherit; }
     linear-gradient(180deg, var(--crema) 0%, var(--crema-2) 100%);
 }
 
+/* el héroe se reparte: el texto a la izquierda, las fotos colgadas a la
+   derecha. Antes ese costado quedaba vacío en pantallas anchas. */
+.heroe__rejilla {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+  gap: 2.5rem;
+  align-items: center;
+}
+.heroe__texto { min-width: 0; }
+
+/* ---- tendedero de polaroids ---- */
+.tendedero {
+  position: relative;
+  display: grid;
+  gap: 2.6rem;
+  min-width: 0;
+}
+.tendedero__fila {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding-top: 1.4rem;
+}
+.tendedero__hilo {
+  position: absolute;
+  top: 0.9rem; left: -3%; right: -3%;
+  height: 2px;
+  border-radius: 2px;
+  background: #C6B49E;
+  /* una cuerda no queda recta: se comba en el centro */
+  clip-path: ellipse(52% 100% at 50% 0%);
+}
+.polaroid-col {
+  position: relative;
+  margin-top: var(--caida, 20px);
+  transform: rotate(var(--giro, -3deg));
+  background: var(--papel);
+  padding: 8px 8px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--linea);
+  box-shadow: 0 8px 20px rgba(59, 49, 41, 0.14);
+  text-decoration: none;
+  color: inherit;
+  width: clamp(112px, 15vw, 148px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: colgar 6s ease-in-out infinite alternate;
+  animation-delay: var(--demora, 0s);
+  transform-origin: 50% -8px;
+}
+.polaroid-col:hover,
+.polaroid-col:focus-visible {
+  transform: rotate(0deg) translateY(-5px) scale(1.04);
+  box-shadow: 0 14px 30px rgba(59, 49, 41, 0.22);
+  z-index: 3;
+  animation-play-state: paused;
+}
+/* la pinza que la sujeta al hilo */
+.polaroid-col__pinza {
+  position: absolute;
+  top: -11px; left: 50%;
+  width: 9px; height: 17px;
+  margin-left: -4.5px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #DCC4A6 0%, #C2A484 100%);
+  box-shadow: 0 1px 2px rgba(59, 49, 41, 0.3);
+}
+.polaroid-col__marco {
+  display: block;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--crema-2);
+}
+.polaroid-col__marco img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+.polaroid-col__pie {
+  display: block;
+  text-align: center;
+  font-family: var(--fuente-display);
+  font-style: italic;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  color: var(--tinta-suave);
+  padding: 6px 2px 2px;
+}
+
+@keyframes colgar {
+  from { transform: rotate(calc(var(--giro, -3deg) - 0.9deg)); }
+  to   { transform: rotate(calc(var(--giro, -3deg) + 0.9deg)); }
+}
+
+@media (max-width: 980px) {
+  .heroe__rejilla { grid-template-columns: 1fr; gap: 2rem; }
+  .tendedero { padding-top: 2rem; }
+  .polaroid-col { width: clamp(104px, 26vw, 132px); }
+  /* en pantallas chicas tres bastan: más se amontonan */
+  .polaroid-col:nth-child(n+5) { display: none; }
+}
+
 .heroe__eyebrow {
   display: flex;
   align-items: center;

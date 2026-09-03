@@ -122,6 +122,47 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  /* ============================================================
+     TENDEDERO — fotos de las clases colgadas con pinzas
+     Extiende el gesto de la guirnalda: en esta sala las cosas
+     cuelgan de un hilo. Las fotos salen de config.js, así que se
+     renuevan solas cuando cambian las de cada clase.
+     ============================================================ */
+  var tendedero = document.querySelector("[data-tendedero]");
+  if (tendedero && typeof CRISOL !== "undefined") {
+    var conFoto = CRISOL.talleres.filter(function (t) {
+      return t.tipo !== "evento" && t.fotos && t.fotos.length;
+    });
+    // dos hilos de verdad: cada polaroid tiene que colgar de una cuerda
+    // que se vea, si no las de abajo quedan flotando de la nada
+    var caidas = [14, 46, 6, 34, 10];
+    var giros  = [-4.5, 3.2, -2.4, 3.8, -3.1];
+    var fotos  = conFoto.slice(0, 5);
+    var filas  = [fotos.slice(0, 3), fotos.slice(3)];
+    var html = [];
+    var k = 0;
+    filas.forEach(function (fila) {
+      if (!fila.length) return;
+      html.push('<div class="tendedero__fila">');
+      html.push('<span class="tendedero__hilo" aria-hidden="true"></span>');
+      fila.forEach(function (t) {
+        html.push(
+          '<a class="polaroid-col" href="' + base + t.pagina + '" ' +
+          'style="--caida:' + caidas[k % caidas.length] + 'px; --giro:' + giros[k % giros.length] + 'deg; --demora:' + (k * 0.7) + 's">' +
+            '<span class="polaroid-col__pinza" aria-hidden="true"></span>' +
+            '<span class="polaroid-col__marco">' +
+              '<img src="' + base + t.fotos[0] + '" alt="" loading="lazy">' +
+            "</span>" +
+            '<span class="polaroid-col__pie">' + t.nombre + "</span>" +
+          "</a>"
+        );
+        k++;
+      });
+      html.push("</div>");
+    });
+    tendedero.innerHTML = html.join("");
+  }
+
   /* ---------- chispas del héroe ---------- */
   var heroe = document.querySelector(".heroe");
   var sinMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
