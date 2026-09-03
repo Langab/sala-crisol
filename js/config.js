@@ -61,9 +61,8 @@ const CRISOL = {
       nivel: "Todos los niveles",
       duracion: "1 hora",
       pagina: "talleres/pilates-mat.html",
-      // La portada es el flyer: img/talleres/pilates-mat/flyer.jpg
-      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
-      fotos: ["img/talleres/pilates-mat/fotos/01.jpg"],
+      // Portada y fotos salen de img/talleres/<id>/ — ver el LEEME.
+
       color: "salvia",
       estado: "activo",
       horarios: [
@@ -87,12 +86,9 @@ const CRISOL = {
       nivel: "Todos los niveles",
       duracion: "1 hora",
       pagina: "talleres/danza-contemporanea.html",
-      // La portada es el flyer: img/talleres/danza-contemporanea/flyer.jpg
-      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
-      // Acá la portada es una FOTO, no un afiche con texto, así que
-      // llena la tarjeta en vez de mostrarse completa con bordes.
+      // Portada y fotos salen de img/talleres/<id>/ — ver el LEEME.
       portadaEsFoto: true,
-      fotos: ["img/talleres/danza-contemporanea/fotos/01.jpg", "img/talleres/danza-contemporanea/fotos/02.jpg"],
+
       color: "turquesa",
       estado: "activo",
       horarios: [
@@ -114,9 +110,8 @@ const CRISOL = {
       nivel: "Todos los niveles",
       duracion: "2 horas",
       pagina: "talleres/movimiento-flexible.html",
-      // La portada es el flyer: img/talleres/movimiento-flexible/flyer.jpg
-      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
-      fotos: ["img/talleres/movimiento-flexible/fotos/01.jpg"],
+      // Portada y fotos salen de img/talleres/<id>/ — ver el LEEME.
+
       color: "rosa",
       estado: "activo",
       horarios: [
@@ -140,9 +135,8 @@ const CRISOL = {
       nivel: "Inicial · sin experiencia",
       duracion: "2 horas",
       pagina: "talleres/equilibrio-de-manos.html",
-      // La portada es el flyer: img/talleres/equilibrio-de-manos/flyer.jpg
-      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
-      fotos: ["img/talleres/equilibrio-de-manos/fotos/01.jpg"],
+      // Portada y fotos salen de img/talleres/<id>/ — ver el LEEME.
+
       color: "mostaza",
       estado: "activo",
       // horarios del flyer "Taller regular / Inicial"
@@ -167,9 +161,8 @@ const CRISOL = {
       nivel: "Todos los niveles",
       duracion: "1 hora 15 min",
       pagina: "talleres/danza-filosofia.html",
-      // La portada es el flyer: img/talleres/danza-filosofia/flyer.jpg
-      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
-      fotos: ["img/talleres/danza-filosofia/fotos/01.jpg", "img/talleres/danza-filosofia/fotos/02.jpg"],
+      // Portada y fotos salen de img/talleres/<id>/ — ver el LEEME.
+
       color: "lila",
       estado: "activo",
       horarios: [
@@ -190,9 +183,8 @@ const CRISOL = {
       nivel: "Todos los niveles",
       duracion: "1 hora",
       pagina: "talleres/bellydance-fusion.html",
-      // La portada es el flyer: img/talleres/bellydance-fusion/flyer.jpg
-      // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
-      fotos: ["img/talleres/bellydance-fusion/fotos/01.jpg", "img/talleres/bellydance-fusion/fotos/02.jpg"],
+      // Portada y fotos salen de img/talleres/<id>/ — ver el LEEME.
+
       color: "terracota",
       estado: "activo",
       horarios: [

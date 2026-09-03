@@ -130,9 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
      ============================================================ */
   var tendedero = document.querySelector("[data-tendedero]");
   if (tendedero && typeof CRISOL !== "undefined") {
-    var conFoto = CRISOL.talleres.filter(function (t) {
-      return t.tipo !== "evento" && t.fotos && t.fotos.length;
-    });
+    var conFoto = CRISOL.talleres.filter(function (t) { return t.tipo !== "evento"; });
     // dos hilos de verdad: cada polaroid tiene que colgar de una cuerda
     // que se vea, si no las de abajo quedan flotando de la nada
     var caidas = [14, 46, 6, 34, 10];
@@ -151,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
           'style="--caida:' + caidas[k % caidas.length] + 'px; --giro:' + giros[k % giros.length] + 'deg; --demora:' + (k * 0.7) + 's">' +
             '<span class="polaroid-col__pinza" aria-hidden="true"></span>' +
             '<span class="polaroid-col__marco">' +
-              '<img src="' + base + t.fotos[0] + '" alt="" loading="lazy">' +
+              '<img src="' + base + "img/talleres/" + t.id + '/fotos/01.jpg" alt="" loading="lazy" onerror="this.closest(\'.polaroid-col\').remove()">' +
             "</span>" +
             '<span class="polaroid-col__pie">' + t.nombre + "</span>" +
           "</a>"
@@ -180,6 +178,27 @@ document.addEventListener("DOMContentLoaded", function () {
       if (Math.random() > 0.6) chispa.style.background = "var(--lila)";
       heroe.appendChild(chispa);
     }
+  }
+
+  /* ============================================================
+     FOTOS POR CARPETA — la carpeta manda, no config.js
+     ------------------------------------------------------------
+     Un sitio estático no puede listar un directorio, así que las
+     va pidiendo en orden (01.jpg, 02.jpg, 03.jpg…) y se detiene en
+     la primera que no existe. Por eso la numeración no puede tener
+     huecos: si falta la 02, la 03 no se ve.
+     ============================================================ */
+  function fotosDeTaller(idTaller, tope, listo) {
+    var rutas = [];
+    var max = tope || 12;
+    (function probar(n) {
+      if (n > max) return listo(rutas);
+      var ruta = base + "img/talleres/" + idTaller + "/fotos/" + (n < 10 ? "0" : "") + n + ".jpg";
+      var im = new Image();
+      im.onload = function () { rutas.push(ruta); probar(n + 1); };
+      im.onerror = function () { listo(rutas); };
+      im.src = ruta;
+    })(1);
   }
 
   /* ---------- cinta / marquesina de talleres ---------- */
@@ -226,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function () {
         '<span style="position:relative">' + iniciales + "</span></div>";
 
       var flyer = base + "img/talleres/" + t.id + "/flyer.jpg";
-      var foto1 = (t.fotos && t.fotos[0]) ? base + t.fotos[0] : "";
+      var foto1 = base + "img/talleres/" + t.id + "/fotos/01.jpg";
       // si falla el flyer probamos la foto; si falla la foto, se quita y queda el respaldo
       var alFallar = foto1
         ? "this.onerror=function(){this.remove()};this.src='" + foto1 + "';" +
@@ -378,6 +397,27 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
 
+      /* Portada de la página: el mismo flyer que en la tarjeta, con la
+         misma cadena de respaldo. Antes cada página traía una imagen
+         suelta y tres mostraban fotos que no eran ni de esa clase. */
+      var figura = document.querySelector("[data-portada-taller]");
+      if (figura) {
+        var tono2 = ({ rosa:"#E39AA6", terracota:"#D98E6A", mostaza:"#E8C583",
+                       salvia:"#9DBE9C", turquesa:"#8FC6C9", lila:"#B7A6D6" })[taller.color] || "#E39AA6";
+        var ini2 = taller.nombre.split(" ").map(function (p) { return p[0]; }).slice(0, 2).join("");
+        var foto2 = base + "img/talleres/" + taller.id + "/fotos/01.jpg";
+        var alFallar2 = foto2
+          ? "this.onerror=function(){this.remove()};this.src='" + foto2 + "';" +
+            "this.parentNode.classList.remove('es-flyer');"
+          : "this.remove()";
+        figura.className = "taller-hero__media" + (taller.portadaEsFoto ? "" : " es-flyer");
+        figura.style.background = tono2;
+        figura.innerHTML =
+          '<span class="taller-hero__ini" aria-hidden="true">' + ini2 + "</span>" +
+          '<img src="' + base + "img/talleres/" + taller.id + '/flyer.jpg" ' +
+          'alt="Flyer de ' + taller.nombre + '" onerror="this.onerror=null;' + alFallar2 + '">';
+      }
+
       /* opciones de pago: salen de los precios de ESTA clase, porque
          no todas valen lo mismo. La última deja decir que el pase del
          mes ya está pagado, para no cobrarlo dos veces. */
@@ -393,16 +433,19 @@ document.addEventListener("DOMContentLoaded", function () {
         contMod.innerHTML = ops.join("");
       }
 
-      /* galería de fotos de la clase (sale de `fotos` en config.js) */
+      /* galería: la arma la carpeta del taller, no config.js */
       var galeria = document.querySelector("[data-galeria]");
       var contFotos = document.querySelector("[data-galeria-fotos]");
-      if (galeria && contFotos && taller.fotos && taller.fotos.length) {
-        contFotos.innerHTML = taller.fotos.map(function (ruta, i) {
-          return '<figure class="galeria__foto"><img src="' + base + ruta +
-                 '" alt="' + taller.nombre + ' en Sala Crisol, foto ' + (i + 1) +
-                 '" loading="lazy"></figure>';
-        }).join("");
-        galeria.hidden = false;
+      if (galeria && contFotos) {
+        fotosDeTaller(taller.id, 12, function (rutas) {
+          if (!rutas.length) return;
+          contFotos.innerHTML = rutas.map(function (ruta, i) {
+            return '<figure class="galeria__foto"><img src="' + ruta +
+                   '" alt="' + taller.nombre + ' en Sala Crisol, foto ' + (i + 1) +
+                   '" loading="lazy"></figure>';
+          }).join("");
+          galeria.hidden = false;
+        });
       }
 
       // formulario → registra la inscripción en la planilla

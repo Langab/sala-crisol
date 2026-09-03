@@ -1736,3 +1736,19 @@ body[data-subpagina] { padding-top: 0; }
   border-style: solid;
   color: #3F6B45;
 }
+
+/* ---- portada en la página de cada clase ---- */
+.taller-hero__media { position: relative; }
+.taller-hero__ini {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-size: 4rem;
+  color: #fff;
+}
+.taller-hero__media img { position: relative; z-index: 1; }
+/* un afiche se mira entero; una foto llena el marco */
+.taller-hero__media.es-flyer img { object-fit: contain; }
