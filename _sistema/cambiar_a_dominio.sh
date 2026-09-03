@@ -17,7 +17,16 @@ NUEVA="https://${DOM}/"
 cd "$(dirname "$0")/.."
 
 echo "1. Comprobando el DNS de ${DOM}…"
-IPS=$(dig +short "$DOM" A | sort | tr '\n' ' ')
+# Una sola consulta puede fallar con la caché fría del resolvedor local,
+# así que se reintenta y se cae a resolvedores públicos.
+IPS=""
+for intento in 1 2 3; do
+  IPS=$(dig +short "$DOM" A 2>/dev/null | grep -E '^[0-9.]+$' | sort | tr '\n' ' ')
+  [ -n "$IPS" ] && break
+  IPS=$(dig +short @1.1.1.1 "$DOM" A 2>/dev/null | grep -E '^[0-9.]+$' | sort | tr '\n' ' ')
+  [ -n "$IPS" ] && break
+  sleep 3
+done
 ESPERADAS="185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153"
 if [ -z "$IPS" ]; then
   echo "   ✗ ${DOM} todavía no resuelve. Falta configurar el DNS."

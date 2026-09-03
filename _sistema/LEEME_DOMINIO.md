@@ -16,7 +16,7 @@ el que lo paga primero se lo lleva. Si vas a hacerlo, hazlo pronto.
 
 ### Qué vas a conseguir
 
-Hoy la página vive en `https://langab.github.io/sala-crisol/`. Funciona
+Hoy la página vive en `https://salacrisol.cl/`. Funciona
 perfecto, pero es larga, tiene el nombre de otra persona adentro (`langab`) y
 no se puede dictar por teléfono.
 
@@ -274,7 +274,7 @@ Haz esto **después** de que Cloudflare te avise que el dominio está activo.
    - `salacrisol.cl`
    - `www.salacrisol.cl`
    - `http://salacrisol.cl` (debe saltar solo a `https://`)
-   - `https://langab.github.io/sala-crisol/` (debe redirigir a `salacrisol.cl`)
+   - `https://salacrisol.cl/` (debe redirigir a `salacrisol.cl`)
 
 ⚠️ **Un detalle si editas el sitio desde la terminal:** cuando guardas el
 "Custom domain", GitHub crea solo un archivo llamado `CNAME` dentro del
@@ -297,7 +297,7 @@ Esto **no es opcional si te importa cómo se ve el link al compartirlo**.
 ### Qué son y por qué importan
 
 En el código de cada página hay tres líneas escondidas arriba del todo que
-hoy dicen `https://langab.github.io/sala-crisol/...`:
+hoy dicen `https://salacrisol.cl/...`:
 
 - **`canonical`** — le dice a Google *"la dirección de verdad de esta página
   es ésta"*. Si queda apuntando a la vieja, Google puede seguir mostrando la
@@ -331,7 +331,7 @@ las tres mismas en cada uno:
 En todos los casos el cambio es el mismo: reemplazar
 
 ```
-https://langab.github.io/sala-crisol/
+https://salacrisol.cl/
 ```
 
 por
@@ -344,7 +344,7 @@ El resto de cada línea queda igual. Por ejemplo, en `index.html` la línea 8
 pasa de:
 
 ```html
-<link rel="canonical" href="https://langab.github.io/sala-crisol/">
+<link rel="canonical" href="https://salacrisol.cl/">
 ```
 
 a:
@@ -359,7 +359,7 @@ Desde la carpeta `sala_crisol_web`, en la terminal:
 
 ```bash
 grep -rl "langab.github.io/sala-crisol" --include="*.html" . \
-  | xargs sed -i '' 's|https://langab.github.io/sala-crisol/|https://salacrisol.cl/|g'
+  | xargs sed -i '' 's|https://salacrisol.cl/|https://salacrisol.cl/|g'
 ```
 
 Después revisa que quedó bien y no quedó nada suelto:

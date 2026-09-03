@@ -2,7 +2,7 @@
 
 Este sitio es **estático**: no necesita servidor, base de datos ni mantenciones.
 
-**Está publicado en:** https://langab.github.io/sala-crisol/
+**Está publicado en:** https://salacrisol.cl/
 
 ## Dónde llegan las inscripciones
 
@@ -81,7 +81,7 @@ no basta**: hay que subir los cambios. Desde la carpeta `sala_crisol_web`:
 git add -A && git commit -m "Actualizo horarios y cupos" && git push
 ```
 
-En 1–2 minutos https://langab.github.io/sala-crisol/ queda actualizado.
+En 1–2 minutos https://salacrisol.cl/ queda actualizado.
 (Si no ves el cambio, recarga con Ctrl+Shift+R / Cmd+Shift+R.)
 
 ### Si prefieres no usar la terminal
