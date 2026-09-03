@@ -35,13 +35,19 @@ TALLERES = {
     "danza_filosofia_amar":          "danza-filosofia",
     "bellydance_kathia":             "bellydance-fusion",
 }
-# Carpetas que no son clases. Solo se publica lo que la web usa:
-# tertulias_de_cine y domingos_populares quedan como archivo en
-# Recursos_graficos — son decenas de imágenes que nadie referencia y
-# solo engordarían el repositorio.
-OTRAS = {
+# Carpetas cuyos archivos se copian tal cual, conservando el nombre.
+# La web los busca por ese nombre exacto, así que no se renumeran.
+TAL_CUAL = {
     "sala_y_clases": "sala",
+    "fundadoras":    "fundadoras",
+    "Logos":         "sala",
 }
+# Los afiches de las tertulias se publican en orden: afiche-01, -02, -03…
+TERTULIAS = "tertulias_de_cine"
+
+# No se publican: son archivo. Viven en Recursos_graficos y nada más.
+# domingos_populares y talleres_descontinuados son decenas de imágenes
+# que la web no referencia; publicarlas solo engordaría el repositorio.
 
 APLICAR = "--aplicar" in sys.argv
 firma = lambda p: hashlib.md5(open(p, "rb").read()).hexdigest()
@@ -98,13 +104,26 @@ for origen_dir, clase in TALLERES.items():
                 os.remove(os.path.join(dfotos, f))
                 print(f"  ✗ {clase}/fotos/{f} — ya no está en Recursos")
 
-for origen_dir, destino_rel in OTRAS.items():
+for origen_dir, destino_rel in TAL_CUAL.items():
     base = os.path.join(REC, origen_dir)
     if not os.path.isdir(base):
         continue
-    for f in jpgs_sueltas(base):
+    for f in sorted(os.listdir(base)):
+        if f.startswith(".") or not f.lower().endswith((".jpg", ".jpeg", ".svg", ".png")):
+            continue
         if copiar(os.path.join(base, f), os.path.join(IMG, destino_rel, f)):
             print(f"  ✓ {destino_rel}/{f}")
+
+# tertulias: los afiches se numeran, las fotos van con su nombre
+base = os.path.join(REC, TERTULIAS)
+if os.path.isdir(base):
+    fl = os.path.join(base, "1_flyers", "clases_actuales")
+    for i, f in enumerate(jpgs_sueltas(fl), 1):
+        if copiar(os.path.join(fl, f), os.path.join(IMG, "tertulias", "afiche-%02d.jpg" % i)):
+            print(f"  ✓ tertulias/afiche-%02d.jpg  ←  {f}" % i)
+    for f in jpgs_sueltas(base):
+        if copiar(os.path.join(base, f), os.path.join(IMG, "tertulias", "fotos", f)):
+            print(f"  ✓ tertulias/fotos/{f}")
 
 print()
 if not cambios:
