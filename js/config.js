@@ -265,32 +265,82 @@ const CRISOL = {
   tertulias: [
     {
       numero: "01",
+      id: "01-this-is-ballroom",
+      pagina: "tertulias/this-is-ballroom.html",
       pelicula: "This is Ballroom",
       subtitulo: "(Salão de Baile)",
       fecha: "Viernes 1 de mayo · 19:00",
       detalle: "Apertura de ciclo. Proyección + tertulia con artistas invitadxs: música y danza en vivo, cruce entre disciplinas.",
-      img: "img/tertulias/afiche-01.jpg",
+      img: "img/tertulias/01-this-is-ballroom/afiche.jpg",
       acento: "#E39AA6",
+      // la paleta sale del afiche del evento
+      paleta: { fondo: "#1A0B2E", tinta: "#F7E9FF", acento: "#E845C8", acento2: "#7B3FF2" },
+      relato: "Con esta abrimos el ciclo. Proyectamos <em>This is Ballroom</em>, documental sobre la escena ballroom, y después la sala se transformó: artistas invitadxs cruzaron música y danza en vivo, sin separar el público del escenario. Cupos limitados, entrada general $5.000.",
     },
     {
       numero: "02",
+      id: "02-perro-bomba",
+      pagina: "tertulias/perro-bomba.html",
       pelicula: "Perro Bomba",
       subtitulo: "de Juan Cáceres · Chile",
       fecha: "Viernes 29 de mayo · 20:00",
       detalle: "Proyección + tertulia en un espacio más íntimo: música, danza y expresiones artísticas en atmósfera de escucha.",
-      img: "img/tertulias/afiche-02.jpg",
+      img: "img/tertulias/02-perro-bomba/afiche.jpg",
       acento: "#8FC6C9",
+      paleta: { fondo: "#0E2340", tinta: "#E8F6FF", acento: "#28C8E0", acento2: "#F2C14E" },
+      relato: "Segundo ciclo, con <em>Perro Bomba</em> de Juan Cáceres — cine chileno sobre migración y pertenencia. Fue la más íntima de las tres: menos gente, más conversación, y el cierre con música en vivo en penumbra.",
     },
     {
       numero: "03",
+      id: "03-tetoterapia",
+      pagina: "tertulias/tetoterapia.html",
       pelicula: "Tetoterapia: El Musical",
       subtitulo: "de Elefante Gonorrea y sus amigxs",
       fecha: "Viernes 26 de junio · 19:30",
       detalle: "Tercer ciclo. Proyección + tertulia con intervención artística. Espacio íntimo, cupos limitados.",
-      img: "img/tertulias/afiche-03.jpg",
+      img: "img/tertulias/03-tetoterapia/afiche.jpg",
       acento: "#E8C583",
+      paleta: { fondo: "#2B0F26", tinta: "#FFF0FA", acento: "#FF6FC8", acento2: "#F5E14C" },
+      relato: "Cerramos el ciclo con <em>Tetoterapia: El Musical</em>, de Elefante Gonorrea y sus amigxs, con Irina la Loca, Hija de Perra y Maggie Lay. Hubo concurso de entradas por Instagram y la sala quedó chica.",
     },
   ],
+
+  /* ============================================================
+     DOMINGO POPULAR — la jornada mensual
+     ============================================================ */
+  domingoPopular: {
+    pagina: "tertulias/domingo-popular.html",
+    // Datos del afiche de la próxima jornada.
+    // Al cambiar de fecha: sube las imágenes nuevas a
+    // Recursos_graficos/domingos_populares/<fecha>/ y actualiza esto.
+    fecha: "Domingo 6 de septiembre",
+    horario: "10:00 – 18:00",
+    carpeta: "img/domingos/2026-09-06",
+    img: "img/domingos/2026-09-06/afiche.jpg",
+    paleta: { fondo: "#5B2A1E", tinta: "#FFF1E6", acento: "#F79A5B", acento2: "#F5C6B0" },
+    bloques: [
+      { clase: "Pilates Matwork",      profe: "Esperanza Fredes", hora: "10:30 – 11:30" },
+      { clase: "Equilibrio Flexible",  profe: "Consuelo Ongaro",  hora: "11:45 – 13:45" },
+      { clase: "Almuerzo comunitario", profe: "",                 hora: "" },
+      { clase: "Yoga",                 profe: "Niebla",           hora: "15:30 – 16:30" },
+      { clase: "Danza Contemporánea",  profe: "Esperanza Fredes", hora: "16:45 – 18:00" },
+    ],
+    aporteMonetario: [
+      { n: "1 clase",  valor: "$5.000" },
+      { n: "2 clases", valor: "$8.000" },
+      { n: "3 clases", valor: "$10.000" },
+      { n: "4 clases", valor: "$12.000" },
+    ],
+    aporteMaterial: [
+      "Papel higiénico", "Jabón líquido", "Esponjas o paños de limpieza",
+      "Limpiapisos o limpiador multiuso", "Bolsas de basura",
+      "Toalla de papel, diarios, limpiavidrios", "Café, té o azúcar para compartir",
+      "Velas e inciensos", "Plantas o maceteros", "Cojines y mantas",
+      "Papelería: papel, plumones, masking tape, gaffer",
+      "Alargadores, zapatillas, enchufes triples, luces led",
+    ],
+    equivalencia: "2 materiales equivalen a 1 clase",
+  },
 
   /* ---------- ARRIENDO DE LA SALA ---------- */
   arriendo: {

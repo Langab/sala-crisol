@@ -284,6 +284,39 @@ document.addEventListener("DOMContentLoaded", function () {
     return "mostaza";
   }
 
+  /* ---------- tertulias: cada afiche lleva a su página ---------- */
+  var rejTert = document.querySelector("[data-tertulias]");
+  if (rejTert && typeof CRISOL !== "undefined") {
+    var html = CRISOL.tertulias.map(function (t, i) {
+      return (
+        '<a class="afiche revelar revelar--retraso-' + (i % 3 + 1) + '" href="' + base + t.pagina + '" ' +
+        'style="--acento-afiche:' + t.acento + '">' +
+          '<div class="afiche__marco">' +
+            '<img src="' + base + t.img + '" alt="Afiche de la tertulia ' + t.numero + ': ' + t.pelicula + '" loading="lazy">' +
+            '<span class="afiche__numero">Tertulia ' + t.numero + "</span>" +
+          "</div>" +
+          '<div class="afiche__cuerpo">' +
+            '<h3 class="afiche__pelicula">' + t.pelicula + "</h3>" +
+            '<p class="afiche__detalle">' + t.detalle + "</p>" +
+            '<p class="afiche__fecha">' + t.fecha + "</p>" +
+            '<span class="afiche__ver">Ver cómo fue <span class="flecha">→</span></span>' +
+          "</div>" +
+        "</a>"
+      );
+    }).join("");
+    html +=
+      '<article class="afiche afiche--tba revelar revelar--retraso-3">' +
+        '<div class="afiche__marco"><span class="afiche__interrogante">0' + (CRISOL.tertulias.length + 1) + "</span>" +
+        '<span class="afiche__numero">Próximo ciclo</span></div>' +
+        '<div class="afiche__cuerpo">' +
+          "<h3 class=\"afiche__pelicula\">¿Qué veremos?</h3>" +
+          '<p class="afiche__detalle">La cuarta tertulia se está cocinando. Entradas $5.000 (preventa 2×$7.000). Síguenos para enterarte primero.</p>' +
+          '<a class="afiche__fecha" data-ig href="#">Avisarme por Instagram →</a>' +
+        "</div>" +
+      "</article>";
+    rejTert.innerHTML = html;
+  }
+
   /* ---------- grilla semanal de horarios ---------- */
   var tabla = document.querySelector("[data-grilla]");
   if (tabla && typeof CRISOL !== "undefined") {
@@ -573,72 +606,58 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ---------- inscripción al Domingo Popular ---------- */
+  /* ---------- inscripción al Domingo Popular ---------- */
   var cajaDP = document.querySelector("[data-form-domingo]");
-  if (cajaDP && typeof CRISOL !== "undefined") {
-    var dp = buscarTaller("domingo-popular");
-    if (!dp || dp.estado !== "activo") {
-      cajaDP.remove();
-    } else {
-      var h0 = dp.horarios[0] || { dia: "Domingo", hora: "" };
-      var meses = ["enero","febrero","marzo","abril","mayo","junio","julio",
-                   "agosto","septiembre","octubre","noviembre","diciembre"];
-      var fdp = dp.fechaFija ? new Date(dp.fechaFija + "T12:00:00") : null;
-      var cuando = fdp
-        ? "Domingo " + fdp.getDate() + " de " + meses[fdp.getMonth()]
-        : "Próxima fecha por anunciar";
+  if (cajaDP && typeof CRISOL !== "undefined" && CRISOL.domingoPopular) {
+    var dp = CRISOL.domingoPopular;
+    var clasesDP = dp.bloques.filter(function (b) { return b.hora; });
 
-      cajaDP.innerHTML =
-        '<h3>Ven al próximo</h3>' +
-        '<p class="dp-cuando">' + cuando + (h0.hora ? " · " + h0.hora : "") + "</p>" +
-        '<form data-form-dp>' +
-          '<div class="campo"><label for="dp-nombre">Tu nombre</label>' +
-          '<input id="dp-nombre" name="nombre" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" required></div>' +
-          '<div class="campo"><label for="dp-telefono">WhatsApp</label>' +
-          '<input id="dp-telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 ..." required></div>' +
-          '<div class="campo"><label for="dp-cuantos">¿Vienen más contigo?</label>' +
-          '<input id="dp-cuantos" name="cuantos" type="text" placeholder="Ej: voy con una amiga"></div>' +
-          '<p class="aviso" data-aviso-dp role="status" aria-live="polite"></p>' +
-          '<button class="boton boton--fuego" type="submit">Anotarme</button>' +
-          '<p class="formulario__nota">Quedas en la lista del día. Es de aporte voluntario.</p>' +
-        "</form>";
+    cajaDP.innerHTML =
+      '<form class="formulario" data-form-dp>' +
+        "<p>Cuéntanos que vienes y te guardamos un lugar. " +
+        "<strong>" + dp.fecha + " · " + dp.horario + "</strong></p>" +
+        '<div class="campo"><label for="dp-nombre">Tu nombre</label>' +
+        '<input id="dp-nombre" name="nombre" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" required></div>' +
+        '<div class="campo"><label for="dp-tel">WhatsApp</label>' +
+        '<input id="dp-tel" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 ..." required></div>' +
+        '<div class="campo"><label id="dp-lbl">¿A qué clases vienes?</label>' +
+        '<div class="opciones opciones--precios" role="group" aria-labelledby="dp-lbl">' +
+          clasesDP.map(function (b, i) {
+            return '<label class="opcion"><input type="checkbox" name="clase" value="' + b.clase + '">' +
+                   "<span><b>" + b.clase + "</b><em>" + b.hora + "</em></span></label>";
+          }).join("") +
+        "</div></div>" +
+        '<div class="campo"><label for="dp-aporte">Cómo vas a aportar</label>' +
+        '<select id="dp-aporte" name="aporte">' +
+          dp.aporteMonetario.map(function (a) {
+            return '<option value="' + a.n + " — " + a.valor + '">' + a.n + " — " + a.valor + "</option>";
+          }).join("") +
+          '<option value="con materiales">Llevo materiales para la sala</option>' +
+        "</select></div>" +
+        '<p class="aviso" data-aviso role="status" aria-live="polite"></p>' +
+        '<button class="boton boton--ws" type="submit">Anotarme →</button>' +
+        '<p class="formulario__nota">Te confirmamos por WhatsApp. ' +
+        "Nadie se queda fuera por plata: si no puedes aportar, ven igual.</p>" +
+      "</form>";
 
-      var formDP = cajaDP.querySelector("[data-form-dp]");
-      formDP.addEventListener("submit", function (e) {
-        e.preventDefault();
-        var v = function (n) { var el = formDP.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ""; };
-        var nombre = v("nombre");
-        var aviso = cajaDP.querySelector("[data-aviso-dp]");
-        var boton = formDP.querySelector('button[type="submit"]');
-        var ahora = new Date().toISOString();
-        var ins = {
-          id: "insc_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-          creado: ahora, nombre: nombre, telefono: v("telefono"), correo: "",
-          claseId: dp.id, claseNombre: dp.nombre, dia: h0.dia, hora: h0.hora,
-          fechaSesion: dp.fechaFija || proximaFecha(h0.dia),
-          experiencia: "primera-vez", modalidad: "suelta", monto: 0,
-          asistio: false, pago: false, metodoPago: "",
-          notas: v("cuantos"), estado: "activa", updatedAt: ahora
-        };
-        var listo = function (ok) {
-          if (boton) { boton.disabled = false; boton.textContent = "Anotarme"; }
-          aviso.className = "aviso aviso--" + (ok ? "ok" : "error");
-          aviso.textContent = ok
-            ? "Listo, " + nombre.split(" ")[0] + ". Te esperamos el " + cuando.toLowerCase() + "."
-            : "No pudimos anotarte. Escríbenos por WhatsApp y te sumamos a mano.";
-          if (ok) formDP.reset();
-        };
-        var destino = CRISOL.inscripcionesURL || "";
-        if (!destino) return listo(true);
-        boton.disabled = true; boton.textContent = "Guardando…";
-        fetch(destino, {
-          method: "POST", redirect: "follow",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ inscripciones: [ins] })
-        }).then(function (r) { return r.json(); })
-          .then(function (r) { listo(!!(r && r.ok)); })
-          .catch(function () { listo(false); });
-      });
-    }
+    var formDP = cajaDP.querySelector("[data-form-dp]");
+    formDP.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var nombre = formDP.querySelector('[name="nombre"]').value.trim();
+      var elegidas = [].slice.call(formDP.querySelectorAll('[name="clase"]:checked'))
+        .map(function (c) { return c.value; });
+      var aporte = formDP.querySelector('[name="aporte"]').value;
+      var msj = "Hola! Soy " + nombre + " y quiero ir al Domingo Popular del " +
+                dp.fecha.replace("Domingo ", "") + ".";
+      if (elegidas.length) msj += " Me interesan: " + elegidas.join(", ") + ".";
+      msj += " Aporte: " + aporte + " 🌿";
+      var aviso = formDP.querySelector("[data-aviso]");
+      if (aviso) {
+        aviso.className = "aviso aviso--ok";
+        aviso.textContent = "Listo. Te abrimos WhatsApp para confirmar tu lugar.";
+      }
+      window.open(enlaceWhatsApp(msj), "_blank", "noopener");
+    });
   }
 
   /* ---------- formulario general "Hablemos" ---------- */

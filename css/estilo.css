@@ -1752,3 +1752,250 @@ body[data-subpagina] { padding-top: 0; }
 .taller-hero__media img { position: relative; z-index: 1; }
 /* un afiche se mira entero; una foto llena el marco */
 .taller-hero__media.es-flyer img { object-fit: contain; }
+
+/* ============================================================
+   PÁGINAS DE EVENTO (tertulias y Domingo Popular)
+   El héroe toma la paleta del afiche; el resto es la base clara
+   del sitio, para que se sienta parte y no un injerto.
+   ============================================================ */
+.evento-hero {
+  position: relative;
+  padding: 8.5rem 0 3.5rem;
+  background:
+    radial-gradient(70% 60% at 75% 15%, color-mix(in srgb, var(--ev-acento) 28%, transparent), transparent 70%),
+    radial-gradient(60% 50% at 15% 85%, color-mix(in srgb, var(--ev-acento2) 24%, transparent), transparent 70%),
+    var(--ev-fondo);
+  color: var(--ev-tinta);
+  overflow: hidden;
+}
+.evento-hero__rejilla {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 3rem;
+  align-items: center;
+}
+.evento-hero__texto { min-width: 0; }
+
+.miga--claro { color: var(--ev-tinta); opacity: 0.75; }
+.miga--claro:hover { color: var(--ev-acento); opacity: 1; }
+
+.evento-hero__eyebrow {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ev-acento);
+  margin-bottom: 0.9rem;
+}
+.evento-hero__titulo {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+  font-size: clamp(2.4rem, 6.5vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ev-tinta);
+}
+.evento-hero__subt {
+  font-family: var(--fuente-display);
+  font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  color: var(--ev-acento2);
+  margin-top: 0.4rem;
+}
+.evento-hero__fecha {
+  display: inline-block;
+  margin: 1.2rem 0 1rem;
+  padding: 0.45em 1em;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ev-tinta) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ev-tinta) 25%, transparent);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.evento-hero__bajada {
+  color: color-mix(in srgb, var(--ev-tinta) 80%, transparent);
+  max-width: 52ch;
+  font-size: 1.02rem;
+}
+.boton--evento {
+  margin-top: 1.6rem;
+  background: var(--ev-acento);
+  color: var(--ev-fondo);
+  font-weight: 700;
+}
+.boton--evento:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+.evento-hero__afiche {
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  transform: rotate(-1.5deg);
+}
+.evento-hero__afiche img { width: 100%; display: block; }
+
+/* --- cuerpo, ya en la base clara --- */
+.evento-cuerpo { background: var(--crema); padding: 3.5rem 0 4.5rem; }
+
+.evento-relato { max-width: 62ch; margin-bottom: 2.6rem; }
+.evento-relato h2,
+.evento-galeria h2,
+.evento-piezas h2,
+.evento-dato h3 {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: 1.5rem;
+  margin-bottom: 0.8rem;
+}
+.evento-dato h3 { font-size: 1.15rem; }
+.evento-relato p { color: var(--tinta-suave); font-size: 1.02rem; }
+.evento-relato em { color: var(--tinta); font-style: italic; }
+
+.galeria__grilla,
+.piezas__grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.galeria__grilla .galeria__foto img { aspect-ratio: 1/1; object-fit: cover; }
+.piezas__grilla .pieza {
+  border-radius: var(--radio);
+  overflow: hidden;
+  border: 1px solid var(--linea);
+  box-shadow: var(--sombra);
+  background: var(--papel);
+}
+.piezas__grilla .pieza img { width: 100%; display: block; }
+.evento-piezas, .evento-galeria { margin-bottom: 2.6rem; }
+
+.evento-vacio {
+  background: var(--crema-2);
+  border: 1px dashed var(--linea);
+  border-radius: var(--radio);
+  padding: 1.4rem;
+  color: var(--tinta-suave);
+  font-size: 0.95rem;
+}
+.evento-vacio strong { color: var(--tinta); }
+
+.evento-datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2.6rem;
+}
+.evento-dato {
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 1.4rem;
+  box-shadow: var(--sombra);
+}
+.evento-dato p { color: var(--tinta-suave); font-size: 0.94rem; }
+.evento-aporte {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--frambuesa) !important;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .evento-hero { padding-top: 7rem; }
+  .evento-hero__rejilla { grid-template-columns: 1fr; gap: 2rem; }
+  .evento-hero__afiche { max-width: 420px; }
+}
+
+/* la tarjeta de tertulia ahora es un enlace */
+a.afiche { text-decoration: none; color: inherit; }
+.afiche__ver {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--linea);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #7A5FA8;
+}
+a.afiche:hover .flecha { transform: translateX(4px); }
+
+/* el afiche del Domingo Popular lleva a su página */
+.dp-afiche {
+  display: block;
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: var(--sombra-alta);
+  transform: rotate(-1.5deg);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  max-width: 420px;
+  margin-inline: auto;
+}
+.dp-afiche:hover { transform: rotate(0deg) translateY(-4px); box-shadow: 0 18px 40px rgba(59,49,41,0.18); }
+.dp-afiche img { width: 100%; display: block; }
+
+.dp-inscripcion { max-width: 560px; margin-top: 1rem; }
+.dp-inscripcion h2 {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: 1.5rem;
+  margin-bottom: 0.8rem;
+}
+
+/* ---- la jornada del Domingo Popular ---- */
+.jornada { margin-bottom: 2.6rem; }
+.jornada h2 {
+  font-family: var(--fuente-display); font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: 1.5rem; margin-bottom: 0.9rem;
+}
+.jornada__lista { list-style: none; display: grid; gap: 0.5rem; max-width: 620px; }
+.jornada__bloque {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr auto;
+  gap: 0.4rem 1rem;
+  align-items: baseline;
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  padding: 0.75rem 1rem;
+  box-shadow: var(--sombra);
+}
+.jornada__hora { font-weight: 700; font-size: 0.84rem; color: var(--frambuesa); white-space: nowrap; }
+.jornada__clase { font-weight: 600; }
+.jornada__profe { font-size: 0.84rem; color: var(--tinta-suave); }
+.jornada__pausa {
+  text-align: center;
+  font-family: var(--fuente-display);
+  font-style: italic;
+  color: var(--tinta-suave);
+  padding: 0.4rem;
+}
+@media (max-width: 560px) {
+  .jornada__bloque { grid-template-columns: 1fr; gap: 0.1rem; }
+}
+
+.aporte-precios { list-style: none; display: grid; gap: 0.4rem; }
+.aporte-precios li {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  padding-bottom: 0.4rem; border-bottom: 1px solid var(--linea);
+  font-size: 0.92rem; color: var(--tinta-suave);
+}
+.aporte-precios b {
+  font-family: var(--fuente-display); font-weight: 600;
+  font-size: 1.1rem; color: var(--tinta);
+}
+.aporte-materiales {
+  list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem;
+}
+.aporte-materiales li {
+  background: var(--crema-2); border: 1px solid var(--linea);
+  border-radius: 999px; padding: 0.3em 0.75em;
+  font-size: 0.78rem; color: var(--tinta-suave);
+}

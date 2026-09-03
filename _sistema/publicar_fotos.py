@@ -114,16 +114,17 @@ for origen_dir, destino_rel in TAL_CUAL.items():
         if copiar(os.path.join(base, f), os.path.join(IMG, destino_rel, f)):
             print(f"  ✓ {destino_rel}/{f}")
 
-# tertulias: los afiches se numeran, las fotos van con su nombre
+# tertulias: una carpeta por evento, se copia tal cual
 base = os.path.join(REC, TERTULIAS)
 if os.path.isdir(base):
-    fl = os.path.join(base, "1_flyers", "clases_actuales")
-    for i, f in enumerate(jpgs_sueltas(fl), 1):
-        if copiar(os.path.join(fl, f), os.path.join(IMG, "tertulias", "afiche-%02d.jpg" % i)):
-            print(f"  ✓ tertulias/afiche-%02d.jpg  ←  {f}" % i)
-    for f in jpgs_sueltas(base):
-        if copiar(os.path.join(base, f), os.path.join(IMG, "tertulias", "fotos", f)):
-            print(f"  ✓ tertulias/fotos/{f}")
+    for ev in sorted(os.listdir(base)):
+        d = os.path.join(base, ev)
+        if not os.path.isdir(d) or ev.startswith(("1_", ".")):
+            continue
+        destino_ev = ev.replace("_", "-", 1).replace("_", "-")
+        for f in jpgs_sueltas(d):
+            if copiar(os.path.join(d, f), os.path.join(IMG, "tertulias", destino_ev, f)):
+                print(f"  ✓ tertulias/{destino_ev}/{f}")
 
 print()
 if not cambios:
