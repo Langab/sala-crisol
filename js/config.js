@@ -160,10 +160,10 @@ const CRISOL = {
     {
       id: "danza-filosofia",
       nombre: "Danza y Filosofía",
-      subtitulo: "Experiencia Sensuallstyle",
+      subtitulo: "Experiencia sensual (Sensuallstyle)",
       profe: "Amar Estefanía",
       profeIg: "",
-      frase: "Mover el cuerpo también es una forma de pensar.",
+      frase: "Un espacio para gozar, disfrutar y ser.",
       nivel: "Todos los niveles",
       duracion: "1 hora 15 min",
       pagina: "talleres/danza-filosofia.html",
@@ -175,11 +175,10 @@ const CRISOL = {
       horarios: [
         { dia: "Jueves", hora: "18:45 – 20:00", cuposTotal: 12, cuposDisponibles: 9 },
       ],
-      // precios del flyer de Amar Estefanía (sep · oct · nov · dic)
+      // valores de Amar Estefanía
       precios: [
         { nombre: "Clase suelta", valor: "$8.000", monto: 8000 },
-        { nombre: "Mensualidad", valor: "$28.000", monto: 28000 },
-        { nombre: "2 meses", valor: "$50.000", monto: 50000 },
+        { nombre: "4 clases al mes", valor: "$28.000", monto: 28000 },
       ],
     },
     {
