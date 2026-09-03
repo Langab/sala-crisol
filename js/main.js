@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       return (
         '<a class="tarjeta-taller revelar revelar--retraso-' + (idx % 3 + 1) + '" href="' + base + t.pagina + '">' +
-        '<div class="tarjeta-taller__media es-flyer">' + media +
+        '<div class="tarjeta-taller__media' + (t.portadaEsFoto ? "" : " es-flyer") + '">' + media +
         '<span class="tarjeta-taller__dia">' +
         (esPronto ? "Nueva fecha pronto" : diasResumen) + "</span></div>" +
         '<div class="tarjeta-taller__cuerpo">' +

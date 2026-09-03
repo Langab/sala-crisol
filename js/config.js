@@ -89,7 +89,10 @@ const CRISOL = {
       pagina: "talleres/danza-contemporanea.html",
       // La portada es el flyer: img/talleres/danza-contemporanea/flyer.jpg
       // Para cambiarla, reemplaza ESE archivo (mismo nombre). Nada más.
-      fotos: ["img/talleres/danza-contemporanea/fotos/01.jpg", "img/talleres/danza-contemporanea/fotos/02.jpg", "img/talleres/danza-contemporanea/fotos/03.jpg"],
+      // Acá la portada es una FOTO, no un afiche con texto, así que
+      // llena la tarjeta en vez de mostrarse completa con bordes.
+      portadaEsFoto: true,
+      fotos: ["img/talleres/danza-contemporanea/fotos/01.jpg", "img/talleres/danza-contemporanea/fotos/02.jpg"],
       color: "turquesa",
       estado: "activo",
       horarios: [
