@@ -1205,6 +1205,21 @@ a { color: inherit; }
 .formulario > p { font-size: 0.88rem; color: var(--tinta-suave); }
 
 .campo { display: grid; gap: 0.35rem; }
+
+/* Aviso chico bajo el botón de inscripción: dice qué hacemos con los datos.
+   Tiene que leerse, pero sin competir con el formulario. */
+.campo__pista {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--tinta-suave);
+  max-width: 46ch;
+}
+.campo__pista a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.campo__pista a:hover { color: var(--frambuesa); }
 .campo label {
   font-size: 0.74rem;
   font-weight: 700;

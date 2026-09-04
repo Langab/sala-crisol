@@ -69,8 +69,25 @@ sala_crisol_web/
 ├── css/estilo.css        ← todos los estilos (colores arriba del archivo)
 ├── js/config.js          ← ★ EL ARCHIVO QUE SE EDITA ★
 ├── js/main.js            ← funcionamiento (no tocar)
+├── privacidad.html       ← qué hacemos con los datos de quien se inscribe
+├── panel.html            ← administración (pide clave, no se indexa)
 └── img/                  ← fotos, flyers y afiches
 ```
+
+## ⚠️ Regla de oro: esta carpeta es pública
+
+Todo lo que guardes dentro de `sala_crisol_web/` queda visible en internet,
+aunque no haya ningún enlace que lleve hasta ahí. Cualquiera puede escribir la
+dirección del archivo y abrirlo.
+
+Así que **nunca** dejes acá dentro:
+
+- claves ni contraseñas de ningún tipo,
+- planillas o listas con datos de las alumnas,
+- documentos internos, presupuestos, borradores.
+
+Todo eso va en la carpeta `_sistema/`, que está **un nivel más arriba** y no
+se publica. Si tienes dudas sobre algo, ahí hay un `LEEME_SEGURIDAD.md`.
 
 ## Cómo se publican los cambios
 

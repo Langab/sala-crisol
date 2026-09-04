@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Seguridad: limita de dónde puede cargar y a dónde puede
+       enviar datos esta página. Si alguien lograra colar código,
+       el navegador igual le impide sacar información afuera. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-src https://www.google.com; form-action 'self'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
   <title>Sala Crisol — Sala de artes y movimiento · Ñuñoa, Santiago</title>
   <meta name="description" content="Sala Crisol es un espacio de artes y movimiento en Ñuñoa: pilates, danza contemporánea, movimiento flexible, equilibrio de manos, bellydance y tertulias de cine. Av. Salvador 2302, a pasos del Metro Monseñor Eyzaguirre.">
   <link rel="canonical" href="https://salacrisol.cl/">
@@ -480,6 +486,7 @@
 
       <div class="pie__final">
         <span>© <span data-anio>2026</span> Sala Crisol · Ñuñoa, Santiago de Chile</span>
+        <span><a href="privacidad.html">Privacidad</a></span>
         <span>Espacio autogestionado de artes y movimiento 🔥</span>
       </div>
     </div>

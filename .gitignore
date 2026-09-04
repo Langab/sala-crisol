@@ -3,3 +3,10 @@
 .Spotlight-V100
 .Trashes
 Thumbs.db
+
+# Nada de herramientas internas ni claves dentro del sitio:
+# todo lo que vive en esta carpeta se publica en internet.
+_sistema/
+*.gs
+CLAVE*.txt
+.env

@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Seguridad: limita de dónde puede cargar y a dónde puede
+       enviar datos esta página. Si alguien lograra colar código,
+       el navegador igual le impide sacar información afuera. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; form-action 'self'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
 <meta name="color-scheme" content="light">
 <meta name="robots" content="noindex, nofollow">
 <title>Administración · Sala Crisol</title>
@@ -891,7 +897,7 @@ main, .vista{ padding-bottom:86px; }
       <div class="campo">
         <label for="a-token">Clave de lectura</label>
         <input type="password" id="a-token" placeholder="la clave que está en el script" autocomplete="off" spellcheck="false">
-        <p class="campo__pista">Sin esta clave el panel no puede ver la lista de inscritas. Está en <code>_sistema/inscripciones_sheets.gs</code>, en la línea <code>TOKEN_LECTURA</code>. No la pegues en la web pública.</p>
+        <p class="campo__pista">Sin esta clave el panel no puede ver la lista de inscritas. Está en Apps Script → ⚙ Configuración del proyecto → Propiedades de la secuencia de comandos, en <code>TOKEN_LECTURA</code>. Nunca la escribas dentro de la página ni la publiques.</p>
       </div>
       <div class="fila-botones">
         <button class="btn btn--tinta" type="button" id="guardar-url">Guardar URL</button>
@@ -1052,8 +1058,28 @@ main, .vista{ padding-bottom:86px; }
 <!-- Si el panel se abre junto al sitio, las clases salen de config.js
      (misma fuente que la web publica). Si se abre suelto, no carga
      y se usa la copia de respaldo que esta mas abajo. -->
+<script>
+/* Si esta página aparece dentro de un marco en otro sitio, alguien está
+   intentando que el equipo apriete botones sin darse cuenta (poner "pagó",
+   cancelar inscripciones). Nos salimos del marco. */
+(function(){
+  try{
+    if(window.top !== window.self){
+      document.documentElement.innerHTML =
+        '<p style="font:16px system-ui;padding:24px">Esta página no se puede abrir dentro de otro sitio. ' +
+        '<a href="https://salacrisol.cl/panel.html">Ábrela directamente</a>.</p>';
+      window.top.location = window.self.location;
+    }
+  }catch(e){
+    // Si ni siquiera podemos mirar la ventana de arriba, es de otro dominio:
+    // razón de más para no mostrar nada.
+    document.documentElement.innerHTML =
+      '<p style="font:16px system-ui;padding:24px">Esta página no se puede abrir dentro de otro sitio.</p>';
+  }
+})();
+</script>
 <script src="js/config.js"></script>
-<script src="js/graficos.js" onerror="window.__sinGraficos=true"></script>
+<script src="js/graficos.js"></script>
 <script>
 (function(){
 "use strict";
@@ -2499,6 +2525,11 @@ function atraparFoco(e){
    ============================================================ */
 function celdaCSV(v){
   var s = String(v == null ? "" : v);
+  /* Una celda que empieza con = + - @ la ejecuta Excel al abrir el archivo.
+     Alguien podría inscribirse con el nombre =HYPERLINK(...) y convertir
+     nuestro CSV en una trampa. La comilla inicial la deja como texto:
+     se ve igual, pero no corre nada. */
+  if(/^[=+\-@\t\r]/.test(s)) s = "'" + s;
   return '"' + s.replace(/"/g,'""') + '"';
 }
 

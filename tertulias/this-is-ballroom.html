@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Seguridad: limita de dónde puede cargar y a dónde puede
+       enviar datos esta página. Si alguien lograra colar código,
+       el navegador igual le impide sacar información afuera. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-src https://www.google.com; form-action 'self'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
   <title>Tertulia 01 · This is Ballroom — Sala Crisol</title>
   <meta name="description" content="This is Ballroom — tertulia de cine en Sala Crisol, Ñuñoa. Viernes 1 de mayo · 19:00 Apertura de ciclo. Proyección + tertulia con artistas invitadxs: música y danza ">
   <link rel="canonical" href="https://salacrisol.cl/tertulias/this-is-ballroom.html">
@@ -103,6 +109,7 @@
     <div class="contenedor">
       <div class="pie__final" style="border:none;margin:0;padding:0">
         <span>© <span data-anio>2026</span> Sala Crisol · Av. Salvador 2302, Ñuñoa</span>
+        <span><a href="../privacidad.html">Privacidad</a></span>
         <span><a data-ig href="#" style="color:#D9CDBF;text-decoration:none">@sala.crisol</a></span>
       </div>
     </div>

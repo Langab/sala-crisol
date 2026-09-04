@@ -1,0 +1,8 @@
+# Sala Crisol — salacrisol.cl
+
+User-agent: *
+Allow: /
+
+# La página de administración no se indexa: no tiene nada público
+# y no queremos que aparezca en Google.
+Disallow: /panel.html

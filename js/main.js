@@ -366,6 +366,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* próxima fecha (YYYY-MM-DD) en que cae ese día de la semana */
+  /* Todo lo que escribe una visitante pasa por aquí antes de volver a la
+     página. Sin esto, un nombre con < > se interpreta como HTML. */
+  function escHtml(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
   function proximaFecha(nombreDia) {
     var dias = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
     var idx = dias.indexOf(nombreDia);
@@ -552,7 +560,7 @@ document.addEventListener("DOMContentLoaded", function () {
             panel.innerHTML =
               '<div class="inscrita">' +
                 '<div class="inscrita__marca">✓</div>' +
-                "<h3>Listo, " + nombre.split(" ")[0] + "</h3>" +
+                "<h3>Listo, " + escHtml(nombre.split(" ")[0]) + "</h3>" +
                 "<p>Quedaste inscrita. Te esperamos:</p>" +
                 '<dl class="inscrita__datos">' +
                   "<dt>Clase</dt><dd>" + taller.nombre + "</dd>" +
