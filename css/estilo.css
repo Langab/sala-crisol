@@ -21,6 +21,7 @@
   --salvia: #9DBE9C;
   --turquesa: #8FC6C9;
   --lila: #B7A6D6;
+  --orquidea: #B67EC4;   /* el violeta del afiche de Kathia */
   --frambuesa: #C4626F;   /* el rojo hondo de la guirnalda, para énfasis */
 
   /* tonos de apoyo (fondos suaves de cada color) */
@@ -28,6 +29,7 @@
   --salvia-velo: #EAF1E9;
   --turquesa-velo: #E4F1F2;
   --lila-velo: #EFE9F6;
+  --orquidea-velo: #F4E9F8;
   --mostaza-velo: #FAF0DC;
   --terracota-velo: #F7E7DC;
 
@@ -106,6 +108,7 @@ a { color: inherit; }
 }
 .sticker--fuego { background: var(--terracota); }
 .sticker--lila { background: var(--lila); }
+.sticker--orquidea { background: var(--orquidea); }
 .sticker--rosa { background: var(--rosa); }
 .sticker--amarillo { background: var(--mostaza); }
 .sticker--derecha { transform: rotate(2deg); }
@@ -162,6 +165,7 @@ a { color: inherit; }
 .banderin--salvia { background: var(--salvia); }
 .banderin--turquesa { background: var(--turquesa); }
 .banderin--lila { background: var(--lila); }
+.banderin--orquidea { background: var(--orquidea); }
 
 /* ---------- botones ---------- */
 .boton {

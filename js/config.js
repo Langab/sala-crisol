@@ -180,15 +180,17 @@ const CRISOL = {
       profe: "Kathia Luminus",
       profeIg: "",
       frase: "Caderas que cuentan historias antiguas.",
-      nivel: "Todos los niveles",
-      duracion: "1 hora",
+      // Ojo: NO es para principiantes. El afiche de Kathia lo dice
+      // explícitamente y antes acá figuraba como "todos los niveles".
+      nivel: "Multinivel · con experiencia previa",
+      duracion: "1 hora y 15 minutos",
       pagina: "talleres/bellydance-fusion.html",
       // Portada y fotos salen de img/talleres/<id>/ — ver el LEEME.
 
-      color: "terracota",
+      color: "orquidea",
       estado: "activo",
       horarios: [
-        { dia: "Viernes", hora: "19:00 – 20:00", cuposTotal: 12, cuposDisponibles: 9 },
+        { dia: "Viernes", hora: "19:00 – 20:15", cuposTotal: 12, cuposDisponibles: 9 },
       ],
       // ⚠️ Kathia no nos ha pasado sus valores: estos son provisorios
       precios: [

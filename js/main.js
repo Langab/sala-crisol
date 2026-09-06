@@ -228,7 +228,8 @@ document.addEventListener("DOMContentLoaded", function () {
          solo tienen que reemplazar el archivo. */
       var mapaColor = {
         rosa: "#E39AA6", terracota: "#D98E6A", mostaza: "#E8C583",
-        salvia: "#9DBE9C", turquesa: "#8FC6C9", lila: "#B7A6D6"
+        salvia: "#9DBE9C", turquesa: "#8FC6C9", lila: "#B7A6D6",
+        orquidea: "#B67EC4"
       };
       var tono = mapaColor[t.color] || "#E39AA6";
       var iniciales = t.nombre.split(" ").map(function (p) { return p[0]; }).slice(0, 2).join("");
@@ -444,7 +445,8 @@ document.addEventListener("DOMContentLoaded", function () {
       var figura = document.querySelector("[data-portada-taller]");
       if (figura) {
         var tono2 = ({ rosa:"#E39AA6", terracota:"#D98E6A", mostaza:"#E8C583",
-                       salvia:"#9DBE9C", turquesa:"#8FC6C9", lila:"#B7A6D6" })[taller.color] || "#E39AA6";
+                       salvia:"#9DBE9C", turquesa:"#8FC6C9", lila:"#B7A6D6",
+                       orquidea:"#B67EC4" })[taller.color] || "#E39AA6";
         var ini2 = taller.nombre.split(" ").map(function (p) { return p[0]; }).slice(0, 2).join("");
         var foto2 = base + "img/talleres/" + taller.id + "/fotos/01.jpg";
         var alFallar2 = foto2
