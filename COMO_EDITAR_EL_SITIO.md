@@ -186,6 +186,24 @@ git add -A && git commit -m "Actualizo la portada" && git push
 En 1–2 minutos https://salacrisol.cl/ queda actualizado.
 (Si no ves el cambio, recarga con Ctrl+Shift+R / Cmd+Shift+R.)
 
+### El `?v=2` de los scripts
+
+Los `<script>` de todas las páginas apuntan a `js/config.js?v=2` y `js/main.js?v=2`.
+Ese numerito no es decorativo: GitHub Pages le dice al navegador que guarde los
+archivos por 10 minutos, así que sin él alguien que visitó el sitio hace poco
+puede quedarse con el HTML nuevo y el JavaScript viejo — y las páginas de clase
+salen en blanco.
+
+**Cada vez que cambies `js/main.js` o `js/config.js`, súbele 1 al número en todas
+las páginas:**
+
+```bash
+sed -i '' 's/\.js?v=2"/.js?v=3"/g' *.html talleres/*.html tertulias/*.html
+```
+
+`datos/contenido.json` no necesita esto: se pide con `no-cache`, así que los
+cambios del panel se ven al tiro.
+
 ### Para ver el sitio en el computador antes de subirlo
 
 El sitio ahora carga `datos/contenido.json` por red, así que **abrir el
