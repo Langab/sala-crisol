@@ -10,15 +10,15 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <title>Bellydance Fusión — Sala Crisol</title>
-  <meta name="description" content="Bellydance Fusión en Sala Crisol, Ñuñoa. Viernes 19:00 – 20:15. Con Kathia Luminus. Multinivel, con experiencia previa en movimiento. Inscríbete online.">
+  <meta name="description" content="Bellydance Fusión en Sala Crisol, Ñuñoa. Viernes 19:00 – 20:15. Con Kathia Luminus. Inscríbete online.">
   <link rel="canonical" href="https://salacrisol.cl/talleres/bellydance-fusion.html">
   <meta property="og:site_name" content="Sala Crisol">
   <meta property="og:locale" content="es_CL">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://salacrisol.cl/talleres/bellydance-fusion.html">
   <meta property="og:title" content="Bellydance Fusión — Sala Crisol">
-  <meta property="og:description" content="Bellydance Fusión en Sala Crisol, Ñuñoa. Viernes 19:00 – 20:15. Con Kathia Luminus. Multinivel, con experiencia previa en movimiento. Inscríbete online.">
-  <meta property="og:image" content="https://salacrisol.cl/img/tertulias/fotos/musica-en-vivo.jpg">
+  <meta property="og:description" content="Bellydance Fusión en Sala Crisol, Ñuñoa. Viernes 19:00 – 20:15. Con Kathia Luminus. Inscríbete online.">
+  <meta property="og:image" content="https://salacrisol.cl/img/talleres/bellydance-fusion/flyer.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="../img/sala/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..600,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/estilo.css">
 </head>
-<body data-subpagina>
+<body data-subpagina data-taller-actual="bellydance-fusion">
 
   <header class="nav">
     <div class="contenedor nav__inner">
@@ -38,14 +38,7 @@
       <ul class="nav__links">
         <li>
           <a href="../index.html#talleres" aria-haspopup="true">Clases ▾</a>
-          <div class="nav__despliegue">
-            <a href="pilates-mat.html">Pilates Mat <small>Lun · Vie · Sáb con Esperanza</small></a>
-            <a href="danza-contemporanea.html">Danza Contemporánea <small>Sábado 10:30 · Esperanza</small></a>
-            <a href="movimiento-flexible.html">Movimiento Flexible <small>Lun · Mar · Sáb con Consuelo</small></a>
-            <a href="equilibrio-de-manos.html">Equilibrio de Manos <small>Miércoles 10:00 · Consuelo</small></a>
-            <a href="danza-filosofia.html">Danza y Filosofía <small>Jueves 18:45 · Amor Expresamos</small></a>
-            <a href="bellydance-fusion.html">Bellydance Fusión <small>Estás aquí ✿</small></a>
-          </div>
+          <div class="nav__despliegue" data-nav-clases></div>
         </li>
         <li><a href="../index.html#horarios">Horarios</a></li>
         <li><a href="../index.html#tertulias">Tertulias</a></li>
@@ -58,20 +51,15 @@
 
   <main>
     <section class="taller-hero" style="--halo: #F4E9F8;">
-      <div class="guirnalda guirnalda--techo" data-guirnalda data-guirnalda-semilla="5"></div>
+      <div class="guirnalda guirnalda--techo" data-guirnalda data-guirnalda-semilla="0"></div>
       <div class="contenedor taller-hero__rejilla">
-        <div>
+        <div data-t-hero>
           <a class="miga" href="../index.html#talleres">← Todas las clases</a>
-          <h1>Bellydance <span style="color:#B67EC4">Fusión</span></h1>
-          
-          <p class="taller-hero__frase">Caderas que cuentan historias antiguas.</p>
-          <p class="taller-hero__desc">Danza del vientre cruzada con otros lenguajes contemporáneos. Trabajamos <strong>técnica y vocabulario</strong> de la danza del vientre fusión, con raíz en la danza árabe y forma libre para lo que cada una quiera traerle encima. El ciclo corre de <strong>septiembre a diciembre</strong> y termina, si quieres, en un proyecto coreográfico.</p>
-          <div class="taller-hero__chips">
-            <span class="chip">🕖 Viernes 19:00 – 20:15</span>
-            <span class="chip">✿ Multinivel · con experiencia previa</span>
-            <span class="chip">⏱ 1 hora y 15 minutos</span>
-            <span class="chip">🌙 Septiembre a diciembre</span>
-          </div>
+          <h1 data-t-titulo></h1>
+          <p class="taller-hero__frase taller-hero__estilo" data-t-subtitulo hidden></p>
+          <p class="taller-hero__frase" data-t-frase></p>
+          <p class="taller-hero__desc" data-t-desc></p>
+          <div class="taller-hero__chips" data-t-chips></div>
         </div>
         <figure class="taller-hero__media" data-portada-taller></figure>
       </div>
@@ -79,42 +67,12 @@
 
     <section class="taller-cuerpo">
       <div class="contenedor taller-cuerpo__rejilla">
-        <div>
-          <div class="taller-bloque">
-            <h2>Qué vas a <span class="acento">trabajar</span></h2>
-            <ul class="lista-beneficios">
-              <li><strong>Disociación</strong> — mover una parte del cuerpo sin arrastrar el resto.</li>
-              <li><strong>Cadera y torso</strong> — la técnica base, capa por capa.</li>
-              <li><strong>Musicalidad</strong> — escuchar el ritmo y responderle con el cuerpo.</li>
-              <li><strong>Brazos y manos</strong> — el detalle que termina de contar la historia.</li>
-              <li><strong>Presencia</strong> — ocupar el espacio con seguridad.</li>
-              <li><strong>Proyecto coreográfico</strong> — hacia el final del ciclo, con presentación si quieres. Es opcional.</li>
-            </ul>
-          </div>
-
-          <div class="taller-bloque">
-            <h2>¿Es <span class="acento">para mí</span>?</h2>
-            <p>Esta clase es <strong>multinivel, pero no es de iniciación</strong>: necesitas
-              experiencia previa en algún arte del movimiento — danza, circo, yoga, teatro
-              físico, lo que sea. No tiene que ser danza árabe, pero sí tiene que haber un
-              cuerpo con oficio.</p>
-            <p>Si estás empezando de cero, escríbenos igual: te contamos por dónde entrar
-              primero.</p>
-            <p>Ropa que deje ver la cadera (calza o pantalón ajustado) para poder corregir.
-              Pies descalzos.</p>
-          </div>
-
-          <div class="taller-bloque">
-            <h2>Tu <span class="acento">profe</span></h2>
-            <div class="profe-tarjeta">
-              <div class="profe-tarjeta__avatar" style="background:#B67EC4;display:grid;place-items:center;font-family:var(--fuente-display);font-weight:600;font-size:1.3rem;color:#fff">KL</div>
-              <div>
-                <h4>Kathia Luminus</h4>
-                <p>Bailarina y profesora de danza árabe. Trabaja la fusión entre el bellydance tradicional y lenguajes contemporáneos.</p>
-                
-              </div>
-            </div>
-          </div>
+        <!-- Todo lo de abajo se llena desde el panel (datos/contenido.json).
+             No escribas textos a mano acá: se pierden al recargar. -->
+        <div data-t-cuerpo>
+          <div class="taller-bloque" data-t-trabajo hidden></div>
+          <div class="taller-bloque" data-t-parami hidden></div>
+          <div class="taller-bloque" data-t-profe></div>
 
           <div class="taller-bloque" data-galeria hidden>
             <h2>La clase por <span class="acento">dentro</span></h2>
@@ -122,7 +80,7 @@
           </div>
         </div>
 
-        <aside class="panel-inscripcion" id="inscribirme" data-taller="bellydance-fusion">
+        <aside class="panel-inscripcion" id="inscribirme" data-panel-inscripcion>
           <h3>Inscríbete</h3>
           <p>Elige tu horario y te confirmamos el cupo por WhatsApp.</p>
 
@@ -174,7 +132,7 @@
   <footer class="pie">
     <div class="contenedor">
       <div class="pie__final" style="border:none;margin:0;padding:0">
-        <span>© <span data-anio>2026</span> Sala Crisol · Av. Salvador 2302, Ñuñoa</span>
+        <span>© <span data-anio>2026</span> Sala Crisol · <span data-direccion>Av. Salvador 2302, Ñuñoa</span></span>
         <span><a href="../privacidad.html">Privacidad</a></span>
         <span><a data-ig href="#">@sala.crisol</a></span>
       </div>

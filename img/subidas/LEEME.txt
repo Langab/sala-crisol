@@ -1,0 +1,9 @@
+Acá caen las fotos y afiches que se suben desde el panel.
+
+No borres archivos de esta carpeta a mano: si una foto está puesta en
+una clase o en una tertulia, al borrarla se rompe la imagen en el sitio.
+Para sacar una foto, quítala primero desde el panel.
+
+Las fotos que publica el script publicar_fotos.py NO viven acá: van a
+img/talleres/ y a img/tertulias/, y son las que se usan cuando el panel
+no tiene ninguna puesta.

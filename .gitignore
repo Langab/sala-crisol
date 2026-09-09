@@ -10,3 +10,6 @@ _sistema/
 *.gs
 CLAVE*.txt
 .env
+
+# Configuración local para levantar el sitio en el computador
+.claude/

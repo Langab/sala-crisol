@@ -1,0 +1,298 @@
+# =====================================================================
+# PANEL DE SALA CRISOL · Sveltia CMS (sirve igual para Decap CMS)
+# ---------------------------------------------------------------------
+# Los mismos campos que .pages.yml, en el formato del otro panel.
+# Si agregas un campo en uno, agrégalo en el otro.
+# =====================================================================
+
+backend:
+  name: github
+  repo: Langab/sala-crisol
+  branch: main
+  # Intermediario que valida el ingreso con GitHub. Se despliega una vez:
+  # https://github.com/sveltia/sveltia-cms-auth
+  # Mientras no exista, este panel no puede entrar (usar Pages CMS).
+  base_url: https://auth.salacrisol.cl
+  commit_messages:
+    update: 'Panel: cambios en {{collection}}'
+    create: 'Panel: se creó {{collection}}'
+    delete: 'Panel: se eliminó {{collection}}'
+    uploadMedia: 'Panel: se subió {{path}}'
+
+# Las fotos que suben las chicas caen acá, separadas de las que publica
+# el script desde Recursos_graficos (que viven en img/talleres, img/tertulias…)
+media_folder: "img/subidas"
+public_folder: "/img/subidas"
+
+media_library:
+  config:
+    max_file_size: 2000000     # 2 MB: una foto de celular sin comprimir no entra
+
+locale: es
+site_url: https://salacrisol.cl
+display_url: https://salacrisol.cl
+
+collections:
+  - name: contenido
+    label: "Contenido del sitio"
+    files:
+      - name: principal
+        label: "Clases, tertulias y datos"
+        file: "datos/contenido.json"
+        description: "Todo lo que se puede cambiar. Los cambios se ven en el sitio en uno o dos minutos."
+        fields:
+
+          # ---------- La sala ----------
+          - name: sala
+            label: "Datos de la sala"
+            widget: object
+            collapsed: true
+            fields:
+              - { name: mesActual, label: "Mes que se muestra en la portada", widget: string,
+                  hint: "Con mayúscula: Septiembre. Aparece en la cinta que corre arriba." }
+              - { name: whatsapp, label: "WhatsApp de la sala", widget: string,
+                  pattern: ['^56[0-9]{9}$', 'Sin + ni espacios, así: 56991757042'],
+                  hint: "Cambia los 11 botones del sitio de una vez." }
+              - { name: instagram, label: "Instagram", widget: string, required: false,
+                  hint: "Solo el usuario, sin la arroba." }
+              - { name: direccion, label: "Dirección", widget: string, required: false }
+
+          # ---------- Clases ----------
+          - name: talleres
+            label: "Clases"
+            label_singular: "Clase"
+            widget: list
+            collapsed: true
+            summary: "{{fields.nombre}} — {{fields.profe}}"
+            hint: "Cada clase aparece en la portada, en el horario semanal y tiene su propia página."
+            fields:
+              - { name: nombre, label: "Nombre de la clase", widget: string }
+              - name: estado
+                label: "¿Se muestra?"
+                widget: select
+                default: activo
+                options:
+                  - { label: "Sí, con inscripción abierta", value: activo }
+                  - { label: "Sí, pero dice «nueva fecha por anunciar»", value: pronto }
+                  - { label: "No mostrarla en el sitio", value: oculto }
+                hint: "Para sacar una clase usa «No mostrarla». No la borres: si vuelve, la prendes de nuevo."
+              - { name: subtitulo, label: "Nombre del estilo", widget: string, required: false,
+                  hint: "Línea en cursiva arriba de la frase, para el nombre del estilo. Vacía = no se muestra." }
+              - { name: frase, label: "Frase corta", widget: string, required: false,
+                  hint: "Una línea, sale bajo el nombre en la portada." }
+              - { name: profe, label: "Profesora o profesor", widget: string }
+              - { name: profeCorto, label: "Nombre corto", widget: string, required: false,
+                  hint: "El que se ve en el horario semanal, donde hay poco espacio." }
+              - { name: profeIg, label: "Instagram de la profe", widget: string, required: false,
+                  hint: "Solo el usuario, sin arroba." }
+              - { name: fotoProfe, label: "Foto de la profe", widget: image, required: false,
+                  hint: "Cuadrada. Si la dejas vacía se muestran sus iniciales." }
+              - { name: bioProfe, label: "Quién es", widget: text, required: false,
+                  hint: "Dos o tres líneas." }
+              - { name: nivel, label: "Nivel", widget: string, required: false,
+                  hint: "Ejemplo: Todos los niveles" }
+              - { name: duracion, label: "Duración", widget: string, required: false,
+                  hint: "Etiqueta ⏱ al lado de los horarios. Vacía = no se muestra. Ejemplo: 1 hora 15" }
+              - { name: temporada, label: "Temporada", widget: string, required: false,
+                  hint: "Etiqueta 🌙 para clases que corren solo unos meses. Vacía = no se muestra." }
+              - { name: color, label: "Color de la clase", widget: select,
+                  options: [rosa, terracota, mostaza, salvia, turquesa, lila, orquidea] }
+              - { name: descripcion, label: "De qué se trata", widget: text, required: false,
+                  hint: "Para destacar una palabra escríbela **entre dos asteriscos**." }
+              - name: trabajo
+                label: "Qué vas a trabajar"
+                label_singular: "Punto"
+                widget: list
+                required: false
+                collapsed: true
+                summary: "{{fields.titulo}}"
+                fields:
+                  - { name: titulo, label: "Palabra clave", widget: string }
+                  - { name: texto, label: "Explicación", widget: string }
+              - { name: paraMi, label: "¿Es para mí?", widget: list, required: false,
+                  field: { name: parrafo, label: "Párrafo", widget: text },
+                  hint: "Un párrafo por ítem: si sirve para principiantes, qué traer." }
+              - name: horarios
+                label: "Horarios y cupos"
+                label_singular: "Horario"
+                widget: list
+                collapsed: true
+                summary: "{{fields.dia}} {{fields.hora}}"
+                hint: "Esto arma el horario semanal de la portada."
+                fields:
+                  - { name: dia, label: "Día", widget: select,
+                      options: [Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo] }
+                  - { name: hora, label: "Hora", widget: string,
+                      hint: "Con guion largo: 10:00 – 11:00" }
+                  - { name: cuposTotal, label: "Cupos totales", widget: number,
+                      value_type: int, min: 0, required: false }
+                  - { name: cuposDisponibles, label: "Cupos que quedan", widget: number,
+                      value_type: int, min: 0, required: false,
+                      hint: "Réstale 1 por cada inscripción. En 0 aparece «Sin cupos»." }
+              - name: precios
+                label: "Precios"
+                label_singular: "Precio"
+                widget: list
+                collapsed: true
+                summary: "{{fields.nombre}} — {{fields.valor}}"
+                fields:
+                  - { name: nombre, label: "Qué es", widget: string }
+                  - { name: valor, label: "Cuánto sale", widget: string,
+                      hint: "Como se lee en el sitio: $35.000" }
+                  - { name: monto, label: "El número solo", widget: number,
+                      value_type: int, min: 0, required: false,
+                      hint: "El mismo valor sin puntos ni signo: 35000" }
+              - { name: portada, label: "Portada de la clase", widget: image, required: false,
+                  hint: "Vertical. Si la dejas vacía se usa la de img/talleres/." }
+              - { name: portadaEsFoto, label: "La portada es una foto, no un afiche",
+                  widget: boolean, default: false, required: false }
+              - { name: fotos, label: "Fotos de la clase", widget: list, required: false,
+                  field: { name: foto, label: "Foto", widget: image },
+                  hint: "Salen en «La clase por dentro»." }
+
+              # ---- de acá abajo, mejor no tocar ----
+              - { name: id, label: "Código interno", widget: string,
+                  pattern: ['^[a-z0-9-]+$', 'Solo minúsculas y guiones, sin tildes'],
+                  hint: "En una clase que ya existe NO lo cambies: se rompen los enlaces." }
+              - { name: pagina, label: "Página propia", widget: string, required: false,
+                  hint: "La dirección de la página de esta clase. No la cambies. En una clase nueva déjala vacía." }
+              - { name: tipo, label: "Tipo", widget: string, required: false,
+                  hint: "Déjalo vacío. Solo el Domingo Popular lleva «evento»." }
+              - { name: fechaFija, label: "Fecha fija", widget: string, required: false,
+                  hint: "Solo para eventos de una fecha: 2026-09-28" }
+
+          # ---------- Filas sueltas del horario ----------
+          - name: grillaExtra
+            label: "Filas extra del horario"
+            label_singular: "Fila"
+            widget: list
+            required: false
+            collapsed: true
+            summary: "{{fields.dia}} {{fields.hora}} · {{fields.clase}}"
+            hint: "Normalmente vacío: el horario se arma solo con los horarios de cada clase."
+            fields:
+              - { name: dia, label: "Día", widget: select,
+                  options: [Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo] }
+              - { name: hora, label: "Hora", widget: string }
+              - { name: clase, label: "Qué es", widget: string }
+              - { name: profe, label: "Quién", widget: string, required: false }
+              - { name: id, label: "Enlaza con la clase", widget: string, required: false }
+              - { name: tipo, label: "Tipo", widget: select, options: [semanal, mensual] }
+
+          # ---------- Tertulias ----------
+          - name: tertulias
+            label: "Tertulias de cine"
+            label_singular: "Tertulia"
+            widget: list
+            collapsed: true
+            summary: "Tertulia {{fields.numero}} · {{fields.pelicula}}"
+            fields:
+              - { name: numero, label: "Número", widget: string,
+                  hint: "Con dos dígitos: 01, 02, 03…" }
+              - { name: pelicula, label: "Película", widget: string }
+              - { name: subtitulo, label: "De quién es", widget: string, required: false,
+                  hint: "Ejemplo: de Juan Cáceres · Chile" }
+              - { name: fecha, label: "Cuándo fue", widget: string,
+                  hint: "Como se lee: Viernes 26 de junio · 19:30" }
+              - { name: detalle, label: "Bajada corta", widget: text, required: false }
+              - { name: relato, label: "Qué pasó esa noche", widget: text, required: false,
+                  hint: "Para un título de película en cursiva: *Perro Bomba*." }
+              - { name: afiche, label: "Afiche", widget: image,
+                  hint: "Vertical. Es lo primero que se ve." }
+              - { name: piezas, label: "Otras piezas gráficas", widget: list, required: false,
+                  field: { name: pieza, label: "Pieza", widget: image } }
+              - { name: fotos, label: "Fotos de la noche", widget: list, required: false,
+                  field: { name: foto, label: "Foto", widget: image },
+                  hint: "Si no subes ninguna, la página dice que todavía no hay fotos." }
+              - name: estado
+                label: "¿Se muestra?"
+                widget: select
+                default: publicada
+                options:
+                  - { label: "Sí", value: publicada }
+                  - { label: "No mostrarla", value: oculta }
+              - { name: acento, label: "Color del número", widget: color, required: false,
+                  allow_input: true }
+              - name: paleta
+                label: "Colores de la página"
+                widget: object
+                collapsed: true
+                hint: "Los colores del afiche. Si no sabes cuáles poner, deja los que están."
+                fields:
+                  - { name: fondo, label: "Fondo", widget: color, allow_input: true }
+                  - { name: tinta, label: "Texto", widget: color, allow_input: true }
+                  - { name: acento, label: "Acento", widget: color, allow_input: true }
+                  - { name: acento2, label: "Segundo acento", widget: color, allow_input: true }
+              - { name: pagina, label: "Página propia", widget: string, required: false,
+                  hint: "La dirección de la página de esta tertulia. No la cambies. En una tertulia nueva déjala vacía." }
+              - { name: id, label: "Código interno", widget: string,
+                  pattern: ['^[a-z0-9-]+$', 'Solo minúsculas y guiones'],
+                  hint: "Ejemplo: 04-la-nueva-peli" }
+
+          # ---------- Domingo Popular ----------
+          - name: domingoPopular
+            label: "Domingo Popular"
+            widget: object
+            collapsed: true
+            hint: "La jornada mensual: es lo que más se cambia."
+            fields:
+              - { name: fecha, label: "Fecha del próximo", widget: string,
+                  hint: "Como se lee: Domingo 6 de septiembre" }
+              - { name: horario, label: "Horario", widget: string,
+                  hint: "Ejemplo: 10:00 – 18:00" }
+              - { name: bajada, label: "Frase de la portada de la jornada", widget: text, required: false }
+              - { name: descripcion, label: "De qué se trata", widget: text, required: false,
+                  hint: "Para destacar algo: **entre dos asteriscos**." }
+              - { name: afiche, label: "Afiche del mes", widget: image,
+                  hint: "Sale en la portada del sitio y en la página de la jornada." }
+              - { name: piezas, label: "Otras piezas gráficas", widget: list, required: false,
+                  field: { name: pieza, label: "Pieza", widget: image } }
+              - name: bloques
+                label: "La jornada, hora por hora"
+                label_singular: "Bloque"
+                widget: list
+                collapsed: true
+                summary: "{{fields.hora}} {{fields.clase}}"
+                hint: "Para el almuerzo o una pausa, deja la hora vacía."
+                fields:
+                  - { name: hora, label: "Hora", widget: string, required: false }
+                  - { name: clase, label: "Qué", widget: string }
+                  - { name: profe, label: "Con quién", widget: string, required: false }
+              - name: aporteMonetario
+                label: "Aporte en plata"
+                label_singular: "Tramo"
+                widget: list
+                collapsed: true
+                summary: "{{fields.n}} — {{fields.valor}}"
+                fields:
+                  - { name: n, label: "Cuántas clases", widget: string }
+                  - { name: valor, label: "Cuánto", widget: string }
+              - { name: aporteMaterial, label: "Aporte en materiales", widget: list,
+                  field: { name: material, label: "Material", widget: string },
+                  hint: "Una cosa por ítem: lo que le hace falta a la sala." }
+              - { name: equivalencia, label: "Cuánto vale un material", widget: string,
+                  hint: "Ejemplo: 2 materiales equivalen a 1 clase" }
+              - name: paleta
+                label: "Colores de la página"
+                widget: object
+                collapsed: true
+                fields:
+                  - { name: fondo, label: "Fondo", widget: color, allow_input: true }
+                  - { name: tinta, label: "Texto", widget: color, allow_input: true }
+                  - { name: acento, label: "Acento", widget: color, allow_input: true }
+                  - { name: acento2, label: "Segundo acento", widget: color, allow_input: true }
+
+          # ---------- Arriendo ----------
+          - name: arriendo
+            label: "Arriendo de la sala"
+            widget: object
+            collapsed: true
+            fields:
+              - name: precios
+                label: "Precios del arriendo"
+                label_singular: "Precio"
+                widget: list
+                summary: "{{fields.nombre}} — {{fields.valor}}"
+                fields:
+                  - { name: nombre, label: "Qué es", widget: string }
+                  - { name: valor, label: "Cuánto", widget: string }

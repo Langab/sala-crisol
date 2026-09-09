@@ -1,0 +1,676 @@
+{
+  "sala": {
+    "whatsapp": "56991757042",
+    "instagram": "sala.crisol",
+    "direccion": "Av. Salvador 2302, Ñuñoa",
+    "mesActual": "Septiembre"
+  },
+  "talleres": [
+    {
+      "id": "pilates-mat",
+      "nombre": "Pilates Mat",
+      "estado": "activo",
+      "subtitulo": "",
+      "frase": "Fuerza que se construye desde el centro.",
+      "profe": "Esperanza Fredes",
+      "profeIg": "pilates.voy",
+      "profeCorto": "Esperanza",
+      "nivel": "Todos los niveles",
+      "duracion": "",
+      "temporada": "",
+      "color": "salvia",
+      "descripcion": "Pilates de suelo, con el peso del propio cuerpo y sin máquinas. Trabajamos el **centro profundo**, la respiración y el control del movimiento — despacio, con precisión y sin impacto. Es de esas clases en que no sudas a chorros pero al otro día descubres músculos que no sabías que tenías.",
+      "trabajo": [
+        {
+          "titulo": "Centro",
+          "texto": "abdomen profundo, suelo pélvico y espalda trabajando juntos."
+        },
+        {
+          "titulo": "Postura",
+          "texto": "la columna encuentra su lugar y deja de doler al final del día."
+        },
+        {
+          "titulo": "Respiración",
+          "texto": "coordinada con el movimiento, no aguantada."
+        },
+        {
+          "titulo": "Movilidad",
+          "texto": "cadera y columna con más recorrido disponible."
+        },
+        {
+          "titulo": "Progresión",
+          "texto": "cada ejercicio tiene versión más simple y más exigente."
+        }
+      ],
+      "paraMi": [
+        "Sí. Es una clase de suelo, de bajo impacto y con progresiones para cada cuerpo. Sirve tanto si nunca hiciste pilates como si vienes de años de práctica.",
+        "Trae ropa cómoda y calcetines si prefieres. Los mats los pone la sala."
+      ],
+      "bioProfe": "Profesora de pilates y danza contemporánea. Trabaja desde la precisión y la escucha del cuerpo, con una mirada que viene de la danza.",
+      "fotoProfe": "",
+      "portada": "",
+      "portadaEsFoto": false,
+      "fotos": [],
+      "horarios": [
+        {
+          "dia": "Lunes",
+          "hora": "10:00 – 11:00",
+          "cuposTotal": 10,
+          "cuposDisponibles": 6
+        },
+        {
+          "dia": "Viernes",
+          "hora": "10:00 – 11:00",
+          "cuposTotal": 10,
+          "cuposDisponibles": 6
+        },
+        {
+          "dia": "Sábado",
+          "hora": "17:30 – 18:30",
+          "cuposTotal": 10,
+          "cuposDisponibles": 8
+        }
+      ],
+      "precios": [
+        {
+          "nombre": "Clase suelta",
+          "valor": "$10.000",
+          "monto": 10000
+        },
+        {
+          "nombre": "4 clases al mes",
+          "valor": "$35.000",
+          "monto": 35000
+        },
+        {
+          "nombre": "8 clases al mes",
+          "valor": "$45.000",
+          "monto": 45000
+        }
+      ],
+      "pagina": "talleres/pilates-mat.html"
+    },
+    {
+      "id": "danza-contemporanea",
+      "nombre": "Danza Contemporánea",
+      "estado": "activo",
+      "subtitulo": "",
+      "frase": "El cuerpo que piensa mientras se mueve.",
+      "profe": "Esperanza Fredes",
+      "profeIg": "pilates.voy",
+      "profeCorto": "Esperanza",
+      "nivel": "Todos los niveles",
+      "duracion": "1 hora",
+      "temporada": "",
+      "color": "turquesa",
+      "descripcion": "Una hora para soltar el cuerpo y encontrarle lenguaje propio. Partimos con **técnica y calentamiento**, seguimos con secuencias en el espacio y cerramos con improvisación. No hay que saber bailar: hay que tener ganas de moverse y de mirar qué aparece.",
+      "trabajo": [
+        {
+          "titulo": "Espacio",
+          "texto": "orientarte, ocupar y compartir la sala con otras."
+        },
+        {
+          "titulo": "Peso y caídas",
+          "texto": "usar la gravedad a favor en vez de pelearla."
+        },
+        {
+          "titulo": "Improvisación",
+          "texto": "componer en el momento, sin coreografía que memorizar."
+        },
+        {
+          "titulo": "Secuencias",
+          "texto": "frases de movimiento que se arman clase a clase."
+        },
+        {
+          "titulo": "Expresión",
+          "texto": "que el movimiento diga algo, no solo que se ejecute."
+        }
+      ],
+      "paraMi": [
+        "Sí. No se pide experiencia previa ni formación en danza. El grupo es mixto en edades y recorridos, y la clase se adapta a quienes llegan ese día.",
+        "Ropa que te deje mover y pies descalzos o calcetines. Nada más."
+      ],
+      "bioProfe": "Bailarina y profesora. Cruza la danza contemporánea con el trabajo somático y el pilates, buscando que la técnica no se coma la expresión.",
+      "fotoProfe": "",
+      "portada": "",
+      "portadaEsFoto": true,
+      "fotos": [],
+      "horarios": [
+        {
+          "dia": "Sábado",
+          "hora": "10:30 – 11:30",
+          "cuposTotal": 12,
+          "cuposDisponibles": 8
+        }
+      ],
+      "precios": [
+        {
+          "nombre": "Clase suelta",
+          "valor": "$10.000",
+          "monto": 10000
+        },
+        {
+          "nombre": "4 clases al mes",
+          "valor": "$35.000",
+          "monto": 35000
+        },
+        {
+          "nombre": "8 clases al mes",
+          "valor": "$45.000",
+          "monto": 45000
+        }
+      ],
+      "pagina": "talleres/danza-contemporanea.html"
+    },
+    {
+      "id": "movimiento-flexible",
+      "nombre": "Movimiento Flexible",
+      "estado": "activo",
+      "subtitulo": "",
+      "frase": "La flexibilidad no es doblarse: es habitar más cuerpo.",
+      "profe": "Consuelo Ongaro",
+      "profeIg": "_consuelidad_",
+      "profeCorto": "Consuelo",
+      "nivel": "Todos los niveles",
+      "duracion": "",
+      "temporada": "",
+      "color": "rosa",
+      "descripcion": "Un entrenamiento donde la elongación deja de ser ese momento aburrido después de la clase y se convierte en la clase entera: trabajamos **rangos de movimiento activos**, fuerza en posiciones profundas y la consciencia para moverte con libertad — sin forzar, sin apuro y con harta risa de por medio.",
+      "trabajo": [
+        {
+          "titulo": "Consciencia",
+          "texto": "entender qué se estira, qué sostiene y qué suelta tu cuerpo en cada posición."
+        },
+        {
+          "titulo": "Fuerza",
+          "texto": "flexibilidad activa: rangos que controlas, no solo alcanzas."
+        },
+        {
+          "titulo": "Rangos",
+          "texto": "caderas, columna y hombros con más espacio para moverse."
+        },
+        {
+          "titulo": "Equilibrio",
+          "texto": "transiciones fluidas entre posiciones."
+        },
+        {
+          "titulo": "Confianza",
+          "texto": "en tu cuerpo y en el grupo que entrena contigo."
+        }
+      ],
+      "paraMi": [
+        "Sí. No necesitas llegar tocándote la punta de los pies — de hecho, para eso vienes. El grupo es multinivel y las propuestas se adaptan a cada cuerpo: hay quienes llegan del circo o la danza, y quienes no se estiraban desde la clase de educación física.",
+        "Trae ropa cómoda que te deje mover y agua. Los mats y el buen ambiente los pone la sala."
+      ],
+      "bioProfe": "Fundadora de Sala Crisol. Se mueve entre la flexibilidad, el equilibrio de manos y las artes del circo — y celebra cada semestre cumplido junto a su grupo.",
+      "fotoProfe": "img/fundadoras/consuelo-ongaro.jpg",
+      "portada": "",
+      "portadaEsFoto": false,
+      "fotos": [],
+      "horarios": [
+        {
+          "dia": "Lunes",
+          "hora": "19:00 – 21:00",
+          "cuposTotal": 10,
+          "cuposDisponibles": 4
+        },
+        {
+          "dia": "Martes",
+          "hora": "10:00 – 12:00",
+          "cuposTotal": 10,
+          "cuposDisponibles": 7
+        },
+        {
+          "dia": "Sábado",
+          "hora": "12:30 – 14:30",
+          "cuposTotal": 10,
+          "cuposDisponibles": 6
+        }
+      ],
+      "precios": [
+        {
+          "nombre": "Clase suelta",
+          "valor": "$12.000",
+          "monto": 12000
+        },
+        {
+          "nombre": "4 clases al mes",
+          "valor": "$40.000",
+          "monto": 40000
+        },
+        {
+          "nombre": "8 clases al mes",
+          "valor": "$50.000",
+          "monto": 50000
+        }
+      ],
+      "pagina": "talleres/movimiento-flexible.html"
+    },
+    {
+      "id": "equilibrio-de-manos",
+      "nombre": "Equilibrio de Manos",
+      "estado": "activo",
+      "subtitulo": "",
+      "frase": "El mundo se ve mejor al revés.",
+      "profe": "Consuelo Ongaro",
+      "profeIg": "_consuelidad_",
+      "profeCorto": "Consuelo",
+      "nivel": "Inicial · sin experiencia",
+      "duracion": "2 horas",
+      "temporada": "",
+      "color": "mostaza",
+      "descripcion": "Aprender a pararse de manos desde cero, con método y sin miedo. Trabajamos **muñecas, hombros y centro**, la técnica de subida y — sobre todo — cómo caerse bien, que es lo primero que hay que perderle el susto.",
+      "trabajo": [
+        {
+          "titulo": "Muñecas",
+          "texto": "preparación y fuerza para que aguanten el peso sin dolor."
+        },
+        {
+          "titulo": "Hombros",
+          "texto": "movilidad y estabilidad, la base de toda inversión."
+        },
+        {
+          "titulo": "Alineación",
+          "texto": "encontrar la línea donde el equilibrio se sostiene solo."
+        },
+        {
+          "titulo": "Caídas",
+          "texto": "salir sin miedo y sin golpearte."
+        },
+        {
+          "titulo": "Paciencia",
+          "texto": "es un proceso largo y se disfruta el camino."
+        }
+      ],
+      "paraMi": [
+        "Sí, sobre todo si nunca lo has intentado. La clase es de nivel inicial y se arma para gente sin experiencia en inversiones. Vamos con progresiones contra la pared.",
+        "Ropa ajustada (para que la polera no se te venga a la cara) y muñecas sin accesorios."
+      ],
+      "bioProfe": "Fundadora de Sala Crisol. Se mueve entre la flexibilidad, el equilibrio de manos y las artes del circo — y celebra cada semestre cumplido junto a su grupo.",
+      "fotoProfe": "img/fundadoras/consuelo-ongaro.jpg",
+      "portada": "",
+      "portadaEsFoto": false,
+      "fotos": [],
+      "horarios": [
+        {
+          "dia": "Miércoles",
+          "hora": "10:00 – 12:00",
+          "cuposTotal": 8,
+          "cuposDisponibles": 3
+        },
+        {
+          "dia": "Sábado",
+          "hora": "15:30 – 17:30",
+          "cuposTotal": 8,
+          "cuposDisponibles": 6
+        }
+      ],
+      "precios": [
+        {
+          "nombre": "Clase suelta",
+          "valor": "$12.000",
+          "monto": 12000
+        },
+        {
+          "nombre": "4 clases al mes",
+          "valor": "$40.000",
+          "monto": 40000
+        },
+        {
+          "nombre": "8 clases al mes",
+          "valor": "$50.000",
+          "monto": 50000
+        }
+      ],
+      "pagina": "talleres/equilibrio-de-manos.html"
+    },
+    {
+      "id": "danza-filosofia",
+      "nombre": "Danza y Filosofía",
+      "estado": "activo",
+      "subtitulo": "Experiencia sensual (Sensuallstyle)",
+      "frase": "Un espacio para gozar, disfrutar y ser.",
+      "profe": "Compañía Amor Expresamos",
+      "profeIg": "",
+      "profeCorto": "Amor Expresamos",
+      "nivel": "Todos los niveles",
+      "duracion": "1 hora 15",
+      "temporada": "",
+      "color": "lila",
+      "descripcion": "Unión de **danza, técnica y Filosofía del Ser**: sensual y habitarse desde el placer de conocerte, tanto a través del movimiento del cuerpo como de la reflexión interior.",
+      "trabajo": [
+        {
+          "titulo": "Registro",
+          "texto": "reconocer qué siente el cuerpo antes de nombrarlo."
+        },
+        {
+          "titulo": "Vocabulario",
+          "texto": "movimiento propio en vez de pasos copiados."
+        },
+        {
+          "titulo": "Confianza",
+          "texto": "soltar la vergüenza en un espacio que la cuida."
+        },
+        {
+          "titulo": "Conversación",
+          "texto": "la reflexión es parte de la clase, no un adorno."
+        },
+        {
+          "titulo": "Comunidad",
+          "texto": "un grupo que sostiene lo que aparece."
+        }
+      ],
+      "paraMi": [
+        "Sí. No se necesita experiencia en danza. Es un espacio de exploración, no de rendimiento, y está pensado para quienes quieren reencontrarse con su cuerpo sin la presión de la técnica.",
+        "Ropa cómoda con la que te sientas bien. Se trabaja descalza."
+      ],
+      "bioProfe": "Compañía que trabaja el cruce entre danza, filosofía y experiencia sensible. Llegan a la sala con una propuesta que mezcla el movimiento con la conversación.",
+      "fotoProfe": "",
+      "portada": "",
+      "portadaEsFoto": false,
+      "fotos": [],
+      "horarios": [
+        {
+          "dia": "Jueves",
+          "hora": "18:45 – 20:00",
+          "cuposTotal": 12,
+          "cuposDisponibles": 9
+        }
+      ],
+      "precios": [
+        {
+          "nombre": "Clase suelta",
+          "valor": "$8.000",
+          "monto": 8000
+        },
+        {
+          "nombre": "4 clases al mes",
+          "valor": "$28.000",
+          "monto": 28000
+        }
+      ],
+      "pagina": "talleres/danza-filosofia.html"
+    },
+    {
+      "id": "bellydance-fusion",
+      "nombre": "Bellydance Fusión",
+      "estado": "activo",
+      "subtitulo": "",
+      "frase": "Caderas que cuentan historias antiguas.",
+      "profe": "Kathia Luminus",
+      "profeIg": "",
+      "profeCorto": "Kathia",
+      "nivel": "Multinivel · con experiencia previa",
+      "duracion": "1 hora y 15 minutos",
+      "temporada": "Septiembre a diciembre",
+      "color": "orquidea",
+      "descripcion": "Danza del vientre cruzada con otros lenguajes contemporáneos. Trabajamos **técnica y vocabulario** de la danza del vientre fusión, con raíz en la danza árabe y forma libre para lo que cada una quiera traerle encima. El ciclo corre de **septiembre a diciembre** y termina, si quieres, en un proyecto coreográfico.",
+      "trabajo": [
+        {
+          "titulo": "Disociación",
+          "texto": "mover una parte del cuerpo sin arrastrar el resto."
+        },
+        {
+          "titulo": "Cadera y torso",
+          "texto": "la técnica base, capa por capa."
+        },
+        {
+          "titulo": "Musicalidad",
+          "texto": "escuchar el ritmo y responderle con el cuerpo."
+        },
+        {
+          "titulo": "Brazos y manos",
+          "texto": "el detalle que termina de contar la historia."
+        },
+        {
+          "titulo": "Presencia",
+          "texto": "ocupar el espacio con seguridad."
+        },
+        {
+          "titulo": "Proyecto coreográfico",
+          "texto": "hacia el final del ciclo, con presentación si quieres. Es opcional."
+        }
+      ],
+      "paraMi": [
+        "Esta clase es **multinivel, pero no es de iniciación**: necesitas experiencia previa en algún arte del movimiento — danza, circo, yoga, teatro físico, lo que sea. No tiene que ser danza árabe, pero sí tiene que haber un cuerpo con oficio.",
+        "Si estás empezando de cero, escríbenos igual: te contamos por dónde entrar primero.",
+        "Ropa que deje ver la cadera (calza o pantalón ajustado) para poder corregir. Pies descalzos."
+      ],
+      "bioProfe": "Bailarina y profesora de danza árabe. Trabaja la fusión entre el bellydance tradicional y lenguajes contemporáneos.",
+      "fotoProfe": "",
+      "portada": "",
+      "portadaEsFoto": false,
+      "fotos": [],
+      "horarios": [
+        {
+          "dia": "Viernes",
+          "hora": "19:00 – 20:15",
+          "cuposTotal": 12,
+          "cuposDisponibles": 9
+        }
+      ],
+      "precios": [
+        {
+          "nombre": "Clase suelta",
+          "valor": "$10.000",
+          "monto": 10000
+        },
+        {
+          "nombre": "4 clases al mes",
+          "valor": "$35.000",
+          "monto": 35000
+        }
+      ],
+      "pagina": "talleres/bellydance-fusion.html"
+    },
+    {
+      "id": "domingo-popular",
+      "nombre": "Domingo Popular",
+      "estado": "activo",
+      "subtitulo": "",
+      "frase": "Una jornada completa: entrenar, cocinar y quedarse.",
+      "profe": "Sala Crisol",
+      "profeIg": "sala.crisol",
+      "profeCorto": "Sala Crisol",
+      "nivel": "Abierto a todas y todos",
+      "duracion": "",
+      "temporada": "",
+      "color": "terracota",
+      "tipo": "evento",
+      "pagina": "index.html#comunidad",
+      "fechaFija": "2026-09-28",
+      "descripcion": "",
+      "trabajo": [],
+      "paraMi": [],
+      "bioProfe": "",
+      "fotoProfe": "",
+      "portada": "",
+      "portadaEsFoto": false,
+      "fotos": [],
+      "horarios": [
+        {
+          "dia": "Domingo",
+          "hora": "11:00 – 18:00",
+          "cuposTotal": 30,
+          "cuposDisponibles": 30
+        }
+      ],
+      "precios": [
+        {
+          "nombre": "Aporte voluntario",
+          "valor": "Desde $3.000",
+          "monto": 3000
+        }
+      ]
+    }
+  ],
+  "grillaExtra": [],
+  "tertulias": [
+    {
+      "pagina": "tertulias/this-is-ballroom.html",
+      "id": "01-this-is-ballroom",
+      "numero": "01",
+      "estado": "publicada",
+      "pelicula": "This is Ballroom",
+      "subtitulo": "(Salão de Baile)",
+      "fecha": "Viernes 1 de mayo · 19:00",
+      "detalle": "Apertura de ciclo. Proyección + tertulia con artistas invitadxs: música y danza en vivo, cruce entre disciplinas.",
+      "relato": "Con esta abrimos el ciclo. Proyectamos *This is Ballroom*, documental sobre la escena ballroom, y después la sala se transformó: artistas invitadxs cruzaron música y danza en vivo, sin separar el público del escenario. Cupos limitados, entrada general $5.000.",
+      "afiche": "img/tertulias/01-this-is-ballroom/afiche.jpg",
+      "piezas": [
+        "img/tertulias/01-this-is-ballroom/promo-artistas-invitadxs.jpg"
+      ],
+      "acento": "#E39AA6",
+      "paleta": {
+        "fondo": "#1A0B2E",
+        "tinta": "#F7E9FF",
+        "acento": "#E845C8",
+        "acento2": "#7B3FF2"
+      },
+      "fotos": [
+        "img/tertulias/01-this-is-ballroom/foto-01-intervencion.jpg"
+      ]
+    },
+    {
+      "pagina": "tertulias/perro-bomba.html",
+      "id": "02-perro-bomba",
+      "numero": "02",
+      "estado": "publicada",
+      "pelicula": "Perro Bomba",
+      "subtitulo": "de Juan Cáceres · Chile",
+      "fecha": "Viernes 29 de mayo · 20:00",
+      "detalle": "Proyección + tertulia en un espacio más íntimo: música, danza y expresiones artísticas en atmósfera de escucha.",
+      "relato": "Segundo ciclo, con *Perro Bomba* de Juan Cáceres — cine chileno sobre migración y pertenencia. Fue la más íntima de las tres: menos gente, más conversación, y el cierre con música en vivo en penumbra.",
+      "afiche": "img/tertulias/02-perro-bomba/afiche.jpg",
+      "piezas": [
+        "img/tertulias/02-perro-bomba/promo-artistas-invitadxs.jpg"
+      ],
+      "acento": "#8FC6C9",
+      "paleta": {
+        "fondo": "#0E2340",
+        "tinta": "#E8F6FF",
+        "acento": "#28C8E0",
+        "acento2": "#F2C14E"
+      },
+      "fotos": [
+        "img/tertulias/02-perro-bomba/foto-01-musica-en-vivo.jpg"
+      ]
+    },
+    {
+      "pagina": "tertulias/tetoterapia.html",
+      "id": "03-tetoterapia",
+      "numero": "03",
+      "estado": "publicada",
+      "pelicula": "Tetoterapia: El Musical",
+      "subtitulo": "de Elefante Gonorrea y sus amigxs",
+      "fecha": "Viernes 26 de junio · 19:30",
+      "detalle": "Tercer ciclo. Proyección + tertulia con intervención artística. Espacio íntimo, cupos limitados.",
+      "relato": "Cerramos el ciclo con *Tetoterapia: El Musical*, de Elefante Gonorrea y sus amigxs, con Irina la Loca, Hija de Perra y Maggie Lay. Hubo concurso de entradas por Instagram y la sala quedó chica.",
+      "afiche": "img/tertulias/03-tetoterapia/afiche.jpg",
+      "piezas": [
+        "img/tertulias/03-tetoterapia/promo-concurso.jpg"
+      ],
+      "acento": "#E8C583",
+      "paleta": {
+        "fondo": "#2B0F26",
+        "tinta": "#FFF0FA",
+        "acento": "#FF6FC8",
+        "acento2": "#F5E14C"
+      },
+      "fotos": []
+    }
+  ],
+  "domingoPopular": {
+    "fecha": "Domingo 6 de septiembre",
+    "horario": "10:00 – 18:00",
+    "bajada": "Los espacios culturales se construyen entre todas y todos. Una vez al mes abrimos las puertas para una jornada completa.",
+    "descripcion": "Una vez al mes abrimos la sala el domingo entero. Hay clases de las mismas disciplinas que dictamos toda la semana, almuerzo comunitario y tiempo para quedarse. Participas aportando el valor de una clase **o trayendo materiales** para la sala: café, plantas, papelería, cosas de limpieza. Puedes venir a una sola clase o quedarte la jornada completa.",
+    "afiche": "img/domingos/2026-09-06/afiche.jpg",
+    "piezas": [
+      "img/domingos/2026-09-06/aportes.jpg",
+      "img/domingos/2026-09-06/horarios.jpg"
+    ],
+    "bloques": [
+      {
+        "clase": "Pilates Matwork",
+        "profe": "Esperanza Fredes",
+        "hora": "10:30 – 11:30"
+      },
+      {
+        "clase": "Equilibrio Flexible",
+        "profe": "Consuelo Ongaro",
+        "hora": "11:45 – 13:45"
+      },
+      {
+        "clase": "Almuerzo comunitario",
+        "profe": "",
+        "hora": ""
+      },
+      {
+        "clase": "Yoga",
+        "profe": "Niebla",
+        "hora": "15:30 – 16:30"
+      },
+      {
+        "clase": "Danza Contemporánea",
+        "profe": "Esperanza Fredes",
+        "hora": "16:45 – 18:00"
+      }
+    ],
+    "aporteMonetario": [
+      {
+        "n": "1 clase",
+        "valor": "$5.000"
+      },
+      {
+        "n": "2 clases",
+        "valor": "$8.000"
+      },
+      {
+        "n": "3 clases",
+        "valor": "$10.000"
+      },
+      {
+        "n": "4 clases",
+        "valor": "$12.000"
+      }
+    ],
+    "aporteMaterial": [
+      "Papel higiénico",
+      "Jabón líquido",
+      "Esponjas o paños de limpieza",
+      "Limpiapisos o limpiador multiuso",
+      "Bolsas de basura",
+      "Toalla de papel, diarios, limpiavidrios",
+      "Café, té o azúcar para compartir",
+      "Velas e inciensos",
+      "Plantas o maceteros",
+      "Cojines y mantas",
+      "Papelería: papel, plumones, masking tape, gaffer",
+      "Alargadores, zapatillas, enchufes triples, luces led"
+    ],
+    "equivalencia": "2 materiales equivalen a 1 clase",
+    "paleta": {
+      "fondo": "#5B2A1E",
+      "tinta": "#FFF1E6",
+      "acento": "#F79A5B",
+      "acento2": "#F5C6B0"
+    }
+  },
+  "arriendo": {
+    "precios": [
+      {
+        "nombre": "1 hora",
+        "valor": "$12.000"
+      },
+      {
+        "nombre": "1 hora y media",
+        "valor": "$16.000"
+      },
+      {
+        "nombre": "Hora para clases regulares del semestre",
+        "valor": "$10.000"
+      }
+    ]
+  }
+}

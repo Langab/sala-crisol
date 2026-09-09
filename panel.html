@@ -1111,8 +1111,12 @@ var CATALOGO_RESPALDO = [
       { dia:"Viernes", hora:"19:00 – 20:15" } ] }
 ];
 
-/* Si config.js cargó, esa es la verdad. Si no, el respaldo de arriba. */
-var CATALOGO = (function () {
+/* El catálogo sale de datos/contenido.json. Como ese archivo se carga
+   por red, hasta que llegue se usa el respaldo de arriba y después se
+   vuelve a calcular (ver iniciar()). */
+var CATALOGO = CATALOGO_RESPALDO;
+
+function calcularCatalogo() {
   try {
     if (typeof CRISOL === "undefined" || !CRISOL || !CRISOL.talleres) return CATALOGO_RESPALDO;
     var derivado = CRISOL.talleres
@@ -1132,7 +1136,7 @@ var CATALOGO = (function () {
   } catch (e) {
     return CATALOGO_RESPALDO;
   }
-})();
+}
 
 var PRECIOS = { suelta:10000, mensual:35000 };
 
@@ -2795,8 +2799,19 @@ function iniciar(){
   if(String(estado.ajustes.url||"").trim()) sincronizar({});
 }
 
-if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciar);
-else iniciar();
+/* Espera a que datos/contenido.json esté cargado para que las clases,
+   los precios y los cupos que muestra el panel sean los de verdad. */
+function arrancarPanel(){
+  CATALOGO = calcularCatalogo();
+  iniciar();
+}
+var listo = (typeof CONTENIDO_LISTO !== "undefined")
+  ? CONTENIDO_LISTO : Promise.resolve();
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", function(){ listo.then(arrancarPanel); });
+} else {
+  listo.then(arrancarPanel);
+}
 
 })();
 </script>

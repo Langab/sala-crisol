@@ -3,6 +3,12 @@
 User-agent: *
 Allow: /
 
-# La página de administración no se indexa: no tiene nada público
-# y no queremos que aparezca en Google.
+# Páginas de administración: no tienen nada público y no queremos
+# que aparezcan en Google.
 Disallow: /panel.html
+Disallow: /admin/
+
+# Páginas genéricas: cada clase y cada tertulia tiene su propia
+# dirección, y esa es la que debe indexarse.
+Disallow: /talleres/clase.html
+Disallow: /tertulias/tertulia.html

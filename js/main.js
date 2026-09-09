@@ -1,13 +1,89 @@
 /* ============================================================
    SALA CRISOL — comportamiento del sitio
-   (no necesitas editar este archivo; los datos van en config.js)
+   (no necesitas editar este archivo; el contenido se edita desde
+    el panel y vive en datos/contenido.json)
    ============================================================ */
 
+/* El sitio se pinta recién cuando el contenido terminó de cargar. */
 document.addEventListener("DOMContentLoaded", function () {
+  CONTENIDO_LISTO.then(pintarSitio);
+});
+
+function pintarSitio() {
 
   /* ---------- ruta base (las páginas de talleres viven en /talleres) ---------- */
   var esSubpagina = document.body.hasAttribute("data-subpagina");
   var base = esSubpagina ? "../" : "";
+
+  /* horario semanal armado a partir de los horarios de cada clase */
+  var GRILLA = construirGrilla();
+
+  /* ============================================================
+     TEXTO DEL PANEL → HTML
+     ------------------------------------------------------------
+     Lo que se escribe en el panel es texto normal, no HTML: así
+     nadie puede romper la página pegando algo de Word. Se permiten
+     dos marcas, las mismas de WhatsApp:
+        *cursiva*      **negrita**
+     ============================================================ */
+  function texto(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  }
+
+  /* ============================================================
+     IMÁGENES
+     ------------------------------------------------------------
+     Manda lo que se subió por el panel. Si ahí no hay nada, se usa
+     la carpeta de siempre (img/talleres/<id>/), así las fotos que
+     publica el script desde Recursos_graficos siguen funcionando.
+     ============================================================ */
+  function limpiarRuta(r) { return String(r || "").replace(/^\/+/, ""); }
+
+  function fotosDelPanel(t) {
+    return (t.fotos || []).filter(Boolean).map(limpiarRuta);
+  }
+
+  function primeraFoto(t) {
+    var f = fotosDelPanel(t);
+    return f.length ? f[0] : "img/talleres/" + t.id + "/fotos/01.jpg";
+  }
+
+  function portadaTaller(t) {
+    return t.portada ? limpiarRuta(t.portada) : "img/talleres/" + t.id + "/flyer.jpg";
+  }
+
+  /* ------------------------------------------------------------
+     Cadena de respaldo de una imagen: si la primera no existe se
+     prueba la siguiente, y si no queda ninguna la imagen se saca.
+     Va enganchada desde acá y no con onerror="" en el HTML, porque
+     el CSP del sitio bloquea el código escrito dentro de un atributo.
+     ------------------------------------------------------------ */
+  function respaldoImagen(img, alternativas, alRendirse) {
+    var i = 0;
+    img.addEventListener("error", function () {
+      if (i < alternativas.length) { img.src = alternativas[i++]; return; }
+      if (alRendirse) alRendirse(img); else img.remove();
+    });
+  }
+
+  /* Relojito que marca la hora de la clase: 17:30 → 🕠 */
+  function reloj(hora) {
+    var m = String(hora || "").match(/(\d{1,2}):(\d{2})/);
+    if (!m) return "🕐";
+    var h = parseInt(m[1], 10) % 12 || 12;
+    var media = parseInt(m[2], 10) >= 30;
+    return String.fromCodePoint((media ? 0x1F55C : 0x1F550) + h - 1);
+  }
+
+  /* Qué clase muestra esta página: del <body> en las páginas propias,
+     y del ?id= de la dirección en la página genérica. */
+  var idTaller = document.body.getAttribute("data-taller-actual") ||
+                 new URLSearchParams(location.search).get("id") || "";
+  var taller = idTaller ? buscarTaller(idTaller) : null;
 
   /* ---------- menú móvil ---------- */
   var burger = document.querySelector(".nav__burger");
@@ -112,6 +188,18 @@ document.addEventListener("DOMContentLoaded", function () {
       "<defs>" + defs + "</defs>" + hilo + flags + "</svg>";
   }
 
+  /* Los colores de los banderines cambian de una clase a otra: la semilla
+     es el lugar que ocupa en la lista, así una clase nueva del panel también
+     estrena guirnalda sin que nadie toque el HTML. */
+  if (idTaller) {
+    var puesto = (CRISOL.talleres || []).findIndex(function (t) { return t.id === idTaller; });
+    if (puesto >= 0) {
+      document.querySelectorAll("[data-guirnalda-semilla]").forEach(function (g) {
+        g.setAttribute("data-guirnalda-semilla", String(puesto));
+      });
+    }
+  }
+
   var guirnaldas = [].slice.call(document.querySelectorAll("[data-guirnalda]"));
   if (guirnaldas.length) {
     guirnaldas.forEach(dibujarGuirnalda);
@@ -129,8 +217,8 @@ document.addEventListener("DOMContentLoaded", function () {
      renuevan solas cuando cambian las de cada clase.
      ============================================================ */
   var tendedero = document.querySelector("[data-tendedero]");
-  if (tendedero && typeof CRISOL !== "undefined") {
-    var conFoto = CRISOL.talleres.filter(function (t) { return t.tipo !== "evento"; });
+  if (tendedero) {
+    var conFoto = talleresVisibles().filter(function (t) { return t.tipo !== "evento"; });
     // dos hilos de verdad: cada polaroid tiene que colgar de una cuerda
     // que se vea, si no las de abajo quedan flotando de la nada
     var caidas = [14, 46, 6, 34, 10];
@@ -145,13 +233,13 @@ document.addEventListener("DOMContentLoaded", function () {
       html.push('<span class="tendedero__hilo" aria-hidden="true"></span>');
       fila.forEach(function (t) {
         html.push(
-          '<a class="polaroid-col" href="' + base + t.pagina + '" ' +
+          '<a class="polaroid-col" href="' + base + paginaTaller(t) + '" ' +
           'style="--caida:' + caidas[k % caidas.length] + 'px; --giro:' + giros[k % giros.length] + 'deg; --demora:' + (k * 0.7) + 's">' +
             '<span class="polaroid-col__pinza" aria-hidden="true"></span>' +
             '<span class="polaroid-col__marco">' +
-              '<img src="' + base + "img/talleres/" + t.id + '/fotos/01.jpg" alt="" loading="lazy" onerror="this.closest(\'.polaroid-col\').remove()">' +
+              '<img src="' + base + primeraFoto(t) + '" alt="" loading="lazy">' +
             "</span>" +
-            '<span class="polaroid-col__pie">' + t.nombre + "</span>" +
+            '<span class="polaroid-col__pie">' + texto(t.nombre) + "</span>" +
           "</a>"
         );
         k++;
@@ -159,6 +247,10 @@ document.addEventListener("DOMContentLoaded", function () {
       html.push("</div>");
     });
     tendedero.innerHTML = html.join("");
+    // si una clase todavía no tiene foto, su polaroid se descuelga sola
+    tendedero.querySelectorAll("img").forEach(function (im) {
+      respaldoImagen(im, [], function (x) { x.closest(".polaroid-col").remove(); });
+    });
   }
 
   /* ---------- chispas del héroe ---------- */
@@ -188,7 +280,13 @@ document.addEventListener("DOMContentLoaded", function () {
      la primera que no existe. Por eso la numeración no puede tener
      huecos: si falta la 02, la 03 no se ve.
      ============================================================ */
-  function fotosDeTaller(idTaller, tope, listo) {
+  function fotosDeTaller(taller, tope, listo) {
+    var delPanel = fotosDelPanel(taller);
+    if (delPanel.length) {
+      listo(delPanel.map(function (r) { return base + r; }));
+      return;
+    }
+    var idTaller = taller.id;
     var rutas = [];
     var max = tope || 12;
     (function probar(n) {
@@ -203,20 +301,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- cinta / marquesina de talleres ---------- */
   var pista = document.querySelector("[data-cinta]");
-  if (pista && typeof CRISOL !== "undefined") {
-    var activos = CRISOL.talleres.filter(function (t) { return t.estado === "activo" && t.tipo !== "evento"; });
+  if (pista) {
+    var activos = talleresVisibles().filter(function (t) { return t.estado === "activo" && t.tipo !== "evento"; });
     var itemsHtml = activos.map(function (t) {
-      return '<a class="cinta__item" href="' + base + t.pagina + '">' + t.nombre + "</a>";
+      return '<a class="cinta__item" href="' + base + paginaTaller(t) + '">' + texto(t.nombre) + "</a>";
     }).join("");
-    itemsHtml = '<span class="cinta__item">Clases de ' + CRISOL.mesActual.toLowerCase() + "</span>" + itemsHtml;
+    itemsHtml = '<span class="cinta__item">Clases de ' + texto(String(CRISOL.sala.mesActual || "").toLowerCase()) + "</span>" + itemsHtml;
     // se duplica para el loop infinito
     pista.innerHTML = itemsHtml + itemsHtml;
   }
 
   /* ---------- tarjetas de talleres en la portada ---------- */
   var rejilla = document.querySelector("[data-rejilla-talleres]");
-  if (rejilla && typeof CRISOL !== "undefined") {
-    rejilla.innerHTML = CRISOL.talleres.filter(function (t) { return t.tipo !== "evento"; }).map(function (t, idx) {
+  if (rejilla) {
+    rejilla.innerHTML = talleresVisibles().filter(function (t) { return t.tipo !== "evento"; }).map(function (t, idx) {
       var diasResumen = t.horarios.map(function (h) { return h.dia; })
         .filter(function (v, i, arr) { return arr.indexOf(v) === i; })
         .join(" · ");
@@ -245,41 +343,43 @@ document.addEventListener("DOMContentLoaded", function () {
         "</svg>" +
         '<span style="position:relative">' + iniciales + "</span></div>";
 
-      var flyer = base + "img/talleres/" + t.id + "/flyer.jpg";
-      var foto1 = base + "img/talleres/" + t.id + "/fotos/01.jpg";
       // si falla el flyer probamos la foto; si falla la foto, se quita y queda el respaldo
-      var alFallar = foto1
-        ? "this.onerror=function(){this.remove()};this.src='" + foto1 + "';" +
-          "this.closest('.tarjeta-taller__media').classList.remove('es-flyer');"
-        : "this.remove()";
       var media = respaldo +
-        '<img class="portada-img" src="' + flyer + '" alt="Flyer de ' + t.nombre + '" loading="lazy" ' +
-        'onerror="this.onerror=null;' + alFallar + '">';
+        '<img class="portada-img" src="' + base + portadaTaller(t) + '" alt="Flyer de ' +
+        texto(t.nombre) + '" loading="lazy" data-respaldo="' + escHtml(base + primeraFoto(t)) + '">';
 
       return (
-        '<a class="tarjeta-taller revelar revelar--retraso-' + (idx % 3 + 1) + '" href="' + base + t.pagina + '">' +
+        '<a class="tarjeta-taller revelar revelar--retraso-' + (idx % 3 + 1) + '" href="' + base + paginaTaller(t) + '">' +
         '<div class="tarjeta-taller__media' + (t.portadaEsFoto ? "" : " es-flyer") + '">' + media +
         '<span class="tarjeta-taller__dia">' +
         (esPronto ? "Nueva fecha pronto" : diasResumen) + "</span></div>" +
         '<div class="tarjeta-taller__cuerpo">' +
-        '<h3 class="tarjeta-taller__nombre">' + t.nombre + "</h3>" +
-        '<p class="tarjeta-taller__frase">' + t.frase + "</p>" +
+        '<h3 class="tarjeta-taller__nombre">' + texto(t.nombre) + "</h3>" +
+        '<p class="tarjeta-taller__frase">' + texto(t.frase) + "</p>" +
         '<div class="tarjeta-taller__meta">' +
-        '<span class="mini-chip">' + t.profe + "</span>" +
-        '<span class="mini-chip mini-chip--fuego">' + t.nivel + "</span>" +
+        '<span class="mini-chip">' + texto(t.profe) + "</span>" +
+        '<span class="mini-chip mini-chip--fuego">' + texto(t.nivel) + "</span>" +
         "</div>" +
         '<span class="tarjeta-taller__accion">Ver clase e inscribirme <span class="flecha">→</span></span>' +
         "</div></a>"
       );
     }).join("");
+
+    rejilla.querySelectorAll(".portada-img").forEach(function (im) {
+      respaldoImagen(im, [im.getAttribute("data-respaldo")], null);
+      im.addEventListener("error", function () {
+        var marco = im.closest(".tarjeta-taller__media");
+        if (marco) marco.classList.remove("es-flyer");   // una foto se recorta distinto que un flyer
+      });
+    });
   }
 
   /* color del banderín que encabeza cada día: el de su primera clase */
   function colorDia(dia) {
-    var bloques = (typeof CRISOL !== "undefined" && CRISOL.grilla[dia]) || [];
+    var bloques = GRILLA[dia] || [];
     for (var i = 0; i < bloques.length; i++) {
       if (!bloques[i].id) continue;
-      var t = CRISOL.talleres.filter(function (x) { return x.id === bloques[i].id; })[0];
+      var t = buscarTaller(bloques[i].id);
       if (t && t.color) return t.color;
     }
     return "mostaza";
@@ -287,19 +387,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- tertulias: cada afiche lleva a su página ---------- */
   var rejTert = document.querySelector("[data-tertulias]");
-  if (rejTert && typeof CRISOL !== "undefined") {
-    var html = CRISOL.tertulias.map(function (t, i) {
+  if (rejTert) {
+    var tertuliasVisibles = (CRISOL.tertulias || []).filter(function (t) { return t.estado !== "oculta"; });
+    var html = tertuliasVisibles.map(function (t, i) {
       return (
-        '<a class="afiche revelar revelar--retraso-' + (i % 3 + 1) + '" href="' + base + t.pagina + '" ' +
-        'style="--acento-afiche:' + t.acento + '">' +
+        '<a class="afiche revelar revelar--retraso-' + (i % 3 + 1) + '" href="' + base + paginaTertulia(t) + '" ' +
+        'style="--acento-afiche:' + texto(t.acento) + '">' +
           '<div class="afiche__marco">' +
-            '<img src="' + base + t.img + '" alt="Afiche de la tertulia ' + t.numero + ': ' + t.pelicula + '" loading="lazy">' +
-            '<span class="afiche__numero">Tertulia ' + t.numero + "</span>" +
+            '<img src="' + base + limpiarRuta(t.afiche) + '" alt="Afiche de la tertulia ' + texto(t.numero) + ': ' + texto(t.pelicula) + '" loading="lazy">' +
+            '<span class="afiche__numero">Tertulia ' + texto(t.numero) + "</span>" +
           "</div>" +
           '<div class="afiche__cuerpo">' +
-            '<h3 class="afiche__pelicula">' + t.pelicula + "</h3>" +
-            '<p class="afiche__detalle">' + t.detalle + "</p>" +
-            '<p class="afiche__fecha">' + t.fecha + "</p>" +
+            '<h3 class="afiche__pelicula">' + texto(t.pelicula) + "</h3>" +
+            '<p class="afiche__detalle">' + texto(t.detalle) + "</p>" +
+            '<p class="afiche__fecha">' + texto(t.fecha) + "</p>" +
             '<span class="afiche__ver">Ver cómo fue <span class="flecha">→</span></span>' +
           "</div>" +
         "</a>"
@@ -307,7 +408,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }).join("");
     html +=
       '<article class="afiche afiche--tba revelar revelar--retraso-3">' +
-        '<div class="afiche__marco"><span class="afiche__interrogante">0' + (CRISOL.tertulias.length + 1) + "</span>" +
+        '<div class="afiche__marco"><span class="afiche__interrogante">' +
+        String(tertuliasVisibles.length + 1).padStart(2, "0") + "</span>" +
         '<span class="afiche__numero">Próximo ciclo</span></div>' +
         '<div class="afiche__cuerpo">' +
           "<h3 class=\"afiche__pelicula\">¿Qué veremos?</h3>" +
@@ -320,10 +422,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- grilla semanal de horarios ---------- */
   var tabla = document.querySelector("[data-grilla]");
-  if (tabla && typeof CRISOL !== "undefined") {
-    var dias = Object.keys(CRISOL.grilla);
+  if (tabla) {
+    var dias = Object.keys(GRILLA);
     tabla.innerHTML = dias.map(function (dia) {
-      var bloques = CRISOL.grilla[dia];
+      var bloques = GRILLA[dia];
       var htmlBloques;
       if (!bloques || bloques.length === 0) {
         htmlBloques = '<p class="horario__vacio">Sala disponible para arriendo</p>';
@@ -331,12 +433,12 @@ document.addEventListener("DOMContentLoaded", function () {
         htmlBloques = bloques.map(function (b) {
           var clase = "horario__bloque" + (b.tipo === "mensual" ? " horario__bloque--mensual" : "");
           var interior =
-            '<span class="horario__hora">' + b.hora + "</span>" +
-            '<span class="horario__clase">' + b.clase + "</span>" +
-            '<span class="horario__profe">' + b.profe + "</span>";
+            '<span class="horario__hora">' + texto(b.hora) + "</span>" +
+            '<span class="horario__clase">' + texto(b.clase) + "</span>" +
+            '<span class="horario__profe">' + texto(b.profe) + "</span>";
           if (b.id) {
-            var taller = CRISOL.talleres.find(function (t) { return t.id === b.id; });
-            var href = taller ? base + taller.pagina : "#talleres";
+            var taller = buscarTaller(b.id);
+            var href = taller ? base + paginaTaller(taller) : "#talleres";
             return '<a class="' + clase + '" href="' + href + '">' + interior + "</a>";
           }
           return '<span class="' + clase + '" style="cursor:default">' + interior + "</span>";
@@ -351,20 +453,47 @@ document.addEventListener("DOMContentLoaded", function () {
     }).join("");
   }
 
-  /* ---------- enlaces de WhatsApp genéricos ---------- */
-  if (typeof CRISOL !== "undefined") {
-    document.querySelectorAll("[data-ws]").forEach(function (el) {
-      var motivo = el.getAttribute("data-ws") || "Hola! Vengo de la página web de Sala Crisol y quiero más información 🔥";
-      el.href = enlaceWhatsApp(motivo);
-      el.target = "_blank";
-      el.rel = "noopener";
-    });
-    document.querySelectorAll("[data-ig]").forEach(function (el) {
-      el.href = enlaceInstagram();
-      el.target = "_blank";
-      el.rel = "noopener";
+  /* ---------- menú de clases: sale del panel, no se escribe a mano ---------- */
+  document.querySelectorAll("[data-nav-clases]").forEach(function (menu) {
+    var aqui = document.body.getAttribute("data-taller-actual") || "";
+    menu.innerHTML = talleresVisibles()
+      .filter(function (t) { return t.tipo !== "evento"; })
+      .map(function (t) {
+        var dias = (t.horarios || []).map(function (h) { return h.dia; })
+          .filter(function (v, i, a) { return a.indexOf(v) === i; }).join(" · ");
+        var pie = t.id === aqui ? "Estás aquí ✿" : dias + " · " + texto(t.profeCorto || t.profe);
+        return '<a href="' + base + paginaTaller(t) + '">' + texto(t.nombre) +
+               " <small>" + pie + "</small></a>";
+      }).join("");
+  });
+
+  /* ---------- dirección de la sala (va en el pie de cada página) ---------- */
+  if (CRISOL.sala.direccion) {
+    document.querySelectorAll("[data-direccion]").forEach(function (el) {
+      el.innerHTML = texto(CRISOL.sala.direccion);
     });
   }
+
+  /* ---------- precios del arriendo ---------- */
+  var listaArriendo = document.querySelector("[data-arriendo]");
+  if (listaArriendo) {
+    listaArriendo.innerHTML = ((CRISOL.arriendo && CRISOL.arriendo.precios) || []).map(function (p) {
+      return "<li><span>" + texto(p.nombre) + '</span> <span class="valor">' + texto(p.valor) + "</span></li>";
+    }).join("");
+  }
+
+  /* ---------- enlaces de WhatsApp genéricos ---------- */
+  document.querySelectorAll("[data-ws]").forEach(function (el) {
+    var motivo = el.getAttribute("data-ws") || "Hola! Vengo de la página web de Sala Crisol y quiero más información 🔥";
+    el.href = enlaceWhatsApp(motivo);
+    el.target = "_blank";
+    el.rel = "noopener";
+  });
+  document.querySelectorAll("[data-ig]").forEach(function (el) {
+    el.href = enlaceInstagram();
+    el.target = "_blank";
+    el.rel = "noopener";
+  });
 
   /* próxima fecha (YYYY-MM-DD) en que cae ese día de la semana */
   /* Todo lo que escribe una visitante pasa por aquí antes de volver a la
@@ -388,13 +517,123 @@ document.addEventListener("DOMContentLoaded", function () {
     return f.getFullYear() + "-" + mm + "-" + dd;
   }
 
-  /* ---------- panel de inscripción en páginas de taller ---------- */
-  var panel = document.querySelector("[data-taller]");
-  if (panel && typeof CRISOL !== "undefined") {
-    var idTaller = panel.getAttribute("data-taller");
-    var taller = CRISOL.talleres.find(function (t) { return t.id === idTaller; });
+  /* ============================================================
+     PÁGINA DE UNA CLASE
+     ------------------------------------------------------------
+     Qué clase es sale de data-taller-actual en el <body>, y si la
+     página es la genérica (clase.html), del ?id= de la dirección.
+     Todo lo que se lee viene del panel: nada está escrito a mano.
+     ============================================================ */
+  if (idTaller) pintarPaginaTaller(taller);
 
-    if (taller) {
+  function pintarPaginaTaller(t) {
+    var cuerpo = document.querySelector("[data-t-cuerpo]");
+    if (!cuerpo) return;
+
+    /* La clase se borró o se ocultó desde el panel: mejor decirlo que
+       mostrar una página a medias. */
+    if (!t || t.estado === "oculto") {
+      cuerpo.innerHTML =
+        '<div class="taller-bloque"><h2>Esta clase no está <span class="acento">disponible</span></h2>' +
+        "<p>Puede que haya terminado el ciclo o que estemos armando la próxima fecha. " +
+        'Mira <a href="' + base + 'index.html#talleres">todas las clases</a> o escríbenos.</p></div>';
+      var heroVacio = document.querySelector("[data-t-hero]");
+      if (heroVacio) heroVacio.innerHTML = '<h1>Sala <span>Crisol</span></h1>';
+      var asideVacio = document.querySelector("[data-panel-inscripcion]");
+      if (asideVacio) asideVacio.hidden = true;
+      return;
+    }
+
+    var TONOS = { rosa: "#E39AA6", terracota: "#D98E6A", mostaza: "#E8C583",
+                  salvia: "#9DBE9C", turquesa: "#8FC6C9", lila: "#B7A6D6",
+                  orquidea: "#B67EC4" };
+    var HALOS = { rosa: "#F7E6E9", terracota: "#F9EAE1", mostaza: "#FAF0DC",
+                  salvia: "#EAF1E9", turquesa: "#E4F1F2", lila: "#EFE9F6",
+                  orquidea: "#F4E9F8" };
+    var tono = TONOS[t.color] || TONOS.rosa;
+
+    document.title = t.nombre + " — Sala Crisol";
+    var seccion = document.querySelector(".taller-hero");
+    if (seccion) seccion.style.setProperty("--halo", HALOS[t.color] || HALOS.rosa);
+
+    /* título: la primera palabra en negro y el resto en el color de la clase */
+    var partes = String(t.nombre).split(" ");
+    var h1 = document.querySelector("[data-t-titulo]");
+    if (h1) {
+      h1.innerHTML = texto(partes[0]) +
+        (partes.length > 1 ? ' <span style="color:' + tono + '">' + texto(partes.slice(1).join(" ")) + "</span>" : "");
+    }
+
+    var elSub = document.querySelector("[data-t-subtitulo]");
+    if (elSub) {
+      elSub.innerHTML = texto(t.subtitulo);
+      elSub.hidden = !t.subtitulo;
+    }
+
+    var elFrase = document.querySelector("[data-t-frase]");
+    if (elFrase) elFrase.innerHTML = texto(t.frase);
+
+    var elDesc = document.querySelector("[data-t-desc]");
+    if (elDesc) elDesc.innerHTML = texto(t.descripcion);
+
+    var elChips = document.querySelector("[data-t-chips]");
+    if (elChips) {
+      var chips = (t.horarios || []).map(function (h) {
+        return "" + reloj(h.hora) + " " + texto(h.dia + " " + h.hora);
+      });
+      if (t.nivel) chips.push("✿ " + texto(t.nivel));
+      if (t.duracion) chips.push("⏱ " + texto(t.duracion));
+      if (t.temporada) chips.push("🌙 " + texto(t.temporada));
+      elChips.innerHTML = chips.map(function (c) {
+        return '<span class="chip">' + c + "</span>";
+      }).join("");
+    }
+
+    var elTrabajo = document.querySelector("[data-t-trabajo]");
+    if (elTrabajo) {
+      var lista = (t.trabajo || []).map(function (b) {
+        return "<li><strong>" + texto(b.titulo) + "</strong> — " + texto(b.texto) + "</li>";
+      }).join("");
+      elTrabajo.innerHTML = lista
+        ? '<h2>Qué vas a <span class="acento">trabajar</span></h2><ul class="lista-beneficios">' + lista + "</ul>"
+        : "";
+      elTrabajo.hidden = !lista;
+    }
+
+    var elParaMi = document.querySelector("[data-t-parami]");
+    if (elParaMi) {
+      var parrafos = (t.paraMi || []).map(function (p) { return "<p>" + texto(p) + "</p>"; }).join("");
+      elParaMi.innerHTML = parrafos
+        ? '<h2>¿Es <span class="acento">para mí</span>?</h2>' + parrafos
+        : "";
+      elParaMi.hidden = !parrafos;
+    }
+
+    var elProfe = document.querySelector("[data-t-profe]");
+    if (elProfe) {
+      var iniciales = String(t.profe).split(" ").map(function (p) { return p[0]; }).slice(0, 2).join("");
+      var avatar = t.fotoProfe
+        ? '<div class="profe-tarjeta__avatar"><img src="' + base + limpiarRuta(t.fotoProfe) +
+          '" alt="' + texto(t.profe) + '"></div>'
+        : '<div class="profe-tarjeta__avatar" style="background:' + tono +
+          ';display:grid;place-items:center;font-family:var(--fuente-display);font-weight:600;font-size:1.3rem;color:#fff">' +
+          texto(iniciales) + "</div>";
+      elProfe.innerHTML =
+        '<h2>Tu <span class="acento">profe</span></h2>' +
+        '<div class="profe-tarjeta">' + avatar + "<div>" +
+          "<h4>" + texto(t.profe) + "</h4>" +
+          "<p>" + texto(t.bioProfe) + "</p>" +
+          (t.profeIg
+            ? '<a href="https://www.instagram.com/' + encodeURIComponent(t.profeIg) +
+              '/" target="_blank" rel="noopener">@' + texto(t.profeIg) + " →</a>"
+            : "") +
+        "</div></div>";
+    }
+  }
+
+  /* ---------- panel de inscripción en páginas de taller ---------- */
+  var panel = document.querySelector("[data-panel-inscripcion]");
+  if (panel && taller && taller.estado !== "oculto") {
       // horarios + cupos
       var contHorarios = panel.querySelector("[data-horarios]");
       if (contHorarios) {
@@ -411,7 +650,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           return (
             '<div class="horario-opcion">' +
-            '<div class="horario-opcion__info"><b>' + h.dia + "</b><span>" + h.hora + "</span></div>" +
+            '<div class="horario-opcion__info"><b>' + texto(h.dia) + "</b><span>" + texto(h.hora) + "</span></div>" +
             cuposHtml +
             "</div>"
           );
@@ -422,7 +661,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var contPrecios = panel.querySelector("[data-precios]");
       if (contPrecios) {
         contPrecios.innerHTML = taller.precios.map(function (p) {
-          return '<div class="precio-tag">' + p.nombre + "<b>" + p.valor + "</b></div>";
+          return '<div class="precio-tag">' + texto(p.nombre) + "<b>" + texto(p.valor) + "</b></div>";
         }).join("");
       }
 
@@ -448,17 +687,16 @@ document.addEventListener("DOMContentLoaded", function () {
                        salvia:"#9DBE9C", turquesa:"#8FC6C9", lila:"#B7A6D6",
                        orquidea:"#B67EC4" })[taller.color] || "#E39AA6";
         var ini2 = taller.nombre.split(" ").map(function (p) { return p[0]; }).slice(0, 2).join("");
-        var foto2 = base + "img/talleres/" + taller.id + "/fotos/01.jpg";
-        var alFallar2 = foto2
-          ? "this.onerror=function(){this.remove()};this.src='" + foto2 + "';" +
-            "this.parentNode.classList.remove('es-flyer');"
-          : "this.remove()";
         figura.className = "taller-hero__media" + (taller.portadaEsFoto ? "" : " es-flyer");
         figura.style.background = tono2;
         figura.innerHTML =
-          '<span class="taller-hero__ini" aria-hidden="true">' + ini2 + "</span>" +
-          '<img src="' + base + "img/talleres/" + taller.id + '/flyer.jpg" ' +
-          'alt="Flyer de ' + taller.nombre + '" onerror="this.onerror=null;' + alFallar2 + '">';
+          '<span class="taller-hero__ini" aria-hidden="true">' + texto(ini2) + "</span>" +
+          '<img src="' + base + portadaTaller(taller) + '" alt="Flyer de ' + texto(taller.nombre) + '">';
+        var imgPortada = figura.querySelector("img");
+        respaldoImagen(imgPortada, [base + primeraFoto(taller)], null);
+        imgPortada.addEventListener("error", function () {
+          figura.classList.remove("es-flyer");
+        });
       }
 
       /* opciones de pago: salen de los precios de ESTA clase, porque
@@ -469,7 +707,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var ops = (taller.precios || []).map(function (pr, i) {
           return '<label class="opcion"><input type="radio" name="modalidad" value="' + i + '"' +
                  (i === 0 ? " checked" : "") + '>' +
-                 '<span><b>' + pr.nombre + "</b><em>" + pr.valor + "</em></span></label>";
+                 '<span><b>' + texto(pr.nombre) + "</b><em>" + texto(pr.valor) + "</em></span></label>";
         });
         ops.push('<label class="opcion opcion--pagada"><input type="radio" name="modalidad" value="pagada">' +
                  '<span><b>Ya pagué el pase del mes</b><em>No pago hoy</em></span></label>');
@@ -480,11 +718,11 @@ document.addEventListener("DOMContentLoaded", function () {
       var galeria = document.querySelector("[data-galeria]");
       var contFotos = document.querySelector("[data-galeria-fotos]");
       if (galeria && contFotos) {
-        fotosDeTaller(taller.id, 12, function (rutas) {
+        fotosDeTaller(taller, 12, function (rutas) {
           if (!rutas.length) return;
           contFotos.innerHTML = rutas.map(function (ruta, i) {
             return '<figure class="galeria__foto"><img src="' + ruta +
-                   '" alt="' + taller.nombre + ' en Sala Crisol, foto ' + (i + 1) +
+                   '" alt="' + texto(taller.nombre) + ' en Sala Crisol, foto ' + (i + 1) +
                    '" loading="lazy"></figure>';
           }).join("");
           galeria.hidden = false;
@@ -594,7 +832,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           if (!nombre || !hSel) { fallar(); return; }
 
-          var destino = (typeof CRISOL !== "undefined" && CRISOL.inscripcionesURL) || "";
+          var destino = CRISOL.inscripcionesURL || "";
           if (!destino) { confirmar(); return; }
 
           // bloquea el doble envío mientras viaja
@@ -611,21 +849,160 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(function (r) { if (r && r.ok) confirmar(); else fallar(); })
             .catch(fallar);
         });
-      }
     }
   }
 
-  /* ---------- inscripción al Domingo Popular ---------- */
+  /* ============================================================
+     PÁGINA DE UNA TERTULIA
+     Igual que las clases: la página es un molde y el contenido
+     entero sale del panel.
+     ============================================================ */
+  var contTert = document.querySelector("[data-tert-cuerpo]");
+  if (contTert) {
+    var idTert = document.body.getAttribute("data-tertulia-actual") ||
+                 new URLSearchParams(location.search).get("id") || "";
+    pintarPaginaTertulia(buscarTertulia(idTert));
+  }
+
+  function pintarPaginaTertulia(t) {
+    var hero = document.querySelector(".evento-hero");
+
+    if (!t || t.estado === "oculta") {
+      contTert.innerHTML =
+        '<div class="evento-relato"><h2>Esta tertulia no está <span class="acento">disponible</span></h2>' +
+        '<p>Mira <a href="' + base + 'index.html#tertulias">todas las tertulias</a> o escríbenos por Instagram.</p></div>';
+      var heroTert = document.querySelector("[data-tert-hero]");
+      if (heroTert) heroTert.innerHTML = '<h1 class="evento-hero__titulo">Tertulias de cine</h1>';
+      return;
+    }
+
+    document.title = "Tertulia " + t.numero + " · " + t.pelicula + " — Sala Crisol";
+
+    /* la paleta la manda el afiche del evento */
+    var pal = t.paleta || {};
+    if (hero) {
+      hero.style.setProperty("--ev-fondo", pal.fondo || "#1A0B2E");
+      hero.style.setProperty("--ev-tinta", pal.tinta || "#F7E9FF");
+      hero.style.setProperty("--ev-acento", pal.acento || t.acento || "#E845C8");
+      hero.style.setProperty("--ev-acento2", pal.acento2 || t.acento || "#7B3FF2");
+    }
+
+    var poner = function (sel, html) {
+      var el = document.querySelector(sel);
+      if (el) el.innerHTML = html;
+    };
+    poner("[data-tert-eyebrow]", "Tertulia " + texto(t.numero) + " · cine + conversación");
+    poner("[data-tert-titulo]", texto(t.pelicula));
+    poner("[data-tert-subtitulo]", texto(t.subtitulo));
+    poner("[data-tert-fecha]", texto(t.fecha));
+    poner("[data-tert-bajada]", texto(t.detalle));
+    poner("[data-tert-afiche]",
+      '<img src="' + base + limpiarRuta(t.afiche) + '" alt="Afiche de Tertulia ' +
+      texto(t.numero) + " · " + texto(t.pelicula) + '">');
+
+    var piezas = (t.piezas || []).filter(Boolean);
+    var fotos = (t.fotos || []).filter(Boolean);
+    contTert.innerHTML =
+      '<div class="evento-relato"><h2>Qué pasó esa noche</h2><p>' + texto(t.relato) + "</p></div>" +
+      (piezas.length
+        ? '<div class="evento-piezas"><h2>Las piezas del ciclo</h2><div class="piezas__grilla">' +
+          piezas.map(function (r) {
+            return '<figure class="pieza"><img src="' + base + limpiarRuta(r) +
+                   '" alt="Pieza gráfica del evento" loading="lazy"></figure>';
+          }).join("") + "</div></div>"
+        : "") +
+      (fotos.length
+        /* las fotos de la noche van recortadas en cuadrado (.galeria__grilla),
+           a diferencia de las piezas gráficas, que se ven completas */
+        ? '<div class="evento-galeria"><h2>Cómo se vivió</h2><div class="galeria__grilla">' +
+          fotos.map(function (r) {
+            return '<figure class="galeria__foto"><img src="' + base + limpiarRuta(r) +
+                   '" alt="' + texto(t.pelicula) + '" loading="lazy"></figure>';
+          }).join("") + "</div></div>"
+        : '<div class="evento-vacio"><p><strong>Todavía no tenemos fotos de esta tertulia.</strong> ' +
+          "Si estuviste y sacaste alguna, escríbenos por Instagram y la sumamos.</p></div>");
+  }
+
+  /* ============================================================
+     DOMINGO POPULAR
+     El afiche de la portada y la página completa de la jornada.
+     Cambia todos los meses, así que no hay nada escrito a mano.
+     ============================================================ */
+  var DP = CRISOL.domingoPopular;
+
+  var aficheDP = document.querySelector("[data-dp-afiche]");
+  if (aficheDP && DP && DP.afiche) {
+    aficheDP.innerHTML =
+      '<img src="' + base + limpiarRuta(DP.afiche) +
+      '" alt="Afiche del Domingo Popular · ' + texto(DP.fecha) + '" loading="lazy">';
+  }
+
+  var cuerpoDP = document.querySelector("[data-dp-cuerpo]");
+  if (cuerpoDP && DP) {
+    /* los colores del afiche del mes */
+    var heroJornada = document.querySelector(".evento-hero");
+    var palDP = DP.paleta || {};
+    if (heroJornada) {
+      Object.keys(palDP).forEach(function (k) {
+        if (palDP[k]) heroJornada.style.setProperty("--ev-" + k, palDP[k]);
+      });
+    }
+
+    document.querySelectorAll("[data-dp-fecha]").forEach(function (el) {
+      el.innerHTML = texto(DP.fecha + " · " + DP.horario);
+    });
+    document.querySelectorAll("[data-dp-bajada]").forEach(function (el) {
+      el.innerHTML = texto(DP.bajada);
+    });
+    var heroDP = document.querySelector("[data-dp-afiche-hero]");
+    if (heroDP && DP.afiche) {
+      heroDP.innerHTML = '<img src="' + base + limpiarRuta(DP.afiche) +
+        '" alt="Afiche del Domingo Popular · ' + texto(DP.fecha) + '">';
+    }
+
+    var jornada = (DP.bloques || []).map(function (b) {
+      if (!b.hora) return '<li class="jornada__pausa"><span>' + texto(b.clase) + "</span></li>";
+      return '<li class="jornada__bloque"><span class="jornada__hora">' + texto(b.hora) +
+             '</span><span class="jornada__clase">' + texto(b.clase) +
+             '</span><span class="jornada__profe">' + texto(b.profe) + "</span></li>";
+    }).join("");
+
+    var piezasDP = (DP.piezas || []).filter(Boolean);
+
+    cuerpoDP.innerHTML =
+      '<div class="evento-relato"><h2>De qué se trata</h2><p>' + texto(DP.descripcion) + "</p></div>" +
+      (jornada ? '<div class="jornada"><h2>La jornada</h2><ul class="jornada__lista">' + jornada + "</ul></div>" : "") +
+      '<div class="evento-datos">' +
+        '<div class="evento-dato"><h3>Aporte monetario</h3><ul class="aporte-precios">' +
+          (DP.aporteMonetario || []).map(function (a) {
+            return "<li><span>" + texto(a.n) + "</span><b>" + texto(a.valor) + "</b></li>";
+          }).join("") +
+        "</ul></div>" +
+        '<div class="evento-dato"><h3>O aporte material</h3>' +
+          '<p class="evento-aporte">' + texto(DP.equivalencia) + "</p>" +
+          '<ul class="aporte-materiales">' +
+            (DP.aporteMaterial || []).map(function (m) { return "<li>" + texto(m) + "</li>"; }).join("") +
+          "</ul></div>" +
+      "</div>" +
+      (piezasDP.length
+        ? '<div class="evento-piezas"><h2>El afiche del mes</h2><div class="piezas__grilla">' +
+          piezasDP.map(function (r) {
+            return '<figure class="pieza"><img src="' + base + limpiarRuta(r) +
+                   '" alt="Información del Domingo Popular" loading="lazy"></figure>';
+          }).join("") + "</div></div>"
+        : "");
+  }
+
   /* ---------- inscripción al Domingo Popular ---------- */
   var cajaDP = document.querySelector("[data-form-domingo]");
-  if (cajaDP && typeof CRISOL !== "undefined" && CRISOL.domingoPopular) {
+  if (cajaDP && CRISOL.domingoPopular) {
     var dp = CRISOL.domingoPopular;
     var clasesDP = dp.bloques.filter(function (b) { return b.hora; });
 
     cajaDP.innerHTML =
       '<form class="formulario" data-form-dp>' +
         "<p>Cuéntanos que vienes y te guardamos un lugar. " +
-        "<strong>" + dp.fecha + " · " + dp.horario + "</strong></p>" +
+        "<strong>" + texto(dp.fecha) + " · " + texto(dp.horario) + "</strong></p>" +
         '<div class="campo"><label for="dp-nombre">Tu nombre</label>' +
         '<input id="dp-nombre" name="nombre" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" required></div>' +
         '<div class="campo"><label for="dp-tel">WhatsApp</label>' +
@@ -633,14 +1010,14 @@ document.addEventListener("DOMContentLoaded", function () {
         '<div class="campo"><label id="dp-lbl">¿A qué clases vienes?</label>' +
         '<div class="opciones opciones--precios" role="group" aria-labelledby="dp-lbl">' +
           clasesDP.map(function (b, i) {
-            return '<label class="opcion"><input type="checkbox" name="clase" value="' + b.clase + '">' +
-                   "<span><b>" + b.clase + "</b><em>" + b.hora + "</em></span></label>";
+            return '<label class="opcion"><input type="checkbox" name="clase" value="' + escHtml(b.clase) + '">' +
+                   "<span><b>" + texto(b.clase) + "</b><em>" + texto(b.hora) + "</em></span></label>";
           }).join("") +
         "</div></div>" +
         '<div class="campo"><label for="dp-aporte">Cómo vas a aportar</label>' +
         '<select id="dp-aporte" name="aporte">' +
           dp.aporteMonetario.map(function (a) {
-            return '<option value="' + a.n + " — " + a.valor + '">' + a.n + " — " + a.valor + "</option>";
+            return '<option value="' + escHtml(a.n + " — " + a.valor) + '">' + texto(a.n + " — " + a.valor) + "</option>";
           }).join("") +
           '<option value="con materiales">Llevo materiales para la sala</option>' +
         "</select></div>" +
@@ -672,7 +1049,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- formulario general "Hablemos" ---------- */
   var formHablemos = document.querySelector("[data-form-hablemos]");
-  if (formHablemos && typeof CRISOL !== "undefined") {
+  if (formHablemos) {
     formHablemos.addEventListener("submit", function (e) {
       e.preventDefault();
       var nombre = formHablemos.querySelector('[name="nombre"]').value.trim();
@@ -704,4 +1081,4 @@ document.addEventListener("DOMContentLoaded", function () {
   /* ---------- año en el pie ---------- */
   var anio = document.querySelector("[data-anio]");
   if (anio) anio.textContent = new Date().getFullYear();
-});
+}

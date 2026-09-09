@@ -18,7 +18,7 @@
   <meta property="og:url" content="https://salacrisol.cl/talleres/pilates-mat.html">
   <meta property="og:title" content="Pilates Mat — Sala Crisol">
   <meta property="og:description" content="Pilates Mat en Sala Crisol, Ñuñoa. Lunes 10:00 – 11:00. Con Esperanza Fredes. Inscríbete online.">
-  <meta property="og:image" content="https://salacrisol.cl/img/sala/logo.jpg">
+  <meta property="og:image" content="https://salacrisol.cl/img/talleres/pilates-mat/flyer.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="../img/sala/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..600,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/estilo.css">
 </head>
-<body data-subpagina>
+<body data-subpagina data-taller-actual="pilates-mat">
 
   <header class="nav">
     <div class="contenedor nav__inner">
@@ -38,14 +38,7 @@
       <ul class="nav__links">
         <li>
           <a href="../index.html#talleres" aria-haspopup="true">Clases ▾</a>
-          <div class="nav__despliegue">
-            <a href="pilates-mat.html">Pilates Mat <small>Estás aquí ✿</small></a>
-            <a href="danza-contemporanea.html">Danza Contemporánea <small>Sábado 10:30 · Esperanza</small></a>
-            <a href="movimiento-flexible.html">Movimiento Flexible <small>Lun · Mar · Sáb con Consuelo</small></a>
-            <a href="equilibrio-de-manos.html">Equilibrio de Manos <small>Miércoles 10:00 · Consuelo</small></a>
-            <a href="danza-filosofia.html">Danza y Filosofía <small>Jueves 18:45 · Amor Expresamos</small></a>
-            <a href="bellydance-fusion.html">Bellydance Fusión <small>Viernes 19:00 · Kathia</small></a>
-          </div>
+          <div class="nav__despliegue" data-nav-clases></div>
         </li>
         <li><a href="../index.html#horarios">Horarios</a></li>
         <li><a href="../index.html#tertulias">Tertulias</a></li>
@@ -60,18 +53,13 @@
     <section class="taller-hero" style="--halo: #EAF1E9;">
       <div class="guirnalda guirnalda--techo" data-guirnalda data-guirnalda-semilla="0"></div>
       <div class="contenedor taller-hero__rejilla">
-        <div>
+        <div data-t-hero>
           <a class="miga" href="../index.html#talleres">← Todas las clases</a>
-          <h1>Pilates <span style="color:#9DBE9C">Mat</span></h1>
-          
-          <p class="taller-hero__frase">Fuerza que se construye desde el centro.</p>
-          <p class="taller-hero__desc">Pilates de suelo, con el peso del propio cuerpo y sin máquinas. Trabajamos el <strong>centro profundo</strong>, la respiración y el control del movimiento — despacio, con precisión y sin impacto. Es de esas clases en que no sudas a chorros pero al otro día descubres músculos que no sabías que tenías.</p>
-          <div class="taller-hero__chips">
-            <span class="chip">🕙 Lunes 10:00 – 11:00</span>
-            <span class="chip">🕙 Viernes 10:00 – 11:00</span>
-            <span class="chip">🕠 Sábado 17:30 – 18:30</span>
-            <span class="chip">✿ Todos los niveles</span>
-          </div>
+          <h1 data-t-titulo></h1>
+          <p class="taller-hero__frase taller-hero__estilo" data-t-subtitulo hidden></p>
+          <p class="taller-hero__frase" data-t-frase></p>
+          <p class="taller-hero__desc" data-t-desc></p>
+          <div class="taller-hero__chips" data-t-chips></div>
         </div>
         <figure class="taller-hero__media" data-portada-taller></figure>
       </div>
@@ -79,35 +67,12 @@
 
     <section class="taller-cuerpo">
       <div class="contenedor taller-cuerpo__rejilla">
-        <div>
-          <div class="taller-bloque">
-            <h2>Qué vas a <span class="acento">trabajar</span></h2>
-            <ul class="lista-beneficios">
-              <li><strong>Centro</strong> — abdomen profundo, suelo pélvico y espalda trabajando juntos.</li>
-              <li><strong>Postura</strong> — la columna encuentra su lugar y deja de doler al final del día.</li>
-              <li><strong>Respiración</strong> — coordinada con el movimiento, no aguantada.</li>
-              <li><strong>Movilidad</strong> — cadera y columna con más recorrido disponible.</li>
-              <li><strong>Progresión</strong> — cada ejercicio tiene versión más simple y más exigente.</li>
-            </ul>
-          </div>
-
-          <div class="taller-bloque">
-            <h2>¿Es <span class="acento">para mí</span>?</h2>
-            <p>Sí. Es una clase de suelo, de bajo impacto y con progresiones para cada cuerpo. Sirve tanto si nunca hiciste pilates como si vienes de años de práctica.</p>
-            <p>Trae ropa cómoda y calcetines si prefieres. Los mats los pone la sala.</p>
-          </div>
-
-          <div class="taller-bloque">
-            <h2>Tu <span class="acento">profe</span></h2>
-            <div class="profe-tarjeta">
-              <div class="profe-tarjeta__avatar" style="background:#9DBE9C;display:grid;place-items:center;font-family:var(--fuente-display);font-weight:600;font-size:1.3rem;color:#fff">EF</div>
-              <div>
-                <h4>Esperanza Fredes</h4>
-                <p>Profesora de pilates y danza contemporánea. Trabaja desde la precisión y la escucha del cuerpo, con una mirada que viene de la danza.</p>
-                <a href="https://www.instagram.com/pilates.voy/" target="_blank" rel="noopener">@pilates.voy →</a>
-              </div>
-            </div>
-          </div>
+        <!-- Todo lo de abajo se llena desde el panel (datos/contenido.json).
+             No escribas textos a mano acá: se pierden al recargar. -->
+        <div data-t-cuerpo>
+          <div class="taller-bloque" data-t-trabajo hidden></div>
+          <div class="taller-bloque" data-t-parami hidden></div>
+          <div class="taller-bloque" data-t-profe></div>
 
           <div class="taller-bloque" data-galeria hidden>
             <h2>La clase por <span class="acento">dentro</span></h2>
@@ -115,7 +80,7 @@
           </div>
         </div>
 
-        <aside class="panel-inscripcion" id="inscribirme" data-taller="pilates-mat">
+        <aside class="panel-inscripcion" id="inscribirme" data-panel-inscripcion>
           <h3>Inscríbete</h3>
           <p>Elige tu horario y te confirmamos el cupo por WhatsApp.</p>
 
@@ -167,7 +132,7 @@
   <footer class="pie">
     <div class="contenedor">
       <div class="pie__final" style="border:none;margin:0;padding:0">
-        <span>© <span data-anio>2026</span> Sala Crisol · Av. Salvador 2302, Ñuñoa</span>
+        <span>© <span data-anio>2026</span> Sala Crisol · <span data-direccion>Av. Salvador 2302, Ñuñoa</span></span>
         <span><a href="../privacidad.html">Privacidad</a></span>
         <span><a data-ig href="#">@sala.crisol</a></span>
       </div>

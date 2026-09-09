@@ -1,0 +1,419 @@
+# =====================================================================
+# PANEL DE SALA CRISOL · Pages CMS
+# ---------------------------------------------------------------------
+# Esto define QUÉ se puede editar desde el panel. Lo que no está acá,
+# no se puede tocar desde el panel — y eso es a propósito: es lo que
+# protege que el sitio se siga viendo bien.
+#
+# Cómo se entra:  https://app.pagescms.org  (invitación por correo)
+# Qué edita:      datos/contenido.json
+# Cuánto demora:  el cambio se ve en el sitio en 1 o 2 minutos.
+#
+# Si cambias algo acá, revisa que el campo exista igual en
+# admin/config.yml (el panel alternativo). Ver COMO_EDITAR_EL_SITIO.md
+# =====================================================================
+
+media:
+  - name: subidas
+    label: Fotos y afiches
+    input: img/subidas
+    output: /img/subidas
+    extensions: [jpg, jpeg, png, webp]
+
+content:
+  - name: contenido
+    label: Contenido del sitio
+    type: file
+    path: datos/contenido.json
+    format: json
+    fields:
+
+      # =================================================================
+      # LA SALA
+      # =================================================================
+      - name: sala
+        label: Datos de la sala
+        type: object
+        fields:
+          - name: mesActual
+            label: Mes que se muestra en la portada
+            type: string
+            required: true
+            description: "Se escribe con mayúscula: Septiembre. Aparece en la cinta que corre arriba."
+          - name: whatsapp
+            label: WhatsApp de la sala
+            type: string
+            required: true
+            pattern: "^56[0-9]{9}$"
+            description: "Sin el + y sin espacios. Ejemplo: 56991757042. Cambia los 11 botones del sitio de una vez."
+          - name: instagram
+            label: Instagram
+            type: string
+            description: Solo el nombre de usuario, sin la arroba.
+          - name: direccion
+            label: Dirección
+            type: string
+
+      # =================================================================
+      # CLASES
+      # =================================================================
+      - name: talleres
+        label: Clases
+        type: object
+        list:
+          collapsible: { summary: "{fields.nombre} — {fields.profe}" }
+        description: Cada clase aparece en la portada, en la cinta, en el horario semanal y tiene su propia página.
+        fields:
+          - name: nombre
+            label: Nombre de la clase
+            type: string
+            required: true
+          - name: estado
+            label: ¿Se muestra?
+            type: select
+            required: true
+            options:
+              values:
+                - { value: activo, label: "Sí, con inscripción abierta" }
+                - { value: pronto, label: "Sí, pero dice «nueva fecha por anunciar»" }
+                - { value: oculto, label: "No mostrarla en el sitio" }
+            description: "Para sacar una clase usa «No mostrarla». No la borres: si vuelve, la prendes de nuevo y no perdiste nada."
+          - name: subtitulo
+            label: Nombre del estilo
+            type: string
+            description: "Una línea en cursiva arriba de la frase, para el nombre del estilo. Vacío = no se muestra. Ejemplo: Experiencia sensual (Sensuallstyle)"
+          - name: frase
+            label: Frase corta
+            type: string
+            description: Una línea, sale bajo el nombre en la portada. Sin punto final queda mejor.
+          - name: profe
+            label: Profesora o profesor
+            type: string
+            required: true
+          - name: profeCorto
+            label: Nombre corto
+            type: string
+            description: "El que se ve en el horario semanal, donde hay poco espacio. Ejemplo: Consuelo"
+          - name: profeIg
+            label: Instagram de la profe
+            type: string
+            description: Solo el usuario, sin arroba.
+          - name: fotoProfe
+            label: Foto de la profe
+            type: image
+            options: { media: subidas }
+            description: Opcional y cuadrada. Si la dejas vacía se muestran sus iniciales sobre el color de la clase.
+          - name: bioProfe
+            label: Quién es
+            type: text
+            description: Dos o tres líneas. Sale en la página de la clase.
+          - name: nivel
+            label: Nivel
+            type: string
+            description: "Ejemplo: Todos los niveles"
+          - name: duracion
+            label: Duración
+            type: string
+            description: "Sale como una etiqueta ⏱ arriba, al lado de los horarios. Déjala vacía si no quieres mostrarla. Ejemplo: 1 hora 15"
+          - name: temporada
+            label: Temporada
+            type: string
+            description: "Etiqueta 🌙 para las clases que corren solo unos meses. Vacío = no se muestra. Ejemplo: Septiembre a diciembre"
+          - name: color
+            label: Color de la clase
+            type: select
+            options:
+              values: [rosa, terracota, mostaza, salvia, turquesa, lila, orquidea]
+            description: El banderín y los detalles de color de esta clase. Elige uno que no repita al de la clase de al lado.
+          - name: descripcion
+            label: De qué se trata
+            type: text
+            description: "El párrafo grande de la página de la clase. Para destacar una palabra, escríbela así: **entre dos asteriscos**."
+          - name: trabajo
+            label: Qué vas a trabajar
+            type: object
+            list:
+              collapsible: { summary: "{fields.titulo}" }
+            description: Los puntos con viñeta de la página. Entre 4 y 6 quedan bien.
+            fields:
+              - { name: titulo, label: Palabra clave, type: string, required: true }
+              - { name: texto, label: Explicación, type: string, required: true }
+          - name: paraMi
+            label: "¿Es para mí?"
+            type: text
+            list: true
+            description: "Un párrafo por línea. Aquí va lo práctico: si sirve para principiantes, qué traer."
+          - name: horarios
+            label: Horarios y cupos
+            type: object
+            list:
+              collapsible: { summary: "{fields.dia} {fields.hora}" }
+            description: Esto arma el horario semanal de la portada. Si cambias una hora acá, cambia en todo el sitio.
+            fields:
+              - name: dia
+                label: Día
+                type: select
+                required: true
+                options:
+                  values: [Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo]
+              - name: hora
+                label: Hora
+                type: string
+                required: true
+                description: "Escríbela con el guion largo: 10:00 – 11:00"
+              - { name: cuposTotal, label: Cupos totales, type: number, options: { min: 0, step: 1 } }
+              - name: cuposDisponibles
+                label: Cupos que quedan
+                type: number
+                options: { min: 0, step: 1 }
+                description: Réstale 1 cada vez que alguien se inscribe. En 0 aparece «Sin cupos». Con 3 o menos aparece «¡Quedan 3!».
+          - name: precios
+            label: Precios
+            type: object
+            list:
+              collapsible: { summary: "{fields.nombre} — {fields.valor}" }
+            fields:
+              - { name: nombre, label: Qué es, type: string, required: true }
+              - name: valor
+                label: Cuánto sale
+                type: string
+                required: true
+                description: "Como se lee en el sitio, con signo peso y punto: $35.000"
+              - name: monto
+                label: El número solo
+                type: number
+                options: { min: 0, step: 500 }
+                description: "El mismo valor sin puntos ni signo: 35000. Se usa para llevar la cuenta de la plata en el panel de inscripciones."
+          - name: portada
+            label: Portada de la clase
+            type: image
+            options: { media: subidas }
+            description: El afiche que se ve en la tarjeta de la portada. Vertical. Si la dejas vacía se usa la que está en img/talleres/.
+          - name: portadaEsFoto
+            label: La portada es una foto, no un afiche
+            type: boolean
+            description: Préndelo si subiste una foto en vez de un flyer, para que se recorte bien.
+          - name: fotos
+            label: Fotos de la clase
+            type: image
+            list: true
+            options: { media: subidas }
+            description: Salen en «La clase por dentro». Horizontales o cuadradas. Si no subes ninguna se usan las de img/talleres/.
+          # ---- de acá abajo, mejor no tocar ----
+          - name: id
+            label: Código interno
+            type: string
+            required: true
+            pattern: "^[a-z0-9-]+$"
+            description: "Solo minúsculas y guiones, sin tildes. Ejemplo: pilates-mat. En una clase que ya existe NO lo cambies: se rompen los enlaces que la gente tiene guardados."
+          - name: pagina
+            label: Página propia
+            type: string
+            description: "La dirección de la página de esta clase. No la cambies. En una clase nueva déjala vacía: se usa la página genérica y funciona igual."
+          - name: tipo
+            label: Tipo
+            type: string
+            description: Déjalo vacío. Solo el Domingo Popular lleva «evento» acá.
+          - name: fechaFija
+            label: Fecha fija
+            type: string
+            description: "Solo para eventos de una fecha. Se escribe así: 2026-09-28"
+
+      # =================================================================
+      # FILAS SUELTAS DEL HORARIO
+      # =================================================================
+      - name: grillaExtra
+        label: Filas extra del horario semanal
+        type: object
+        list:
+          collapsible: { summary: "{fields.dia} {fields.hora} · {fields.clase}" }
+        description: Normalmente vacío. El horario se arma solo con los horarios de cada clase. Esto es para algo que no sea una clase (un ensayo, un arriendo fijo).
+        fields:
+          - name: dia
+            label: Día
+            type: select
+            options:
+              values: [Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo]
+          - { name: hora, label: Hora, type: string }
+          - { name: clase, label: Qué es, type: string }
+          - { name: profe, label: Quién, type: string }
+          - { name: id, label: Enlaza con la clase, type: string, description: "Déjalo vacío si no lleva a ninguna página." }
+          - name: tipo
+            label: Tipo
+            type: select
+            options:
+              values: [semanal, mensual]
+
+      # =================================================================
+      # TERTULIAS DE CINE
+      # =================================================================
+      - name: tertulias
+        label: Tertulias de cine
+        type: object
+        list:
+          collapsible: { summary: "Tertulia {fields.numero} · {fields.pelicula}" }
+        description: Los afiches que salen en la portada. Cada una tiene su propia página con el relato y las fotos.
+        fields:
+          - name: numero
+            label: Número
+            type: string
+            required: true
+            description: "Con dos dígitos: 01, 02, 03…"
+          - { name: pelicula, label: Película, type: string, required: true }
+          - name: subtitulo
+            label: De quién es
+            type: string
+            description: "Ejemplo: de Juan Cáceres · Chile"
+          - name: fecha
+            label: Cuándo fue
+            type: string
+            required: true
+            description: "Como se lee: Viernes 26 de junio · 19:30"
+          - name: detalle
+            label: Bajada corta
+            type: text
+            description: Una o dos líneas. Sale bajo el afiche en la portada.
+          - name: relato
+            label: Qué pasó esa noche
+            type: text
+            description: "El relato de la página. Para poner un título de película en cursiva, escríbelo así: *Perro Bomba*."
+          - name: afiche
+            label: Afiche
+            type: image
+            options: { media: subidas }
+            required: true
+            description: Vertical, el afiche del evento. Es lo primero que se ve.
+          - name: piezas
+            label: Otras piezas gráficas
+            type: image
+            list: true
+            options: { media: subidas }
+            description: Promos, concursos, flyers del ciclo.
+          - name: fotos
+            label: Fotos de la noche
+            type: image
+            list: true
+            options: { media: subidas }
+            description: Si no subes ninguna, la página dice que todavía no hay fotos.
+          - name: estado
+            label: "¿Se muestra?"
+            type: select
+            options:
+              values:
+                - { value: publicada, label: "Sí" }
+                - { value: oculta, label: "No mostrarla" }
+          - name: acento
+            label: Color del número
+            type: string
+            pattern: "^#[0-9A-Fa-f]{6}$"
+            description: "Código de color sacado del afiche. Ejemplo: #E39AA6"
+          - name: paleta
+            label: Colores de la página
+            type: object
+            description: Los colores del afiche, para que la página se vea como el evento. Si no sabes cuáles poner, deja los que están.
+            fields:
+              - { name: fondo, label: Fondo, type: string, pattern: "^#[0-9A-Fa-f]{6}$" }
+              - { name: tinta, label: Texto, type: string, pattern: "^#[0-9A-Fa-f]{6}$" }
+              - { name: acento, label: Acento, type: string, pattern: "^#[0-9A-Fa-f]{6}$" }
+              - { name: acento2, label: Segundo acento, type: string, pattern: "^#[0-9A-Fa-f]{6}$" }
+          - name: pagina
+            label: Página propia
+            type: string
+            description: "La dirección de la página de esta tertulia. No la cambies. En una tertulia nueva déjala vacía: se usa la página genérica y funciona igual."
+          - name: id
+            label: Código interno
+            type: string
+            required: true
+            pattern: "^[a-z0-9-]+$"
+            description: "Solo minúsculas y guiones. Ejemplo: 04-la-nueva-peli"
+
+      # =================================================================
+      # DOMINGO POPULAR
+      # =================================================================
+      - name: domingoPopular
+        label: Domingo Popular
+        type: object
+        description: La jornada mensual. Esto es lo que más se cambia mes a mes.
+        fields:
+          - name: fecha
+            label: Fecha del próximo
+            type: string
+            required: true
+            description: "Como se lee: Domingo 6 de septiembre"
+          - name: horario
+            label: Horario
+            type: string
+            description: "Ejemplo: 10:00 – 18:00"
+          - { name: bajada, label: Frase de la portada de la jornada, type: text }
+          - name: descripcion
+            label: De qué se trata
+            type: text
+            description: "El párrafo largo. Para destacar algo: **entre dos asteriscos**."
+          - name: afiche
+            label: Afiche del mes
+            type: image
+            options: { media: subidas }
+            description: Sale en la portada del sitio y arriba en la página de la jornada.
+          - name: piezas
+            label: Otras piezas gráficas
+            type: image
+            list: true
+            options: { media: subidas }
+            description: El flyer de horarios, el de aportes, lo que hayan hecho ese mes.
+          - name: bloques
+            label: La jornada, hora por hora
+            type: object
+            list:
+              collapsible: { summary: "{fields.hora} {fields.clase}" }
+            description: Para el almuerzo o una pausa, deja la hora vacía y se muestra como una franja aparte.
+            fields:
+              - { name: hora, label: Hora, type: string }
+              - { name: clase, label: Qué, type: string, required: true }
+              - { name: profe, label: Con quién, type: string }
+          - name: aporteMonetario
+            label: Aporte en plata
+            type: object
+            list:
+              collapsible: { summary: "{fields.n} — {fields.valor}" }
+            fields:
+              - { name: n, label: Cuántas clases, type: string, required: true }
+              - { name: valor, label: Cuánto, type: string, required: true }
+          - name: aporteMaterial
+            label: Aporte en materiales
+            type: string
+            list: true
+            description: Una cosa por línea. Es la lista de lo que le hace falta a la sala.
+          - name: equivalencia
+            label: Cuánto vale un material
+            type: string
+            description: "Ejemplo: 2 materiales equivalen a 1 clase"
+          - name: paleta
+            label: Colores de la página
+            type: object
+            fields:
+              - { name: fondo, label: Fondo, type: string, pattern: "^#[0-9A-Fa-f]{6}$" }
+              - { name: tinta, label: Texto, type: string, pattern: "^#[0-9A-Fa-f]{6}$" }
+              - { name: acento, label: Acento, type: string, pattern: "^#[0-9A-Fa-f]{6}$" }
+              - { name: acento2, label: Segundo acento, type: string, pattern: "^#[0-9A-Fa-f]{6}$" }
+
+      # =================================================================
+      # ARRIENDO
+      # =================================================================
+      - name: arriendo
+        label: Arriendo de la sala
+        type: object
+        fields:
+          - name: precios
+            label: Precios del arriendo
+            type: object
+            list:
+              collapsible: { summary: "{fields.nombre} — {fields.valor}" }
+            fields:
+              - { name: nombre, label: Qué es, type: string, required: true }
+              - { name: valor, label: Cuánto, type: string, required: true }
+
+settings:
+  content:
+    # Conserva los campos que no están en esta configuración, en vez de
+    # borrarlos al guardar. No lo saques.
+    merge: true

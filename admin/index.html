@@ -1,0 +1,32 @@
+<!doctype html>
+<!-- =====================================================================
+     PANEL DE SALA CRISOL · Sveltia CMS
+     ---------------------------------------------------------------------
+     Esta es la opción B: el panel dentro del propio dominio, en español.
+     Se entra a  https://salacrisol.cl/admin/
+
+     Para que funcione falta un paso que solo se hace UNA vez:
+     el intermediario que valida el ingreso con GitHub.
+     Está explicado en _sistema/LEEME_PANEL.md
+
+     Mientras eso no esté listo, el panel que sí funciona es Pages CMS
+     (app.pagescms.org). Los dos editan el mismo datos/contenido.json,
+     así que se puede usar cualquiera de los dos, o cambiar después.
+
+     Los campos se configuran en  admin/config.yml
+     ===================================================================== -->
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Panel · Sala Crisol</title>
+  <link rel="icon" type="image/svg+xml" href="../img/sala/favicon.svg">
+</head>
+<body>
+  <!-- Versión fija a propósito: si se deja @latest, una actualización
+       podría cambiarle el panel a las chicas de un día para otro.
+       Novedades: https://github.com/sveltia/sveltia-cms/releases -->
+  <script src="https://unpkg.com/@sveltia/cms@0.117.0/dist/sveltia-cms.js" type="module"></script>
+</body>
+</html>

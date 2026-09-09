@@ -10,14 +10,14 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <title>Equilibrio de Manos — Sala Crisol</title>
-  <meta name="description" content="Equilibrio de Manos en Sala Crisol, Ñuñoa. Miércoles 10:00 – 11:30. Con Consuelo Ongaro. Inscríbete online.">
+  <meta name="description" content="Equilibrio de Manos en Sala Crisol, Ñuñoa. Miércoles 10:00 – 12:00. Con Consuelo Ongaro. Inscríbete online.">
   <link rel="canonical" href="https://salacrisol.cl/talleres/equilibrio-de-manos.html">
   <meta property="og:site_name" content="Sala Crisol">
   <meta property="og:locale" content="es_CL">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://salacrisol.cl/talleres/equilibrio-de-manos.html">
   <meta property="og:title" content="Equilibrio de Manos — Sala Crisol">
-  <meta property="og:description" content="Equilibrio de Manos en Sala Crisol, Ñuñoa. Miércoles 10:00 – 11:30. Con Consuelo Ongaro. Inscríbete online.">
+  <meta property="og:description" content="Equilibrio de Manos en Sala Crisol, Ñuñoa. Miércoles 10:00 – 12:00. Con Consuelo Ongaro. Inscríbete online.">
   <meta property="og:image" content="https://salacrisol.cl/img/talleres/equilibrio-de-manos/flyer.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="../img/sala/favicon.svg">
@@ -26,7 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..600,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/estilo.css">
 </head>
-<body data-subpagina>
+<body data-subpagina data-taller-actual="equilibrio-de-manos">
 
   <header class="nav">
     <div class="contenedor nav__inner">
@@ -38,14 +38,7 @@
       <ul class="nav__links">
         <li>
           <a href="../index.html#talleres" aria-haspopup="true">Clases ▾</a>
-          <div class="nav__despliegue">
-            <a href="pilates-mat.html">Pilates Mat <small>Lun · Vie · Sáb con Esperanza</small></a>
-            <a href="danza-contemporanea.html">Danza Contemporánea <small>Sábado 10:30 · Esperanza</small></a>
-            <a href="movimiento-flexible.html">Movimiento Flexible <small>Lun · Mar · Sáb con Consuelo</small></a>
-            <a href="equilibrio-de-manos.html">Equilibrio de Manos <small>Estás aquí ✿</small></a>
-            <a href="danza-filosofia.html">Danza y Filosofía <small>Jueves 18:45 · Amor Expresamos</small></a>
-            <a href="bellydance-fusion.html">Bellydance Fusión <small>Viernes 19:00 · Kathia</small></a>
-          </div>
+          <div class="nav__despliegue" data-nav-clases></div>
         </li>
         <li><a href="../index.html#horarios">Horarios</a></li>
         <li><a href="../index.html#tertulias">Tertulias</a></li>
@@ -58,20 +51,15 @@
 
   <main>
     <section class="taller-hero" style="--halo: #FAF0DC;">
-      <div class="guirnalda guirnalda--techo" data-guirnalda data-guirnalda-semilla="3"></div>
+      <div class="guirnalda guirnalda--techo" data-guirnalda data-guirnalda-semilla="0"></div>
       <div class="contenedor taller-hero__rejilla">
-        <div>
+        <div data-t-hero>
           <a class="miga" href="../index.html#talleres">← Todas las clases</a>
-          <h1>Equilibrio <span style="color:#E8C583">de Manos</span></h1>
-          
-          <p class="taller-hero__frase">El mundo se ve mejor al revés.</p>
-          <p class="taller-hero__desc">Aprender a pararse de manos desde cero, con método y sin miedo. Trabajamos <strong>muñecas, hombros y centro</strong>, la técnica de subida y — sobre todo — cómo caerse bien, que es lo primero que hay que perderle el susto.</p>
-          <div class="taller-hero__chips">
-            <span class="chip">🕙 Miércoles 10:00 – 12:00</span>
-            <span class="chip">🕞 Sábado 15:30 – 17:30</span>
-            <span class="chip">✿ Inicial · sin experiencia</span>
-            <span class="chip">⏱ 2 horas</span>
-          </div>
+          <h1 data-t-titulo></h1>
+          <p class="taller-hero__frase taller-hero__estilo" data-t-subtitulo hidden></p>
+          <p class="taller-hero__frase" data-t-frase></p>
+          <p class="taller-hero__desc" data-t-desc></p>
+          <div class="taller-hero__chips" data-t-chips></div>
         </div>
         <figure class="taller-hero__media" data-portada-taller></figure>
       </div>
@@ -79,35 +67,12 @@
 
     <section class="taller-cuerpo">
       <div class="contenedor taller-cuerpo__rejilla">
-        <div>
-          <div class="taller-bloque">
-            <h2>Qué vas a <span class="acento">trabajar</span></h2>
-            <ul class="lista-beneficios">
-              <li><strong>Muñecas</strong> — preparación y fuerza para que aguanten el peso sin dolor.</li>
-              <li><strong>Hombros</strong> — movilidad y estabilidad, la base de toda inversión.</li>
-              <li><strong>Alineación</strong> — encontrar la línea donde el equilibrio se sostiene solo.</li>
-              <li><strong>Caídas</strong> — salir sin miedo y sin golpearte.</li>
-              <li><strong>Paciencia</strong> — es un proceso largo y se disfruta el camino.</li>
-            </ul>
-          </div>
-
-          <div class="taller-bloque">
-            <h2>¿Es <span class="acento">para mí</span>?</h2>
-            <p>Sí, sobre todo si nunca lo has intentado. La clase es de nivel inicial y se arma para gente sin experiencia en inversiones. Vamos con progresiones contra la pared.</p>
-            <p>Ropa ajustada (para que la polera no se te venga a la cara) y muñecas sin accesorios.</p>
-          </div>
-
-          <div class="taller-bloque">
-            <h2>Tu <span class="acento">profe</span></h2>
-            <div class="profe-tarjeta">
-              <div class="profe-tarjeta__avatar"><img src="../img/fundadoras/consuelo-ongaro.jpg" alt="Consuelo Ongaro"></div>
-              <div>
-                <h4>Consuelo Ongaro</h4>
-                <p>Fundadora de Sala Crisol. Se mueve entre la flexibilidad, el equilibrio de manos y las artes del circo — y celebra cada semestre cumplido junto a su grupo.</p>
-                <a href="https://www.instagram.com/_consuelidad_/" target="_blank" rel="noopener">@_consuelidad_ →</a>
-              </div>
-            </div>
-          </div>
+        <!-- Todo lo de abajo se llena desde el panel (datos/contenido.json).
+             No escribas textos a mano acá: se pierden al recargar. -->
+        <div data-t-cuerpo>
+          <div class="taller-bloque" data-t-trabajo hidden></div>
+          <div class="taller-bloque" data-t-parami hidden></div>
+          <div class="taller-bloque" data-t-profe></div>
 
           <div class="taller-bloque" data-galeria hidden>
             <h2>La clase por <span class="acento">dentro</span></h2>
@@ -115,7 +80,7 @@
           </div>
         </div>
 
-        <aside class="panel-inscripcion" id="inscribirme" data-taller="equilibrio-de-manos">
+        <aside class="panel-inscripcion" id="inscribirme" data-panel-inscripcion>
           <h3>Inscríbete</h3>
           <p>Elige tu horario y te confirmamos el cupo por WhatsApp.</p>
 
@@ -167,7 +132,7 @@
   <footer class="pie">
     <div class="contenedor">
       <div class="pie__final" style="border:none;margin:0;padding:0">
-        <span>© <span data-anio>2026</span> Sala Crisol · Av. Salvador 2302, Ñuñoa</span>
+        <span>© <span data-anio>2026</span> Sala Crisol · <span data-direccion>Av. Salvador 2302, Ñuñoa</span></span>
         <span><a href="../privacidad.html">Privacidad</a></span>
         <span><a data-ig href="#">@sala.crisol</a></span>
       </div>

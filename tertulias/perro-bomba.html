@@ -10,14 +10,14 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <title>Tertulia 02 · Perro Bomba — Sala Crisol</title>
-  <meta name="description" content="Perro Bomba — tertulia de cine en Sala Crisol, Ñuñoa. Viernes 29 de mayo · 20:00 Proyección + tertulia en un espacio más íntimo: música, danza y expresiones artí">
+  <meta name="description" content="Perro Bomba — tertulia de cine en Sala Crisol, Ñuñoa. Viernes 29 de mayo · 20:00 Proyección + tertulia en un espacio más íntimo: música, danza y expresiones artísticas en atmósfera de escucha.">
   <link rel="canonical" href="https://salacrisol.cl/tertulias/perro-bomba.html">
   <meta property="og:site_name" content="Sala Crisol">
   <meta property="og:locale" content="es_CL">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://salacrisol.cl/tertulias/perro-bomba.html">
   <meta property="og:title" content="Tertulia 02 · Perro Bomba — Sala Crisol">
-  <meta property="og:description" content="Perro Bomba — tertulia de cine en Sala Crisol, Ñuñoa. Viernes 29 de mayo · 20:00 Proyección + tertulia en un espacio más íntimo: música, danza y expresiones artí">
+  <meta property="og:description" content="Perro Bomba — tertulia de cine en Sala Crisol, Ñuñoa. Viernes 29 de mayo · 20:00 Proyección + tertulia en un espacio más íntimo: música, danza y expresiones artísticas en atmósfera de escucha.">
   <meta property="og:image" content="https://salacrisol.cl/img/tertulias/02-perro-bomba/afiche.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="../img/sala/favicon.svg">
@@ -25,17 +25,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..600,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/estilo.css">
-  <style>
-    /* paleta tomada del afiche de este evento */
-    .evento-hero {
-      --ev-fondo: #0E2340;
-      --ev-tinta: #E8F6FF;
-      --ev-acento: #28C8E0;
-      --ev-acento2: #F2C14E;
-    }
-  </style>
 </head>
-<body data-subpagina>
+<body data-subpagina data-tertulia-actual="02-perro-bomba">
 
   <header class="nav">
     <div class="contenedor nav__inner">
@@ -47,14 +38,7 @@
       <ul class="nav__links">
         <li>
           <a href="../index.html#talleres" aria-haspopup="true">Clases ▾</a>
-          <div class="nav__despliegue">
-            <a href="../talleres/pilates-mat.html">Pilates Mat</a>
-            <a href="../talleres/danza-contemporanea.html">Danza Contemporánea</a>
-            <a href="../talleres/movimiento-flexible.html">Movimiento Flexible</a>
-            <a href="../talleres/equilibrio-de-manos.html">Equilibrio de Manos</a>
-            <a href="../talleres/danza-filosofia.html">Danza y Filosofía</a>
-            <a href="../talleres/bellydance-fusion.html">Bellydance Fusión</a>
-          </div>
+          <div class="nav__despliegue" data-nav-clases></div>
         </li>
         <li><a href="../index.html#horarios">Horarios</a></li>
         <li><a href="../index.html#tertulias">Tertulias</a></li>
@@ -68,47 +52,29 @@
   <main>
     <section class="evento-hero">
       <div class="contenedor evento-hero__rejilla">
-        <div class="evento-hero__texto">
+        <div class="evento-hero__texto" data-tert-hero>
           <a class="miga miga--claro" href="../index.html#tertulias">← Todas las tertulias</a>
-          <p class="evento-hero__eyebrow">Tertulia 02 · cine + conversación</p>
-          <h1 class="evento-hero__titulo">Perro Bomba</h1>
-          <p class="evento-hero__subt">de Juan Cáceres · Chile</p>
-          <p class="evento-hero__fecha">Viernes 29 de mayo · 20:00</p>
-          <p class="evento-hero__bajada">Proyección + tertulia en un espacio más íntimo: música, danza y expresiones artísticas en atmósfera de escucha.</p>
+          <p class="evento-hero__eyebrow" data-tert-eyebrow></p>
+          <h1 class="evento-hero__titulo" data-tert-titulo></h1>
+          <p class="evento-hero__subt" data-tert-subtitulo></p>
+          <p class="evento-hero__fecha" data-tert-fecha></p>
+          <p class="evento-hero__bajada" data-tert-bajada></p>
           <a class="boton boton--evento" data-ws="Hola! Quiero saber cuándo es la próxima tertulia ✨" href="#">Avísame de la próxima</a>
         </div>
-        <figure class="evento-hero__afiche">
-          <img src="../img/tertulias/02-perro-bomba/afiche.jpg" alt="Afiche de Tertulia 02 · Perro Bomba">
-        </figure>
+        <figure class="evento-hero__afiche" data-tert-afiche></figure>
       </div>
     </section>
 
     <section class="evento-cuerpo">
-      <div class="contenedor">
-        <div class="evento-relato">
-          <h2>Qué pasó esa noche</h2>
-          <p>Segundo ciclo, con <em>Perro Bomba</em> de Juan Cáceres — cine chileno sobre migración y pertenencia. Fue la más íntima de las tres: menos gente, más conversación, y el cierre con música en vivo en penumbra.</p>
-        </div>
-        <div class="evento-piezas">
-          <h2>Las piezas del ciclo</h2>
-          <div class="piezas__grilla">
-            <figure class="pieza"><img src="../img/tertulias/02-perro-bomba/promo-artistas-invitadxs.jpg" alt="Pieza gráfica del evento" loading="lazy"></figure>
-          </div>
-        </div>
-        <div class="evento-galeria">
-          <h2>Cómo se vivió</h2>
-          <div class="galeria__grilla">
-            <figure class="galeria__foto"><img src="../img/tertulias/02-perro-bomba/foto-01-musica-en-vivo.jpg" alt="Perro Bomba" loading="lazy"></figure>
-          </div>
-        </div>
-      </div>
+      <!-- Se llena solo desde el panel (datos/contenido.json). -->
+      <div class="contenedor" data-tert-cuerpo></div>
     </section>
   </main>
 
   <footer class="pie">
     <div class="contenedor">
       <div class="pie__final" style="border:none;margin:0;padding:0">
-        <span>© <span data-anio>2026</span> Sala Crisol · Av. Salvador 2302, Ñuñoa</span>
+        <span>© <span data-anio>2026</span> Sala Crisol · <span data-direccion>Av. Salvador 2302, Ñuñoa</span></span>
         <span><a href="../privacidad.html">Privacidad</a></span>
         <span><a data-ig href="#" style="color:#D9CDBF;text-decoration:none">@sala.crisol</a></span>
       </div>

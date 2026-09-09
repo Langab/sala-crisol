@@ -1374,6 +1374,7 @@ a { color: inherit; }
    ============================================================ */
 body[data-subpagina] { padding-top: 0; }
 
+
 .taller-hero {
   position: relative;
   padding: 8.5rem 0 3.5rem;
@@ -1408,6 +1409,15 @@ body[data-subpagina] { padding-top: 0; }
   font-size: clamp(1.05rem, 2vw, 1.35rem);
   color: var(--terracota);
   margin-bottom: 1rem;
+}
+/* Nombre del estilo de la clase, sobre la frase.
+   Ej: «Experiencia sensual (Sensuallstyle)» en Danza y Filosofía. */
+.taller-hero__estilo {
+  color: var(--terracota);
+  font-style: italic;
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.2rem;
 }
 .taller-hero__desc { color: var(--tinta-suave); max-width: 54ch; }
 .taller-hero__desc strong { color: var(--tinta); font-weight: 600; }
@@ -1778,6 +1788,14 @@ body[data-subpagina] { padding-top: 0; }
    del sitio, para que se sienta parte y no un injerto.
    ============================================================ */
 .evento-hero {
+  /* Colores por defecto. Los de cada evento vienen del panel y los
+     aplica main.js; estos evitan que la página parpadee en blanco
+     mientras carga. */
+  --ev-fondo: #1A0B2E;
+  --ev-tinta: #F7E9FF;
+  --ev-acento: #E845C8;
+  --ev-acento2: #7B3FF2;
+
   position: relative;
   padding: 8.5rem 0 3.5rem;
   background:
