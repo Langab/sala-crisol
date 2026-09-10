@@ -367,6 +367,8 @@ a { color: inherit; }
 /* el héroe se reparte: el texto a la izquierda, las fotos colgadas a la
    derecha. Antes ese costado quedaba vacío en pantallas anchas. */
 .heroe__rejilla {
+  position: relative;
+  z-index: 1;          /* siempre por encima de la gimnasta que cruza */
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
   gap: 2.5rem;
@@ -556,6 +558,50 @@ a { color: inherit; }
   .heroe__datos li { line-height: 1.5; padding: 0.3rem 0; }
   .heroe__datos li + li { border-top: 1px solid var(--linea); }
   .heroe__datos li:not(:last-child)::after { content: none; }
+}
+
+/* ============================================================
+   LA RUEDA — la gimnasta que cruza el héroe al entrar
+   ------------------------------------------------------------
+   Son 16 dibujos en una sola tira (img/sala/rueda.svg) que se
+   pasan como los cuadros de una animación. A este tamaño la
+   figura se lee limpia; por eso va chica y cruzando, y no
+   grande y quieta.
+
+   Cruza una vez y se va: si se saca, la página dice lo mismo.
+   ============================================================ */
+.rueda {
+  position: absolute;
+  /* al ras del piso del héroe: una rueda pasa por el suelo, y ahí el
+     fondo está limpio. Bajo las banderas se perdía entre el color. */
+  bottom: 30px;
+  left: 0;
+  width: 156px;
+  height: 156px;
+  z-index: 0;          /* por detrás del texto: cruza sin tapar nada */
+  opacity: 0.85;
+  pointer-events: none;
+  background-image: url("../img/sala/rueda.svg");
+  background-repeat: no-repeat;
+  background-size: 1600% 100%;   /* 16 cuadros de ancho */
+  animation:
+    rueda-cuadros 1.05s steps(16) 6 0.7s both,
+    rueda-cruza   6.3s cubic-bezier(0.30, 0.55, 0.45, 1) 0.7s both;
+}
+@keyframes rueda-cuadros { to { background-position-x: 100%; } }
+@keyframes rueda-cruza {
+  from { transform: translateX(-200px); }
+  to   { transform: translateX(calc(100vw + 200px)); }
+}
+
+/* En pantallas chicas la banda bajo las banderas es más angosta y la
+   figura se cruzaría con el titular: se queda fuera. */
+@media (max-width: 860px) {
+  .rueda { display: none; }
+}
+/* Quien pidió menos movimiento no la ve. */
+@media (prefers-reduced-motion: reduce) {
+  .rueda { display: none; }
 }
 
 /* la onda de papel al pie del héroe */
@@ -1051,6 +1097,51 @@ a { color: inherit; }
 }
 @media (max-width: 480px) {
   .espacio__specs { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   GALERÍA — la sala colgada de un hilo
+   ------------------------------------------------------------
+   El mismo tendedero del héroe, pero a escala de página. Las
+   polaroids se cuelgan en un orden distinto en cada visita.
+   ============================================================ */
+.galeria-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 8.5rem 0 3rem;
+  background:
+    radial-gradient(70% 50% at 50% 0%, #FFFDF9 0%, transparent 70%),
+    linear-gradient(180deg, var(--crema) 0%, var(--crema-2) 100%);
+}
+.galeria-hero .contenedor { position: relative; z-index: 1; }
+.galeria-hero h1 {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+  font-size: clamp(2.3rem, 5.5vw, 3.7rem);
+  line-height: 1.03;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.7rem;
+}
+.galeria-hero .bajada { max-width: 46ch; }
+
+.galeria-cuerpo { background: var(--crema-2); padding: 1rem 0 5rem; }
+
+/* En la galería las filas sí pueden partirse: hay muchas más fotos que
+   en el héroe y el hilo tiene que acompañar a las que quedan. */
+.tendedero__fila--galeria {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1.6rem 1.9rem;
+  padding-top: 1.8rem;
+  margin-bottom: 3.4rem;
+}
+.tendedero__fila--galeria .polaroid-col { width: clamp(150px, 21vw, 224px); }
+
+@media (max-width: 720px) {
+  .tendedero__fila--galeria { justify-content: center; gap: 1.2rem 1.2rem; }
+  .tendedero__fila--galeria .polaroid-col { width: clamp(132px, 40vw, 180px); }
 }
 
 /* ============================================================

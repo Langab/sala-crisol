@@ -253,6 +253,99 @@ function pintarSitio() {
     });
   }
 
+  /* ============================================================
+     GALERÍA — todas las fotos colgadas de un hilo
+     ------------------------------------------------------------
+     No hay lista que mantener: se piden las fotos que la convención
+     dice que pueden existir (img/talleres/<clase>/fotos/NN.jpg y las
+     de cada tertulia) y la que no está se descuelga sola. Así, cuando
+     las profes suban una foto nueva a su carpeta, aparece acá sin que
+     nadie toque código.
+
+     El orden se baraja en cada visita: la sala no tiene una foto
+     "principal", y así la galería se siente viva.
+     ============================================================ */
+  var galeria = document.querySelector("[data-galeria-completa]");
+  if (galeria) {
+    var piezas = [];
+    var apuntar = function (ruta, pie, enlace) {
+      if (ruta) piezas.push({ ruta: limpiarRuta(ruta), pie: pie || "", enlace: enlace || "" });
+    };
+
+    talleresVisibles().forEach(function (t) {
+      var pagina = base + limpiarRuta(paginaTaller(t));
+      fotosDelPanel(t).forEach(function (r) { apuntar(r, t.nombre, pagina); });
+      // la convención de carpeta: 01 a 06, las que falten se descuelgan
+      for (var i = 1; i <= 6; i++) {
+        apuntar("img/talleres/" + t.id + "/fotos/" + (i < 10 ? "0" : "") + i + ".jpg",
+                t.nombre, pagina);
+      }
+    });
+
+    (CRISOL.tertulias || []).forEach(function (t) {
+      if (t.estado === "oculta") return;
+      var pagina = base + limpiarRuta(t.pagina || "");
+      (t.fotos || []).forEach(function (r) { apuntar(r, t.pelicula, pagina); });
+    });
+
+    var dp = CRISOL.domingoPopular;
+    if (dp) (dp.piezas || []).forEach(function (r) { apuntar(r, "Domingo Popular", ""); });
+
+    /* Primero se averigua qué fotos existen de verdad y recién después se
+       arman las filas. Si se hiciera al revés, las que no existen dejan
+       la cuerda a medio llenar. */
+    Promise.all(piezas.map(function (pz) {
+      return new Promise(function (listo) {
+        var prueba = new Image();
+        prueba.onload  = function () { listo(prueba.naturalWidth > 0 ? pz : null); };
+        prueba.onerror = function () { listo(null); };
+        prueba.src = base + pz.ruta;
+      });
+    })).then(function (r) {
+      var vivas = r.filter(Boolean);
+
+      /* barajar (Fisher-Yates): la sala no tiene una foto principal */
+      for (var j = vivas.length - 1; j > 0; j--) {
+        var k = Math.floor(Math.random() * (j + 1));
+        var tmp = vivas[j]; vivas[j] = vivas[k]; vivas[k] = tmp;
+      }
+
+      if (!vivas.length) {
+        galeria.innerHTML = '<div class="evento-vacio"><p><strong>Todavía no hay fotos acá.</strong> ' +
+          "Las vamos a ir subiendo.</p></div>";
+        return;
+      }
+
+      var CAIDAS = [10, 40, 4, 30, 16, 44, 8, 26];
+      var GIROS  = [-4.2, 3.1, -2.6, 4.0, -3.4, 2.3, -1.8, 3.6];
+      var POR_FILA = 4;
+      var html = [];
+      for (var f = 0; f < vivas.length; f += POR_FILA) {
+        html.push('<div class="tendedero__fila tendedero__fila--galeria">');
+        html.push('<span class="tendedero__hilo" aria-hidden="true"></span>');
+        vivas.slice(f, f + POR_FILA).forEach(function (pz, n) {
+          var idx = f + n;
+          var abre = pz.enlace ? '<a class="polaroid-col" href="' + escHtml(pz.enlace) + '"'
+                               : '<div class="polaroid-col"';
+          var cierra = pz.enlace ? "</a>" : "</div>";
+          html.push(
+            abre + ' style="--caida:' + CAIDAS[idx % CAIDAS.length] + 'px; --giro:' +
+            GIROS[idx % GIROS.length] + 'deg; --demora:' + ((idx % POR_FILA) * 0.6) + 's">' +
+              '<span class="polaroid-col__pinza" aria-hidden="true"></span>' +
+              '<span class="polaroid-col__marco">' +
+                '<img src="' + base + escHtml(pz.ruta) + '" alt="' + texto(pz.pie) +
+                ' en Sala Crisol" loading="lazy">' +
+              "</span>" +
+              '<span class="polaroid-col__pie">' + texto(pz.pie) + "</span>" +
+            cierra
+          );
+        });
+        html.push("</div>");
+      }
+      galeria.innerHTML = html.join("");
+    });
+  }
+
   /* ---------- chispas del héroe ---------- */
   var heroe = document.querySelector(".heroe");
   var sinMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Seguridad: limita de dónde puede cargar y a dónde puede
+       enviar datos esta página. Si alguien lograra colar código,
+       el navegador igual le impide sacar información afuera. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-src https://www.google.com; form-action 'self'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>Galería — Sala Crisol</title>
+  <meta name="description" content="Fotos de la sala, las clases y las tertulias de Sala Crisol, Ñuñoa. Pilates, danza contemporánea, movimiento flexible, equilibrio de manos y bellydance.">
+  <link rel="canonical" href="https://salacrisol.cl/galeria.html">
+  <meta property="og:site_name" content="Sala Crisol">
+  <meta property="og:locale" content="es_CL">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://salacrisol.cl/galeria.html">
+  <meta property="og:title" content="Galería — Sala Crisol">
+  <meta property="og:description" content="Fotos de la sala, las clases y las tertulias de Sala Crisol, Ñuñoa. Pilates, danza contemporánea, movimiento flexible, equilibrio de manos y bellydance.">
+  <meta property="og:image" content="https://salacrisol.cl/img/fundadoras/consuelo-ongaro.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="img/sala/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..600,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="contenedor nav__inner">
+      <a class="nav__marca" href="index.html" aria-label="Sala Crisol, inicio">
+        <img class="nav__logo" src="img/sala/logo.jpg" alt="Logo de Sala Crisol">
+        <span class="nav__nombre">Sala <span>Crisol</span></span>
+      </a>
+      <button class="nav__burger" aria-expanded="false" aria-label="Abrir menú">☰</button>
+      <ul class="nav__links">
+        <li>
+          <a href="index.html#talleres" aria-haspopup="true">Clases ▾</a>
+          <div class="nav__despliegue" data-nav-clases></div>
+        </li>
+        <li><a href="index.html#horarios">Horarios</a></li>
+        <li><a href="index.html#tertulias">Tertulias</a></li>
+        <li><a href="index.html#espacio">El espacio</a></li>
+        <li><a href="galeria.html" aria-current="page">Galería</a></li>
+        <li><a href="nosotros.html">Nosotras</a></li>
+        <li><a class="boton boton--fuego" data-ws="Hola! Quiero tomar clases con ustedes ✨" href="#">Agenda una clase</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="contenido">
+
+  <section class="galeria-hero">
+    <div class="guirnalda guirnalda--techo" data-guirnalda data-guirnalda-semilla="7"></div>
+    <div class="contenedor">
+      <p class="miga"><a href="index.html">Inicio</a> · Galería</p>
+      <h1>Así se ve<br><span class="acento">la sala por dentro</span></h1>
+      <p class="bajada">Clases, tertulias, domingos populares y gente moviéndose.
+        Cada vez que entras, las fotos se cuelgan en otro orden.</p>
+    </div>
+  </section>
+
+  <section class="galeria-cuerpo">
+    <!-- Las fotos se cuelgan solas desde las carpetas de cada clase y de
+         cada tertulia. Si una foto no existe, su polaroid se descuelga
+         sin dejar hueco: no hay lista que mantener a mano. -->
+    <div class="contenedor" data-galeria-completa></div>
+  </section>
+
+</main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie__final" style="border: none; margin: 0; padding: 0;">
+        <span>© <span data-anio>2026</span> Sala Crisol · <span data-direccion>Av. Salvador 2302, Ñuñoa</span></span>
+        <span><a href="privacidad.html">Privacidad</a></span>
+        <span><a data-ig href="#" style="color: #D9CDBF; text-decoration: none;">@sala.crisol</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js?v=2"></script>
+  <script src="js/main.js?v=2"></script>
+</body>
+</html>
