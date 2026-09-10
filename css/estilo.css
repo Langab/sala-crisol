@@ -1410,14 +1410,26 @@ body[data-subpagina] { padding-top: 0; }
   color: var(--terracota);
   margin-bottom: 1rem;
 }
-/* Nombre del estilo de la clase, sobre la frase.
-   Ej: «Experiencia sensual (Sensuallstyle)» en Danza y Filosofía. */
+/* Cuando el titular es el nombre del estilo va en mayúsculas. Como la
+   caja alta ocupa mucho más, baja de tamaño para que siga entrando en
+   una o dos líneas. Ej: EXPERIENCIA SENSUAL (SENSUALLSTYLE). */
+.taller-hero h1.titulo--estilo {
+  text-transform: uppercase;
+  font-size: clamp(1.65rem, 3.9vw, 2.75rem);
+  letter-spacing: -0.005em;
+  line-height: 1.06;
+  margin-bottom: 0.3rem;
+}
+
+/* El nombre de la clase, chico y en minúsculas debajo del titular.
+   Ej: «danza y filosofía» bajo EXPERIENCIA SENSUAL. */
 .taller-hero__estilo {
   color: var(--terracota);
   font-style: italic;
   font-size: 1.02rem;
   letter-spacing: 0.01em;
   margin-bottom: 0.2rem;
+  text-transform: lowercase;
 }
 .taller-hero__desc { color: var(--tinta-suave); max-width: 54ch; }
 .taller-hero__desc strong { color: var(--tinta); font-weight: 600; }
@@ -1558,6 +1570,7 @@ body[data-subpagina] { padding-top: 0; }
 @media (max-width: 900px) {
   .taller-hero__rejilla,
   .taller-cuerpo__rejilla { grid-template-columns: 1fr; gap: 2rem; }
+  .evento-cuerpo__rejilla { grid-template-columns: 1fr; gap: 2rem; }
   .panel-inscripcion { position: static; }
   .taller-hero { padding-top: 7rem; }
 }
@@ -1874,6 +1887,53 @@ body[data-subpagina] { padding-top: 0; }
 /* --- cuerpo, ya en la base clara --- */
 .evento-cuerpo { background: var(--crema); padding: 3.5rem 0 4.5rem; }
 
+/* Eventos con inscripción (la fonda): el relato a la izquierda y la
+   columna de inscribirse + transferencia a la derecha, igual que en
+   las páginas de clase. */
+.evento-cuerpo__rejilla {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Los datos para transferir. Van debajo del formulario, en papel, para
+   que se lean como un dato práctico y no como parte del formulario. */
+.transf {
+  margin-top: 1.5rem;
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-radius: 18px;
+  padding: 1.4rem 1.5rem;
+}
+.transf__titulo {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  margin-bottom: 0.9rem;
+}
+.transf__datos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 0.9rem;
+  margin-bottom: 1rem;
+  font-size: 0.93rem;
+}
+.transf__datos dt { color: var(--tinta-suave); }
+.transf__datos dd {
+  font-weight: 600;
+  /* el número de cuenta se lee y se copia mejor con ancho fijo */
+  font-variant-numeric: tabular-nums;
+  word-break: break-word;
+}
+.transf__nota {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--tinta-suave);
+  margin-bottom: 1rem;
+}
+.transf__nota strong { color: var(--tinta); }
+
 .evento-relato { max-width: 62ch; margin-bottom: 2.6rem; }
 .evento-relato h2,
 .evento-galeria h2,
@@ -1963,6 +2023,18 @@ a.afiche { text-decoration: none; color: inherit; }
 a.afiche:hover .flecha { transform: translateX(4px); }
 
 /* el afiche del Domingo Popular lleva a su página */
+/* Banda del próximo evento de una sola fecha en la portada. Usa el
+   mismo panel que los Domingos Populares, con el fondo más cálido
+   para que se note que es algo puntual. */
+.evento-proximo { background: var(--mostaza-velo); }
+.evento-proximo__cuando {
+  font-family: var(--fuente-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--terracota);
+  margin-bottom: 0.9rem;
+}
+
 .dp-afiche {
   display: block;
   border-radius: var(--radio);

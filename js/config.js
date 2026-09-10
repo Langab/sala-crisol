@@ -85,6 +85,10 @@ function construirGrilla() {
   dias.forEach(function (d) { grilla[d] = []; });
 
   talleresVisibles().forEach(function (t) {
+    /* Un evento de una sola fecha (una fonda, un taller puntual) no es
+       parte de la semana: sale en su propia tarjeta, no en el horario.
+       El Domingo Popular sí va, porque se repite todos los meses. */
+    if (t.enHorario === false) return;
     (t.horarios || []).forEach(function (h) {
       if (!grilla[h.dia]) return;
       grilla[h.dia].push({

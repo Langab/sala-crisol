@@ -53,6 +53,17 @@ content:
           - name: direccion
             label: Dirección
             type: string
+          - name: transferencia
+            label: Datos para transferir
+            type: object
+            description: "Aparecen en la página de los eventos con entrada. Si los dejas vacíos, el recuadro no se muestra."
+            fields:
+              - { name: titular, label: A nombre de, type: string }
+              - { name: rut, label: RUT, type: string }
+              - { name: banco, label: Banco, type: string }
+              - { name: tipoCuenta, label: Tipo de cuenta, type: string, description: "Corriente, Vista, RUT…" }
+              - { name: numero, label: Número de cuenta, type: string }
+              - { name: correo, label: Correo para el comprobante, type: string }
 
       # =================================================================
       # CLASES
@@ -213,11 +224,15 @@ content:
           - name: tipo
             label: Tipo
             type: string
-            description: Déjalo vacío. Solo el Domingo Popular lleva «evento» acá.
+            description: "Déjalo vacío en las clases. Escribe «evento» si es una fecha suelta (una fonda, un taller de un día) o el Domingo Popular."
           - name: fechaFija
             label: Fecha fija
             type: string
             description: "Solo para eventos de una fecha. Se escribe así: 2026-09-28"
+          - name: enHorario
+            label: ¿Sale en el horario semanal?
+            type: boolean
+            description: "Déjalo encendido en las clases. Apágalo en un evento de una sola fecha: sale en su propia franja de la portada y desaparece solo cuando pasa."
 
       # =================================================================
       # FILAS SUELTAS DEL HORARIO

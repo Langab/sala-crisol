@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Seguridad: limita de dónde puede cargar y a dónde puede
+       enviar datos esta página. Si alguien lograra colar código,
+       el navegador igual le impide sacar información afuera. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-src https://www.google.com; form-action 'self'; base-uri 'none'; object-src 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <title>Fonda en la Casona — Sala Crisol</title>
+  <meta name="description" content="Fonda en la Casona: sábado 19 de septiembre desde las 16:00 en Sala Crisol, Ñuñoa. Junto a Ironcross Calistenia. Entrada anticipada $5.000 con choripán o terremoto incluido.">
+  <link rel="canonical" href="https://salacrisol.cl/eventos/fonda-en-la-casona.html">
+  <meta property="og:site_name" content="Sala Crisol">
+  <meta property="og:locale" content="es_CL">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://salacrisol.cl/eventos/fonda-en-la-casona.html">
+  <meta property="og:title" content="Fonda en la Casona — Sala Crisol">
+  <meta property="og:description" content="Fonda en la Casona: sábado 19 de septiembre desde las 16:00 en Sala Crisol, Ñuñoa. Junto a Ironcross Calistenia. Entrada anticipada $5.000 con choripán o terremoto incluido.">
+  <meta property="og:image" content="https://salacrisol.cl/img/eventos/fonda-2026-09-19/afiche.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="../img/sala/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..600,0..100,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/estilo.css">
+  <style>
+    /* Los colores salen del afiche: el índigo de la banda de la fecha,
+       el oro de las letras, el carmesí de "ENTRADA" y el crema del papel. */
+    .evento-hero {
+      --ev-fondo: #2E2A63;
+      --ev-tinta: #F7EBD2;
+      --ev-acento: #F0C74E;
+      --ev-acento2: #C1272D;
+    }
+  </style>
+</head>
+<body data-subpagina data-taller-actual="fonda-en-la-casona">
+
+  <header class="nav">
+    <div class="contenedor nav__inner">
+      <a class="nav__marca" href="../index.html" aria-label="Sala Crisol, inicio">
+        <img class="nav__logo" src="../img/sala/logo.jpg" alt="Logo de Sala Crisol">
+        <span class="nav__nombre">Sala <span>Crisol</span></span>
+      </a>
+      <button class="nav__burger" aria-expanded="false" aria-label="Abrir menú">☰</button>
+      <ul class="nav__links">
+        <li>
+          <a href="../index.html#talleres" aria-haspopup="true">Clases ▾</a>
+          <div class="nav__despliegue" data-nav-clases></div>
+        </li>
+        <li><a href="../index.html#horarios">Horarios</a></li>
+        <li><a href="../index.html#tertulias">Tertulias</a></li>
+        <li><a href="../index.html#espacio">El espacio</a></li>
+        <li><a href="../nosotros.html">Nosotras</a></li>
+        <li><a class="boton boton--fuego" data-ws="Hola! Quiero tomar clases con ustedes ✨" href="#">Agenda una clase</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <section class="evento-hero">
+      <div class="contenedor evento-hero__rejilla">
+        <div class="evento-hero__texto">
+          <a class="miga miga--claro" href="../index.html">← Volver al inicio</a>
+          <p class="evento-hero__eyebrow" data-ev-eyebrow></p>
+          <h1 class="evento-hero__titulo" data-ev-titulo></h1>
+          <p class="evento-hero__fecha" data-ev-fecha></p>
+          <p class="evento-hero__bajada" data-ev-bajada></p>
+          <a class="boton boton--evento" href="#inscribirme">Quiero mi entrada</a>
+        </div>
+        <figure class="evento-hero__afiche" data-ev-afiche></figure>
+      </div>
+    </section>
+
+    <section class="evento-cuerpo">
+      <div class="contenedor evento-cuerpo__rejilla">
+        <div data-ev-cuerpo></div>
+
+        <div>
+          <aside class="panel-inscripcion" id="inscribirme" data-panel-inscripcion>
+          <h3>Inscríbete</h3>
+          <p>Reserva tu entrada anticipada y te confirmamos por WhatsApp.</p>
+
+          <div class="horarios-lista" data-horarios></div>
+          <div class="precios-linea" data-precios></div>
+
+          <form class="formulario" data-form-inscripcion style="padding:0;border:none;box-shadow:none;background:none">
+            <div class="campo">
+              <label for="i-nombre">Tu nombre</label>
+              <input id="i-nombre" name="nombre" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" required>
+            </div>
+            <div class="campo">
+              <label for="i-telefono">WhatsApp</label>
+              <input id="i-telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 ..." required>
+            </div>
+            <div class="campo">
+              <label for="i-correo">Correo <span style="text-transform:none;opacity:0.6">(opcional)</span></label>
+              <input id="i-correo" name="correo" type="email" autocomplete="email" placeholder="tucorreo@mail.com">
+            </div>
+            <div class="campo">
+              <label for="i-horario">Horario</label>
+              <select id="i-horario" name="horario" data-selector-horario required></select>
+            </div>
+            <div class="campo">
+              <label id="lbl-exp">¿Es tu primera vez acá?</label>
+              <div class="opciones" role="radiogroup" aria-labelledby="lbl-exp">
+                <label class="opcion"><input type="radio" name="experiencia" value="primera-vez" checked><span>Primera vez</span></label>
+                <label class="opcion"><input type="radio" name="experiencia" value="antigua"><span>Ya vengo</span></label>
+              </div>
+            </div>
+            <div class="campo">
+              <label id="lbl-mod">¿Qué entrada quieres?</label>
+              <div class="opciones opciones--precios" role="radiogroup" aria-labelledby="lbl-mod" data-modalidades></div>
+            </div>
+            <div class="campo">
+              <label for="i-comentario">Comentario <span style="text-transform:none;opacity:0.6">(opcional)</span></label>
+              <textarea id="i-comentario" name="comentario" placeholder="Lesiones, dudas, lo que quieras contarnos"></textarea>
+            </div>
+            <p class="aviso" data-aviso role="status" aria-live="polite"></p>
+            <button class="boton boton--ws" type="submit">Inscribirme →</button>
+            <p class="campo__pista" data-aviso-privacidad style="margin-top:12px">Guardamos tu nombre y contacto solo para reservarte el cupo y escribirte por la fonda. <a href="../privacidad.html">Cómo cuidamos tus datos</a>.</p>
+            <p class="formulario__nota">Tu inscripción queda registrada al tiro. La sala te confirma por WhatsApp y te pasa los datos para transferir.</p>
+          </form>
+        </aside>
+          <div class="transf" data-transferencia hidden></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <div class="pie__final" style="border:none;margin:0;padding:0">
+        <span>© <span data-anio>2026</span> Sala Crisol · <span data-direccion>Av. Salvador 2302, Ñuñoa</span></span>
+        <span><a href="../privacidad.html">Privacidad</a></span>
+        <span><a data-ig href="#" style="color:#D9CDBF;text-decoration:none">@sala.crisol</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/config.js?v=2"></script>
+  <script src="../js/main.js?v=2"></script>
+</body>
+</html>

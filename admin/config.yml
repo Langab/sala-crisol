@@ -56,6 +56,20 @@ collections:
               - { name: instagram, label: "Instagram", widget: string, required: false,
                   hint: "Solo el usuario, sin la arroba." }
               - { name: direccion, label: "Dirección", widget: string, required: false }
+              - name: transferencia
+                label: "Datos para transferir"
+                widget: object
+                collapsed: true
+                required: false
+                hint: "Aparecen en la página de los eventos con entrada. Si los dejas vacíos, el recuadro no se muestra."
+                fields:
+                  - { name: titular, label: "A nombre de", widget: string, required: false }
+                  - { name: rut, label: "RUT", widget: string, required: false }
+                  - { name: banco, label: "Banco", widget: string, required: false }
+                  - { name: tipoCuenta, label: "Tipo de cuenta", widget: string, required: false,
+                      hint: "Corriente, Vista, RUT…" }
+                  - { name: numero, label: "Número de cuenta", widget: string, required: false }
+                  - { name: correo, label: "Correo para el comprobante", widget: string, required: false }
 
           # ---------- Clases ----------
           - name: talleres
@@ -157,9 +171,12 @@ collections:
               - { name: pagina, label: "Página propia", widget: string, required: false,
                   hint: "La dirección de la página de esta clase. No la cambies. En una clase nueva déjala vacía." }
               - { name: tipo, label: "Tipo", widget: string, required: false,
-                  hint: "Déjalo vacío. Solo el Domingo Popular lleva «evento»." }
+                  hint: "Déjalo vacío en las clases. Escribe «evento» si es una fecha suelta (una fonda, un taller de un día) o el Domingo Popular." }
               - { name: fechaFija, label: "Fecha fija", widget: string, required: false,
                   hint: "Solo para eventos de una fecha: 2026-09-28" }
+              - { name: enHorario, label: "¿Sale en el horario semanal?", widget: boolean,
+                  required: false, default: true,
+                  hint: "Déjalo encendido en las clases. Apágalo en un evento de una sola fecha: sale en su propia franja de la portada y desaparece solo cuando pasa." }
 
           # ---------- Filas sueltas del horario ----------
           - name: grillaExtra

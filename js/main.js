@@ -552,21 +552,26 @@ function pintarSitio() {
                   orquidea: "#F4E9F8" };
     var tono = TONOS[t.color] || TONOS.rosa;
 
-    document.title = t.nombre + " — Sala Crisol";
+    document.title = (t.subtitulo ? t.subtitulo + " · " + t.nombre : t.nombre) + " — Sala Crisol";
     var seccion = document.querySelector(".taller-hero");
     if (seccion) seccion.style.setProperty("--halo", HALOS[t.color] || HALOS.rosa);
 
-    /* título: la primera palabra en negro y el resto en el color de la clase */
-    var partes = String(t.nombre).split(" ");
+    /* Cuando la clase tiene nombre de estilo propio, ese es el que manda:
+       va grande y en mayúsculas, y el nombre de la clase queda chico y en
+       minúsculas justo abajo. Hoy solo pasa con Experiencia Sensual, que
+       es «danza y filosofía» pero se anuncia por el estilo. */
+    var titular = t.subtitulo || t.nombre;
+    var partes = String(titular).split(" ");
     var h1 = document.querySelector("[data-t-titulo]");
     if (h1) {
       h1.innerHTML = texto(partes[0]) +
         (partes.length > 1 ? ' <span style="color:' + tono + '">' + texto(partes.slice(1).join(" ")) + "</span>" : "");
+      h1.className = t.subtitulo ? "titulo--estilo" : "";
     }
 
     var elSub = document.querySelector("[data-t-subtitulo]");
     if (elSub) {
-      elSub.innerHTML = texto(t.subtitulo);
+      elSub.innerHTML = t.subtitulo ? texto(t.nombre) : "";
       elSub.hidden = !t.subtitulo;
     }
 
@@ -709,8 +714,12 @@ function pintarSitio() {
                  (i === 0 ? " checked" : "") + '>' +
                  '<span><b>' + texto(pr.nombre) + "</b><em>" + texto(pr.valor) + "</em></span></label>";
         });
-        ops.push('<label class="opcion opcion--pagada"><input type="radio" name="modalidad" value="pagada">' +
-                 '<span><b>Ya pagué el pase del mes</b><em>No pago hoy</em></span></label>');
+        /* El pase mensual es de las clases: en un evento de una sola
+           fecha no existe, y ofrecerlo confunde. */
+        if (taller.tipo !== "evento") {
+          ops.push('<label class="opcion opcion--pagada"><input type="radio" name="modalidad" value="pagada">' +
+                   '<span><b>Ya pagué el pase del mes</b><em>No pago hoy</em></span></label>');
+        }
         contMod.innerHTML = ops.join("");
       }
 
@@ -1060,6 +1069,151 @@ function pintarSitio() {
       msj += " Quiero tomar clases con ustedes ✨";
       window.open(enlaceWhatsApp(msj), "_blank", "noopener");
     });
+  }
+
+  /* ============================================================
+     PRÓXIMO EVENTO EN LA PORTADA
+     ------------------------------------------------------------
+     Cualquier evento de una sola fecha que esté en el panel y no
+     haya pasado todavía. Si no hay ninguno, la sección no aparece:
+     nadie tiene que acordarse de bajarla cuando termine la fonda.
+     ============================================================ */
+  var cajaProx = document.querySelector("[data-evento-proximo]");
+  if (cajaProx) {
+    var hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    var proximos = talleresVisibles().filter(function (t) {
+      if (t.tipo !== "evento" || t.enHorario !== false || !t.fechaFija) return false;
+      var f = new Date(t.fechaFija + "T12:00:00");
+      return !isNaN(f) && f >= hoy;
+    }).sort(function (a, b) {
+      return String(a.fechaFija).localeCompare(String(b.fechaFija));
+    });
+
+    if (!proximos.length) {
+      cajaProx.hidden = true;
+    } else {
+      var ev = proximos[0];
+      var afi = portadaTaller(ev);
+      cajaProx.hidden = false;
+      cajaProx.innerHTML =
+        '<div class="contenedor comunidad__panel">' +
+          '<div class="comunidad__texto">' +
+            '<span class="sticker sticker--fuego revelar">Este mes</span>' +
+            '<h2 class="titulo-seccion revelar">' + texto(ev.nombre) + "</h2>" +
+            '<p class="evento-proximo__cuando revelar">' +
+              texto(fechaLarga(ev.fechaFija) +
+                    ((ev.horarios || [])[0] ? " · " + ev.horarios[0].hora : "")) +
+            "</p>" +
+            '<p class="revelar">' + texto(ev.descripcion) + "</p>" +
+            '<div class="heroe__ctas revelar">' +
+              '<a class="boton boton--fuego" href="' + base + limpiarRuta(ev.pagina) + '">Quiero ir →</a>' +
+              '<a class="boton boton--borde" data-ws="Hola! Tengo una duda sobre ' +
+                escHtml(ev.nombre) + '" href="#">¿Dudas? Escríbenos</a>' +
+            "</div>" +
+          "</div>" +
+          (afi
+            ? '<a class="dp-afiche revelar revelar--retraso-1" href="' + base + limpiarRuta(ev.pagina) +
+              '"><img src="' + base + limpiarRuta(afi) + '" alt="Afiche de ' + texto(ev.nombre) + '"></a>'
+            : "") +
+        "</div>";
+      /* el botón de WhatsApp que acabo de crear necesita su enlace */
+      cajaProx.querySelectorAll("[data-ws]").forEach(function (el) {
+        el.href = enlaceWhatsApp(el.getAttribute("data-ws"));
+      });
+    }
+  }
+
+  /* ============================================================
+     PÁGINA DE UN EVENTO DE UNA SOLA FECHA
+     ------------------------------------------------------------
+     Usa el molde oscuro de las tertulias, pero los datos salen de
+     la misma ficha de "clases" del panel. Así la inscripción, los
+     cupos y la planilla funcionan igual que en cualquier clase, sin
+     inventar un sistema aparte.
+     ============================================================ */
+  var contEv = document.querySelector("[data-ev-cuerpo]");
+  if (contEv) pintarPaginaEvento(taller);
+
+  function pintarPaginaEvento(t) {
+    if (!t || t.estado === "oculto") {
+      contEv.innerHTML =
+        '<div class="evento-relato"><h2>Este evento no está <span class="acento">disponible</span></h2>' +
+        '<p>Puede que ya haya pasado. Mira <a href="' + base + 'index.html">qué viene ahora</a>.</p></div>';
+      var panelEv = document.querySelector("[data-panel-inscripcion]");
+      if (panelEv) panelEv.hidden = true;
+      return;
+    }
+
+    document.title = t.nombre + " — Sala Crisol";
+
+    var poner = function (sel, html) {
+      var el = document.querySelector(sel);
+      if (el) el.innerHTML = html;
+    };
+
+    poner("[data-ev-titulo]", texto(t.nombre));
+    poner("[data-ev-eyebrow]", texto(t.profe));
+    poner("[data-ev-bajada]", texto(t.frase));
+    poner("[data-ev-fecha]", texto(fechaLarga(t.fechaFija) +
+      ((t.horarios || [])[0] ? " · " + t.horarios[0].hora : "")));
+
+    var afiche = portadaTaller(t);
+    if (afiche) {
+      poner("[data-ev-afiche]", '<img src="' + base + limpiarRuta(afiche) +
+        '" alt="Afiche de ' + texto(t.nombre) + '">');
+    }
+
+    contEv.innerHTML =
+      '<div class="evento-relato"><h2>De qué se trata</h2><p>' +
+      texto(t.descripcion) + "</p></div>";
+  }
+
+  /** "2026-09-19" → "Sábado 19 de septiembre". Si no hay fecha, "". */
+  function fechaLarga(iso) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(iso || ""))) return "";
+    var f = new Date(iso + "T12:00:00");
+    var dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    var meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+                 "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    return dias[f.getDay()] + " " + f.getDate() + " de " + meses[f.getMonth()];
+  }
+
+  /* ============================================================
+     DATOS PARA TRANSFERIR
+     ------------------------------------------------------------
+     Se llenan desde el panel (Datos de la sala → Transferencia).
+     Mientras estén vacíos el bloque no aparece: mejor no mostrar
+     nada que mostrar una cuenta a medias.
+     ============================================================ */
+  var cajaTransf = document.querySelector("[data-transferencia]");
+  if (cajaTransf) {
+    var cta = (CRISOL.sala && CRISOL.sala.transferencia) || {};
+    var filas = [
+      ["Nombre", cta.titular], ["RUT", cta.rut], ["Banco", cta.banco],
+      ["Tipo de cuenta", cta.tipoCuenta], ["N° de cuenta", cta.numero],
+      ["Correo", cta.correo],
+    ].filter(function (f) { return String(f[1] || "").trim(); });
+
+    if (!filas.length) {
+      cajaTransf.hidden = true;
+    } else {
+      cajaTransf.hidden = false;
+      cajaTransf.innerHTML =
+        '<h3 class="transf__titulo">Para transferir</h3>' +
+        '<dl class="transf__datos">' +
+        filas.map(function (f) {
+          return "<dt>" + texto(f[0]) + "</dt><dd>" + texto(f[1]) + "</dd>";
+        }).join("") +
+        "</dl>" +
+        '<p class="transf__nota">Cuando transfieras, <strong>mándanos el comprobante ' +
+        'por WhatsApp</strong> y te confirmamos el cupo. Si prefieres, también puedes ' +
+        'pagar en la puerta.</p>' +
+        '<a class="boton boton--ws" data-ws="Hola! Ya transferí para la Fonda en la Casona. Acá va el comprobante 📎" href="#">Enviar comprobante</a>';
+      /* el botón nuevo también necesita su enlace de WhatsApp */
+      var btn = cajaTransf.querySelector("[data-ws]");
+      if (btn) btn.href = enlaceWhatsApp(btn.getAttribute("data-ws"));
+    }
   }
 
   /* ---------- aparición al hacer scroll ---------- */

@@ -3,7 +3,15 @@
     "whatsapp": "56991757042",
     "instagram": "sala.crisol",
     "direccion": "Av. Salvador 2302, Ñuñoa",
-    "mesActual": "Septiembre"
+    "mesActual": "Septiembre",
+    "transferencia": {
+      "titular": "",
+      "rut": "",
+      "banco": "",
+      "tipoCuenta": "",
+      "numero": "",
+      "correo": ""
+    }
   },
   "talleres": [
     {
@@ -502,6 +510,52 @@
           "monto": 3000
         }
       ]
+    },
+    {
+      "id": "fonda-en-la-casona",
+      "nombre": "Fonda en la Casona",
+      "estado": "activo",
+      "subtitulo": "",
+      "frase": "Un espacio seguro para compartir.",
+      "profe": "Sala Crisol y Ironcross Calistenia",
+      "profeIg": "sala.crisol",
+      "profeCorto": "Sala Crisol",
+      "nivel": "Abierto a todas y todos",
+      "duracion": "",
+      "temporada": "",
+      "color": "mostaza",
+      "descripcion": "Nos juntamos con **Ironcross Calistenia** para celebrar el 18 en la casona. Hay choripán, terremoto y espacio para quedarse toda la tarde. La entrada anticipada incluye **un choripán o un terremoto**.",
+      "trabajo": [],
+      "paraMi": [],
+      "bioProfe": "",
+      "fotoProfe": "",
+      "portada": "img/eventos/fonda-2026-09-19/afiche.jpg",
+      "portadaEsFoto": false,
+      "fotos": [],
+      "horarios": [
+        {
+          "dia": "Sábado",
+          "hora": "16:00 en adelante",
+          "cuposTotal": 0,
+          "cuposDisponibles": null
+        }
+      ],
+      "precios": [
+        {
+          "nombre": "Entrada anticipada",
+          "valor": "$5.000",
+          "monto": 5000
+        },
+        {
+          "nombre": "En la puerta",
+          "valor": "$8.000",
+          "monto": 8000
+        }
+      ],
+      "pagina": "eventos/fonda-en-la-casona.html",
+      "tipo": "evento",
+      "fechaFija": "2026-09-19",
+      "enHorario": false
     }
   ],
   "grillaExtra": [],
