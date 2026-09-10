@@ -11,7 +11,7 @@
   --crema-2: #F5EDE1;
   --papel: #FFFFFF;
   --tinta: #3B3129;
-  --tinta-suave: #7A6A5A;
+  --tinta-suave: #685B4D;
   --linea: #E7DACA;
 
   /* ---- Los banderines ---- */
@@ -23,6 +23,11 @@
   --lila: #B7A6D6;
   --orquidea: #B67EC4;   /* el violeta del afiche de Kathia */
   --frambuesa: #C4626F;   /* el rojo hondo de la guirnalda, para énfasis */
+  /* Los dos de abajo son los mismos colores, oscurecidos lo justo para que
+     un texto chico se lea con el contraste que pide la norma (4,5:1).
+     El de marca se queda intacto donde va como fondo, en los botones. */
+  --frambuesa-texto: #B14251;
+  --terracota-texto: #A04E24;
 
   /* tonos de apoyo (fondos suaves de cada color) */
   --rosa-velo: #F7E6E9;
@@ -122,7 +127,7 @@ a { color: inherit; }
   letter-spacing: -0.02em;
   margin-bottom: 0.9rem;
 }
-.titulo-seccion .acento { color: var(--frambuesa); font-style: italic; }
+.titulo-seccion .acento { color: var(--frambuesa-texto); font-style: italic; }
 
 .bajada {
   font-size: clamp(1rem, 1.5vw, 1.1rem);
@@ -198,7 +203,7 @@ a { color: inherit; }
   color: var(--tinta);
   box-shadow: inset 0 0 0 1.5px var(--linea);
 }
-.boton--borde:hover { box-shadow: inset 0 0 0 1.5px var(--frambuesa); color: var(--frambuesa); transform: translateY(-2px); }
+.boton--borde:hover { box-shadow: inset 0 0 0 1.5px var(--frambuesa); color: var(--frambuesa-texto); transform: translateY(-2px); }
 
 .boton--tinta { background: var(--tinta); color: var(--crema); }
 .boton--tinta:hover { transform: translateY(-2px); background: #2B231C; }
@@ -246,7 +251,7 @@ a { color: inherit; }
   color: var(--tinta);
   line-height: 1;
 }
-.nav__nombre span { color: var(--frambuesa); font-style: italic; }
+.nav__nombre span { color: var(--frambuesa-texto); font-style: italic; }
 
 .nav__links { display: flex; align-items: center; gap: 1.5rem; list-style: none; }
 .nav__links > li { position: relative; }
@@ -259,7 +264,7 @@ a { color: inherit; }
   color: var(--tinta-suave);
   transition: color 0.15s ease;
 }
-.nav__links a:not(.boton):hover { color: var(--frambuesa); }
+.nav__links a:not(.boton):hover { color: var(--frambuesa-texto); }
 .nav__links .boton { padding: 0.6em 1.2em; font-size: 0.82rem; min-height: 0; }
 
 .nav__despliegue {
@@ -492,7 +497,7 @@ a { color: inherit; }
 }
 .heroe__titulo .fundido {
   display: block;
-  color: var(--frambuesa);
+  color: var(--frambuesa-texto);
   font-style: italic;
 }
 
@@ -514,20 +519,43 @@ a { color: inherit; }
 
 .heroe__ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
 
+/* Los tres datos duros bajo los botones. Eran cápsulas blancas con
+   emoji, el mismo recurso que trae cualquier plantilla; ahora son una
+   línea de texto separada por puntos, más discreta, para que el titular
+   y las banderas se lleven la atención.
+
+   El separador va al FINAL de cada dato y no al principio del siguiente:
+   así, cuando la línea salta, no queda una marca suelta abriendo el
+   renglón de abajo. */
 .heroe__datos {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 2rem;
+  align-items: baseline;
+  margin-top: 2.2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--linea);
+  list-style: none;
+  max-width: 60ch;
 }
-.heroe__datos span {
-  background: var(--papel);
-  border: 1px solid var(--linea);
-  border-radius: 999px;
-  padding: 0.4em 0.9em;
-  font-size: 0.8rem;
+.heroe__datos li {
+  font-size: 0.83rem;
+  line-height: 1.9;
   color: var(--tinta-suave);
-  box-shadow: var(--sombra);
+}
+.heroe__datos li:not(:last-child)::after {
+  content: "·";
+  margin: 0 0.62rem;
+  color: var(--terracota);
+  opacity: 0.55;
+}
+
+@media (max-width: 620px) {
+  /* apilados, el punto sobra: cada dato es su propia línea */
+  /* stretch para que los filetes midan lo mismo y no el largo del texto */
+  .heroe__datos { flex-direction: column; align-items: stretch; max-width: none; }
+  .heroe__datos li { line-height: 1.5; padding: 0.3rem 0; }
+  .heroe__datos li + li { border-top: 1px solid var(--linea); }
+  .heroe__datos li:not(:last-child)::after { content: none; }
 }
 
 /* la onda de papel al pie del héroe */
@@ -730,7 +758,7 @@ a { color: inherit; }
   font-size: 0.82rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--frambuesa);
+  color: var(--frambuesa-texto);
 }
 .flecha { transition: transform 0.2s ease; }
 .tarjeta-taller:hover .flecha { transform: translateX(4px); }
@@ -795,7 +823,7 @@ a { color: inherit; }
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--frambuesa);
+  color: var(--frambuesa-texto);
 }
 .horario__bloque--mensual .horario__hora { color: #7A5FA8; }
 
@@ -820,7 +848,7 @@ a { color: inherit; }
   align-items: flex-start;
 }
 .horario__nota strong { color: var(--tinta); }
-.horario__nota a { color: var(--frambuesa); }
+.horario__nota a { color: var(--frambuesa-texto); }
 
 @media (max-width: 1000px) {
   .horario__tabla { grid-template-columns: repeat(3, 1fr); }
@@ -829,38 +857,6 @@ a { color: inherit; }
 @media (max-width: 560px) {
   .horario__tabla { grid-template-columns: 1fr; }
 }
-
-/* ============================================================
-   CÓMO EMPEZAR — 3 pasos
-   ============================================================ */
-.pasos { background: var(--crema); }
-.pasos__rejilla {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.2rem;
-  margin-top: 2.2rem;
-}
-.paso {
-  background: var(--papel);
-  border: 1px solid var(--linea);
-  border-radius: var(--radio);
-  padding: 1.6rem 1.4rem;
-  box-shadow: var(--sombra);
-  position: relative;
-}
-.paso__numero {
-  font-family: var(--fuente-display);
-  font-weight: 600;
-  font-variation-settings: "SOFT" 80, "WONK" 1;
-  font-size: 2.4rem;
-  line-height: 1;
-  color: var(--rosa);
-  margin-bottom: 0.5rem;
-}
-.paso:nth-child(2) .paso__numero { color: var(--mostaza); }
-.paso:nth-child(3) .paso__numero { color: var(--salvia); }
-.paso__titulo { font-weight: 700; margin-bottom: 0.4rem; font-size: 1.02rem; }
-.paso p { color: var(--tinta-suave); font-size: 0.93rem; }
 
 /* ============================================================
    TERTULIAS — la sala se apaga y se enciende de otra forma
@@ -1021,26 +1017,6 @@ a { color: inherit; }
 .espacio { background: var(--crema-2); }
 .espacio__rejilla { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 2.5rem; margin-top: 2.2rem; align-items: start; }
 
-.espacio__specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
-.spec {
-  background: var(--papel);
-  border: 1px solid var(--linea);
-  border-radius: 14px;
-  padding: 1rem;
-  box-shadow: var(--sombra);
-}
-.spec__icono {
-  width: 40px; height: 40px;
-  margin-bottom: 0.7rem;
-  display: grid; place-items: center;
-  border-radius: 11px;
-  background: color-mix(in srgb, var(--ico, var(--rosa)) 16%, var(--papel));
-  color: color-mix(in srgb, var(--ico, var(--rosa)) 72%, var(--tinta));
-}
-.spec__icono svg { width: 23px; height: 23px; }
-.spec__nombre { font-weight: 700; font-size: 0.92rem; margin-bottom: 0.15rem; }
-.spec__dato { font-size: 0.82rem; color: var(--tinta-suave); }
-
 .arriendo-caja {
   background: var(--tinta);
   color: var(--crema);
@@ -1106,44 +1082,119 @@ a { color: inherit; }
    UBICACIÓN
    ============================================================ */
 .ubicacion { background: var(--crema-2); }
-.ubicacion__rejilla { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2.2rem; align-items: start; }
-.ubicacion__datos { display: grid; gap: 0.8rem; }
-
-.dato-ubicacion {
-  display: flex;
-  gap: 0.9rem;
-  background: var(--papel);
-  border: 1px solid var(--linea);
-  border-radius: 14px;
-  padding: 1rem 1.1rem;
-  box-shadow: var(--sombra);
-}
-.dato-ubicacion__icono {
-  width: 40px; height: 40px;
-  flex: 0 0 auto;
+.ubicacion__rejilla {
   display: grid;
-  place-items: center;
-  border-radius: 11px;
-  background: color-mix(in srgb, var(--ico, var(--rosa)) 16%, var(--papel));
-  color: color-mix(in srgb, var(--ico, var(--rosa)) 72%, var(--tinta));
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-top: 2.4rem;
+  align-items: start;
 }
-.dato-ubicacion__icono svg { width: 22px; height: 22px; }
-.dato-ubicacion h4 { font-size: 0.95rem; margin-bottom: 0.15rem; }
-.dato-ubicacion p { font-size: 0.87rem; color: var(--tinta-suave); }
-.dato-ubicacion a { color: var(--frambuesa); }
+
+/* La calle, en grande. Es el dato que más se pregunta y antes estaba
+   dentro de una tarjeta del mismo tamaño que «tenemos patio para bicis». */
+.direccion {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+}
+.direccion__comuna {
+  color: var(--tinta-suave);
+  margin-top: 0.15rem;
+}
+
+/* Enlace con flecha que avanza al pasar el mouse. Es el único movimiento
+   de la sección: el resto se ordena solo con las líneas. */
+.enlace-flecha {
+  display: inline-block;
+  margin-top: 0.9rem;
+  color: var(--frambuesa-texto);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--frambuesa) 35%, transparent);
+  padding-bottom: 1px;
+}
+.enlace-flecha::after {
+  content: "→";
+  display: inline-block;
+  margin-left: 0.35em;
+  transition: transform 0.18s ease;
+}
+.enlace-flecha:hover { border-bottom-color: var(--frambuesa); }
+.enlace-flecha:hover::after { transform: translateX(3px); }
 
 .mapa {
   border-radius: var(--radio);
   overflow: hidden;
   border: 1px solid var(--linea);
-  min-height: 380px;
-  box-shadow: var(--sombra);
+  min-height: 420px;
   background: var(--papel);
 }
-.mapa iframe { width: 100%; height: 100%; min-height: 380px; border: 0; display: block; }
+.mapa iframe { width: 100%; height: 100%; min-height: 420px; border: 0; display: block; }
 
 @media (max-width: 860px) {
-  .ubicacion__rejilla { grid-template-columns: 1fr; }
+  .ubicacion__rejilla { grid-template-columns: 1fr; gap: 2rem; }
+  .mapa, .mapa iframe { min-height: 300px; }
+}
+
+/* ============================================================
+   FICHA — los datos prácticos, en un solo patrón
+   ------------------------------------------------------------
+   Dirección, metro, medidas de la sala: antes cada dato era una
+   tarjeta blanca con sombra y un ícono de color dentro de un
+   cuadrado pastel, que es lo que trae cualquier plantilla y hacía
+   que tres secciones distintas se vieran iguales. Una línea de 1px
+   ordena lo mismo, pesa menos y deja el protagonismo en las
+   banderas y las fotos, que son lo propio de la sala.
+   ============================================================ */
+.ficha { border-top: 1px solid var(--linea); }
+/* El aire va solo cuando la ficha viene después del enlace al mapa; en
+   «El espacio» arranca arriba para calzar con la caja de arriendo. */
+.enlace-flecha + .ficha { margin-top: 1.9rem; }
+.ficha__fila {
+  display: grid;
+  grid-template-columns: minmax(88px, 148px) 1fr;
+  gap: 0.3rem 1.6rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--linea);
+}
+.ficha__clave {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terracota-texto);
+  padding-top: 0.4em;
+}
+.ficha__valor {
+  color: var(--tinta-suave);
+  font-size: 0.95rem;
+  line-height: 1.62;
+}
+.ficha__valor strong { color: var(--tinta); font-weight: 600; }
+.ficha__valor a { color: var(--frambuesa-texto); }
+
+/* Variante para medidas: manda el número, no la etiqueta. Va en la
+   serif del sitio para que un dato duro no se sienta un formulario. */
+.ficha--medidas .ficha__fila { grid-template-columns: minmax(112px, 190px) 1fr; }
+.ficha__clave--dato {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--tinta);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0;
+}
+
+@media (max-width: 560px) {
+  .ficha__fila { grid-template-columns: 1fr; gap: 0.25rem; padding: 0.85rem 0; }
+  .ficha__clave { padding-top: 0; }
 }
 
 /* ============================================================
@@ -1161,7 +1212,7 @@ a { color: inherit; }
   letter-spacing: -0.03em;
   margin-bottom: 1rem;
 }
-.hablemos__titulo em { color: var(--frambuesa); }
+.hablemos__titulo em { color: var(--frambuesa-texto); }
 
 .portales { display: grid; gap: 0.7rem; margin-top: 1.8rem; }
 .portal {
@@ -1188,7 +1239,7 @@ a { color: inherit; }
   margin-top: 0.1rem;
 }
 .portal p { font-size: 0.84rem; color: var(--tinta-suave); }
-.portal__flecha { color: var(--frambuesa); font-size: 1.1rem; }
+.portal__flecha { color: var(--frambuesa-texto); font-size: 1.1rem; }
 
 /* --- formulario --- */
 .formulario {
@@ -1223,7 +1274,7 @@ a { color: inherit; }
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.campo__pista a:hover { color: var(--frambuesa); }
+.campo__pista a:hover { color: var(--frambuesa-texto); }
 .campo label {
   font-size: 0.74rem;
   font-weight: 700;
@@ -1391,7 +1442,7 @@ body[data-subpagina] { padding-top: 0; }
   text-decoration: none;
   margin-bottom: 1rem;
 }
-.miga:hover { color: var(--frambuesa); }
+.miga:hover { color: var(--frambuesa-texto); }
 
 .taller-hero h1 {
   font-family: var(--fuente-display);
@@ -1460,7 +1511,7 @@ body[data-subpagina] { padding-top: 0; }
   letter-spacing: -0.015em;
   margin-bottom: 0.9rem;
 }
-.taller-bloque h2 .acento { color: var(--frambuesa); font-style: italic; }
+.taller-bloque h2 .acento { color: var(--frambuesa-texto); font-style: italic; }
 .taller-bloque p { color: var(--tinta-suave); margin-bottom: 0.8rem; max-width: 60ch; }
 .taller-bloque p strong { color: var(--tinta); font-weight: 600; }
 
@@ -1500,7 +1551,7 @@ body[data-subpagina] { padding-top: 0; }
 .profe-tarjeta__avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profe-tarjeta h4 { font-size: 1rem; margin-bottom: 0.2rem; }
 .profe-tarjeta p { font-size: 0.87rem; color: var(--tinta-suave); margin-bottom: 0.3rem; }
-.profe-tarjeta a { font-size: 0.84rem; color: var(--frambuesa); text-decoration: none; font-weight: 600; }
+.profe-tarjeta a { font-size: 0.84rem; color: var(--frambuesa-texto); text-decoration: none; font-weight: 600; }
 
 /* --- panel de inscripción --- */
 .panel-inscripcion {
@@ -1604,7 +1655,7 @@ body[data-subpagina] { padding-top: 0; }
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--frambuesa);
+  color: var(--frambuesa-texto);
   margin-bottom: 0.6rem;
 }
 .perfil p { color: var(--tinta-suave); margin-bottom: 0.7rem; }
@@ -1700,7 +1751,7 @@ body[data-subpagina] { padding-top: 0; }
   cursor: pointer;
   border-radius: var(--radio-chico);
 }
-.inscrita__otra:hover { color: var(--frambuesa); }
+.inscrita__otra:hover { color: var(--frambuesa-texto); }
 
 /* ---- galería de fotos dentro de la página de cada clase ---- */
 .galeria {
@@ -1994,7 +2045,7 @@ body[data-subpagina] { padding-top: 0; }
   font-family: var(--fuente-display);
   font-weight: 600;
   font-size: 1.15rem;
-  color: var(--frambuesa) !important;
+  color: var(--frambuesa-texto) !important;
   margin-bottom: 0.5rem;
 }
 
@@ -2076,7 +2127,7 @@ a.afiche:hover .flecha { transform: translateX(4px); }
   padding: 0.75rem 1rem;
   box-shadow: var(--sombra);
 }
-.jornada__hora { font-weight: 700; font-size: 0.84rem; color: var(--frambuesa); white-space: nowrap; }
+.jornada__hora { font-weight: 700; font-size: 0.84rem; color: var(--frambuesa-texto); white-space: nowrap; }
 .jornada__clase { font-weight: 600; }
 .jornada__profe { font-size: 0.84rem; color: var(--tinta-suave); }
 .jornada__pausa {

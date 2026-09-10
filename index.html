@@ -81,11 +81,14 @@
           <a class="boton boton--borde" href="#talleres">Ver las clases de septiembre ↓</a>
         </div>
 
-        <div class="heroe__datos">
-          <span class="chip">📍 Av. Salvador 2302, Ñuñoa</span>
-          <span class="chip">Ⓜ️ A 4 min del Metro Monseñor Eyzaguirre (L3)</span>
-          <span class="chip">✿ Espacio íntimo · grupos pequeños</span>
-        </div>
+        <!-- Los tres datos que deciden si alguien viene: dónde queda, qué
+             tan lejos del metro y cuánta gente hay en clase. Sin cápsulas
+             ni emojis: una línea fina alcanza para separarlos. -->
+        <ul class="heroe__datos">
+          <li>Av. Salvador 2302, Ñuñoa</li>
+          <li>4 min del Metro Monseñor Eyzaguirre</li>
+          <li>Grupos de 8 a 12 personas</li>
+        </ul>
         </div>
 
         <!-- fotos colgadas de un hilo, como los banderines -->
@@ -153,35 +156,6 @@
          panel. Cuando pasa la fecha, la sección desaparece sola. -->
     <section class="seccion evento-proximo" id="proximo" data-evento-proximo hidden></section>
 
-    <!-- ===================== CÓMO EMPEZAR ===================== -->
-    <section class="seccion pasos" id="como-empezar">
-      <div class="contenedor">
-        <span class="sticker sticker--lila revelar">Tu primera vez</span>
-        <h2 class="titulo-seccion revelar">Empezar es <span class="acento">así de simple</span></h2>
-
-        <div class="pasos__rejilla">
-          <article class="paso revelar">
-            <div class="paso__numero">1</div>
-            <h3 class="paso__titulo">Escríbenos</h3>
-            <p>Cuéntanos por WhatsApp o Instagram qué taller te llama. Te confirmamos cupo y
-            respondemos cualquier duda — no hay preguntas tontas.</p>
-          </article>
-          <article class="paso revelar revelar--retraso-1">
-            <div class="paso__numero">2</div>
-            <h3 class="paso__titulo">Ven a tu primera clase</h3>
-            <p>Llega 10 minutos antes con ropa cómoda y agua. La sala tiene tatamis, espejo y
-            buena música. No necesitas experiencia previa: acá se llega a aprender.</p>
-          </article>
-          <article class="paso revelar revelar--retraso-2">
-            <div class="paso__numero">3</div>
-            <h3 class="paso__titulo">Quédate en la comunidad</h3>
-            <p>Si te gustó, eliges tu plan mensual y pasas a ser parte del crisol: talleres,
-            tertulias, domingos populares y gente que se mueve como tú.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
     <!-- ===================== TERTULIAS ===================== -->
     <section class="seccion tertulias" id="tertulias">
       <div class="contenedor">
@@ -243,38 +217,24 @@
         </p>
 
         <div class="espacio__rejilla">
-          <div class="espacio__specs revelar">
-            <div class="spec">
-              <div class="spec__icono" style="--ico:var(--turquesa)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 26V9l12-4 12 4v17"/><path d="M4 26h24"/><path d="M11 26v-8h10v8"/><path d="M16 5v4"/></svg></div>
-              <div class="spec__nombre">25 m² de sala</div>
-              <div class="spec__dato">Piso de linóleo, ideal para danza y entrenamiento</div>
+          <dl class="ficha ficha--medidas revelar">
+            <div class="ficha__fila">
+              <dt class="ficha__clave ficha__clave--dato">25 m²</dt>
+              <dd class="ficha__valor">De sala, con piso de linóleo para danza y entrenamiento.</dd>
             </div>
-            <div class="spec">
-              <div class="spec__icono" style="--ico:var(--lila)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="4" width="14" height="20" rx="7"/><path d="M13 24v4h6v-4"/><path d="M13 9c-1.2 1.6-1.2 4 0 6"/></svg></div>
-              <div class="spec__nombre">Espejo gigante</div>
-              <div class="spec__dato">1,90 × 3,50 m para verte de cuerpo entero</div>
+            <div class="ficha__fila">
+              <dt class="ficha__clave ficha__clave--dato">1,90 × 3,50 m</dt>
+              <dd class="ficha__valor">De espejo, para verte de cuerpo entero.</dd>
             </div>
-            <div class="spec">
-              <div class="spec__icono" style="--ico:var(--salvia)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="26" height="12" rx="2.5"/><path d="M12 11v12M20 11v12"/><path d="M6 17h2M24 17h2"/></svg></div>
-              <div class="spec__nombre">10 tatamis</div>
-              <div class="spec__dato">Para pilates, danza, suelo y caídas felices</div>
+            <div class="ficha__fila">
+              <dt class="ficha__clave ficha__clave--dato">10 tatamis</dt>
+              <dd class="ficha__valor">Para pilates, danza, trabajo de suelo y caídas felices.</dd>
             </div>
-            <div class="spec">
-              <div class="spec__icono" style="--ico:var(--terracota)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h5l6-5v18l-6-5H6z"/><path d="M22 12.5a5 5 0 0 1 0 7"/><path d="M25.5 9a9.5 9.5 0 0 1 0 14"/></svg></div>
-              <div class="spec__nombre">Parlante bluetooth</div>
-              <div class="spec__dato">Tu música, tu clase</div>
+            <div class="ficha__fila">
+              <dt class="ficha__clave ficha__clave--dato">Parlante</dt>
+              <dd class="ficha__valor">Bluetooth: conectas tu música y listo.</dd>
             </div>
-            <div class="spec">
-              <div class="spec__icono" style="--ico:var(--mostaza)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="5"/><circle cx="24" cy="21" r="5"/><path d="M8 21l5-10h6l5 10"/><path d="M13 11h5"/><path d="M19 11l-3 10"/></svg></div>
-              <div class="spec__nombre">Patio para bicis</div>
-              <div class="spec__dato">Interior y seguro</div>
-            </div>
-            <div class="spec">
-              <div class="spec__icono" style="--ico:var(--frambuesa)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="4" width="18" height="17" rx="4"/><path d="M11 21l-3 6M21 21l3 6"/><path d="M7 14h18"/><circle cx="12" cy="17.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="20" cy="17.5" r="1.1" fill="currentColor" stroke="none"/></svg></div>
-              <div class="spec__nombre">A pasos del metro</div>
-              <div class="spec__dato">Monseñor Eyzaguirre (L3) e Irarrázaval (L3/L5)</div>
-            </div>
-          </div>
+          </dl>
 
           <aside class="arriendo-caja revelar revelar--retraso-1">
             <h3>Arrienda la sala</h3>
@@ -319,37 +279,30 @@
         <h2 class="titulo-seccion revelar">Fácil de llegar, <span class="acento">difícil de irse</span></h2>
 
         <div class="ubicacion__rejilla">
-          <div class="ubicacion__datos">
-            <div class="dato-ubicacion revelar">
-              <div class="dato-ubicacion__icono" style="--ico:var(--frambuesa)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 29s10-9.5 10-16A10 10 0 0 0 6 13c0 6.5 10 16 10 16z"/><circle cx="16" cy="13" r="3.6"/></svg></div>
-              <div>
-                <h4>Dirección</h4>
-                <p>Av. Salvador 2302, Ñuñoa · Santiago<br>
-                <a href="https://maps.google.com/?q=Av.+Salvador+2302,+Ñuñoa,+Santiago" target="_blank" rel="noopener">Abrir en Google Maps →</a></p>
+          <div class="revelar">
+            <!-- La dirección es lo que más se pregunta por Instagram, así que
+                 se lee como un titular y no como una tarjeta más. -->
+            <p class="direccion">Av. Salvador 2302</p>
+            <p class="direccion__comuna">Ñuñoa · Santiago de Chile</p>
+            <a class="enlace-flecha" href="https://maps.google.com/?q=Av.+Salvador+2302,+%C3%91u%C3%B1oa,+Santiago" target="_blank" rel="noopener">Abrir en Google Maps</a>
+
+            <dl class="ficha">
+              <div class="ficha__fila">
+                <dt class="ficha__clave">Metro</dt>
+                <dd class="ficha__valor">
+                  <strong>Monseñor Eyzaguirre</strong> (L3) — 4 minutos caminando<br>
+                  <strong>Irarrázaval</strong> (L3 y L5) — 8 minutos caminando
+                </dd>
               </div>
-            </div>
-            <div class="dato-ubicacion revelar revelar--retraso-1">
-              <div class="dato-ubicacion__icono" style="--ico:var(--turquesa)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="4" width="18" height="17" rx="4"/><path d="M11 21l-3 6M21 21l3 6"/><path d="M7 14h18"/><circle cx="12" cy="17.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="20" cy="17.5" r="1.1" fill="currentColor" stroke="none"/></svg></div>
-              <div>
-                <h4>En metro</h4>
-                <p><strong>Monseñor Eyzaguirre (L3)</strong> a 4 minutos caminando, o
-                <strong>Irarrázaval (L3/L5)</strong> a 8 minutos. Sí: llegar es realmente fácil.</p>
+              <div class="ficha__fila">
+                <dt class="ficha__clave">Bici</dt>
+                <dd class="ficha__valor">Patio interior para dejarla segura mientras entrenas.</dd>
               </div>
-            </div>
-            <div class="dato-ubicacion revelar revelar--retraso-2">
-              <div class="dato-ubicacion__icono" style="--ico:var(--mostaza)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="5"/><circle cx="24" cy="21" r="5"/><path d="M8 21l5-10h6l5 10"/><path d="M13 11h5"/><path d="M19 11l-3 10"/></svg></div>
-              <div>
-                <h4>En bici</h4>
-                <p>Tenemos patio interior para dejarla segura mientras entrenas.</p>
+              <div class="ficha__fila">
+                <dt class="ficha__clave">Horario</dt>
+                <dd class="ficha__valor">La sala abre según la grilla de clases y los arriendos. <a href="#horarios">Ver los horarios</a>.</dd>
               </div>
-            </div>
-            <div class="dato-ubicacion revelar revelar--retraso-3">
-              <div class="dato-ubicacion__icono" style="--ico:var(--salvia)" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="12"/><path d="M16 8.5V16l5 3"/></svg></div>
-              <div>
-                <h4>Horario de la sala</h4>
-                <p>Abre según la grilla de clases y arriendos — revisa los <a href="#horarios" style="color: var(--frambuesa);">horarios</a> o escríbenos.</p>
-              </div>
-            </div>
+            </dl>
           </div>
 
           <div class="mapa revelar revelar--retraso-1">
