@@ -216,6 +216,24 @@ function pintarSitio() {
      cuelgan de un hilo. Las fotos salen de config.js, así que se
      renuevan solas cuando cambian las de cada clase.
      ============================================================ */
+  /* ---------- la foto grande del héroe ---------- */
+  var heroeFoto = document.querySelector("[data-heroe-foto]");
+  if (heroeFoto) {
+    var rutaPortada = limpiarRuta((CRISOL.sala && CRISOL.sala.fotoPortada) || "");
+    /* si el panel no tiene foto elegida, se usa la primera clase con foto */
+    if (!rutaPortada) {
+      var conFotoHeroe = talleresVisibles().filter(function (t) { return t.tipo !== "evento"; })[0];
+      if (conFotoHeroe) rutaPortada = limpiarRuta(primeraFoto(conFotoHeroe));
+    }
+    if (rutaPortada) {
+      heroeFoto.innerHTML =
+        '<img src="' + base + escHtml(rutaPortada) +
+        '" alt="Una clase en Sala Crisol" fetchpriority="high" decoding="async">';
+    } else {
+      heroeFoto.hidden = true;
+    }
+  }
+
   var tendedero = document.querySelector("[data-tendedero]");
   if (tendedero) {
     var conFoto = talleresVisibles().filter(function (t) { return t.tipo !== "evento"; });
@@ -288,8 +306,13 @@ function pintarSitio() {
       (t.fotos || []).forEach(function (r) { apuntar(r, t.pelicula, pagina); });
     });
 
-    var dp = CRISOL.domingoPopular;
-    if (dp) (dp.piezas || []).forEach(function (r) { apuntar(r, "Domingo Popular", ""); });
+    /* Los afiches, los flyers y las gráficas de horarios NO son fotos de
+       la sala: la galería es de gente moviéndose. Se filtran por nombre
+       para que siga funcionando con lo que suban después. */
+    piezas = piezas.filter(function (pz) {
+      return !/(afiche|flyer|promo|horarios|aportes|logo|portada)/i.test(pz.ruta) &&
+             pz.ruta.indexOf("img/domingos/") !== 0;
+    });
 
     /* Primero se averigua qué fotos existen de verdad y recién después se
        arman las filas. Si se hiciera al revés, las que no existen dejan
@@ -1323,6 +1346,33 @@ function pintarSitio() {
     revelables.forEach(function (el) { observador.observe(el); });
   } else {
     revelables.forEach(function (el) { el.classList.add("visible"); });
+  }
+
+  /* ---------- la barra fija de celular ----------
+     Se esconde mientras haya OTRO botón de lo mismo en pantalla: el del
+     héroe o un formulario de inscripción. Si no, el visitante ve el mismo
+     llamado dos veces, uno encima del otro. */
+  var barra = document.querySelector("[data-barra-movil]");
+  if (barra) {
+    var estorbos = [].slice.call(document.querySelectorAll(
+      ".heroe__ctas, [data-form-inscripcion], [data-form-dp], .panel-inscripcion"));
+    var revisar = function () {
+      var tapado = estorbos.some(function (el) {
+        var r = el.getBoundingClientRect();
+        return r.bottom > 0 && r.top < (window.innerHeight || 0);
+      });
+      barra.classList.toggle("barra-movil--oculta", tapado);
+    };
+    var pendiente = false;
+    var alDesplazar = function () {
+      if (pendiente) return;
+      pendiente = true;
+      requestAnimationFrame(function () { pendiente = false; revisar(); });
+    };
+    window.addEventListener("scroll", alDesplazar, { passive: true });
+    window.addEventListener("resize", alDesplazar);
+    window.addEventListener("load", revisar);
+    revisar();
   }
 
   /* ---------- año en el pie ---------- */

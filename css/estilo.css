@@ -366,15 +366,72 @@ a { color: inherit; }
 
 /* el héroe se reparte: el texto a la izquierda, las fotos colgadas a la
    derecha. Antes ese costado quedaba vacío en pantallas anchas. */
-.heroe__rejilla {
-  position: relative;
-  z-index: 1;          /* siempre por encima de la gimnasta que cruza */
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
-  gap: 2.5rem;
-  align-items: center;
+.heroe__rejilla { position: relative; }
+/* el texto no cruza por debajo de la foto */
+.heroe__texto { min-width: 0; max-width: min(54%, 600px); }
+
+/* ---- la foto grande: es lo primero que se ve ----
+   Columna de alto completo pegada al borde derecho. Todas las fotos de
+   la sala son verticales, así que el marco también lo es: un recuadro
+   apaisado les cortaba la cabeza. */
+.heroe__foto {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: min(43%, 620px);
+  margin: 0;
+  overflow: hidden;
+  background: var(--crema-2);
+  /* por encima de los banderines: cruzados sobre la foto se ven como un
+     calco pegado, y la guirnalda se lee mejor terminando en su borde */
+  z-index: 2;
 }
-.heroe__texto { min-width: 0; }
+.heroe__foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 55%;
+  display: block;
+}
+/* velo cálido en el borde izquierdo: la foto se funde con la crema del
+   sitio en vez de quedar como un recorte pegado encima */
+.heroe__foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    var(--crema) 0%,
+    color-mix(in srgb, var(--crema) 55%, transparent) 12%,
+    transparent 34%);
+  pointer-events: none;
+}
+
+/* el llamado secundario, ya sin forma de botón */
+.heroe__secundario {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.92rem;
+  color: var(--tinta-suave);
+  text-decoration: none;
+  border-bottom: 1px solid var(--linea);
+  padding-bottom: 2px;
+}
+.heroe__secundario:hover { color: var(--frambuesa-texto); border-bottom-color: var(--frambuesa-texto); }
+
+.boton--grande { font-size: 1.02rem; padding: 0.95em 1.9em; }
+
+/* ============================================================
+   MANIFIESTO — qué es esto, con aire propio
+   ============================================================ */
+.manifiesto { background: var(--crema); padding: 4.5rem 0 3.5rem; }
+.manifiesto__texto {
+  font-family: var(--fuente-display);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+  max-width: 34ch;
+  color: var(--tinta);
+}
+.manifiesto__texto strong { font-weight: 600; color: var(--frambuesa-texto); }
 
 /* ---- tendedero de polaroids ---- */
 .tendedero {
@@ -463,7 +520,21 @@ a { color: inherit; }
 }
 
 @media (max-width: 980px) {
-  .heroe__rejilla { grid-template-columns: 1fr; gap: 2rem; }
+  /* En celular la foto vuelve al flujo: va arriba, a sangre por los dos
+     lados, y el texto queda debajo. */
+  .heroe { padding-top: 5.5rem; }
+  .heroe__texto { max-width: none; }
+  .heroe__foto {
+    position: static;
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    height: clamp(300px, 44vh, 430px);
+    margin-bottom: 2rem;
+  }
+  .heroe__foto::after {
+    background: linear-gradient(0deg,
+      color-mix(in srgb, var(--crema) 60%, transparent) 0%, transparent 26%);
+  }
   .tendedero { padding-top: 2rem; }
   .polaroid-col { width: clamp(104px, 26vw, 132px); }
   /* en pantallas chicas tres bastan: más se amontonan */
@@ -561,47 +632,29 @@ a { color: inherit; }
 }
 
 /* ============================================================
-   LA RUEDA — la gimnasta que cruza el héroe al entrar
+   BARRA FIJA DE CELULAR
    ------------------------------------------------------------
-   Son 16 dibujos en una sola tira (img/sala/rueda.svg) que se
-   pasan como los cuadros de una animación. A este tamaño la
-   figura se lee limpia; por eso va chica y cruzando, y no
-   grande y quieta.
-
-   Cruza una vez y se va: si se saca, la página dice lo mismo.
+   La acción principal viaja con el visitante. En escritorio no
+   existe: ahí el botón del héroe y el del menú ya alcanzan.
    ============================================================ */
-.rueda {
-  position: absolute;
-  /* al ras del piso del héroe: una rueda pasa por el suelo, y ahí el
-     fondo está limpio. Bajo las banderas se perdía entre el color. */
-  bottom: 30px;
-  left: 0;
-  width: 156px;
-  height: 156px;
-  z-index: 0;          /* por detrás del texto: cruza sin tapar nada */
-  opacity: 0.85;
-  pointer-events: none;
-  background-image: url("../img/sala/rueda.svg");
-  background-repeat: no-repeat;
-  background-size: 1600% 100%;   /* 16 cuadros de ancho */
-  animation:
-    rueda-cuadros 1.05s steps(16) 6 0.7s both,
-    rueda-cruza   6.3s cubic-bezier(0.30, 0.55, 0.45, 1) 0.7s both;
-}
-@keyframes rueda-cuadros { to { background-position-x: 100%; } }
-@keyframes rueda-cruza {
-  from { transform: translateX(-200px); }
-  to   { transform: translateX(calc(100vw + 200px)); }
-}
+.barra-movil { display: none; }
 
-/* En pantallas chicas la banda bajo las banderas es más angosta y la
-   figura se cruzaría con el titular: se queda fuera. */
-@media (max-width: 860px) {
-  .rueda { display: none; }
-}
-/* Quien pidió menos movimiento no la ve. */
-@media (prefers-reduced-motion: reduce) {
-  .rueda { display: none; }
+@media (max-width: 760px) {
+  .barra-movil {
+    display: block;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 60;
+    padding: 0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--crema) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--linea);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+  .barra-movil .boton { display: block; text-align: center; width: 100%; }
+  .barra-movil--oculta { transform: translateY(110%); opacity: 0; pointer-events: none; }
+  /* que la barra no tape el final de la página */
+  body { padding-bottom: 78px; }
 }
 
 /* la onda de papel al pie del héroe */

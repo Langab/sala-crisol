@@ -59,10 +59,11 @@
     <section class="heroe" aria-label="Presentación de Sala Crisol">
       <div class="guirnalda guirnalda--techo" data-guirnalda data-guirnalda-semilla="0"></div>
       <div class="guirnalda guirnalda--techo" data-guirnalda data-guirnalda-semilla="3" style="top:54px;opacity:0.75;transform:scaleX(-1)"></div>
-      <!-- Una gimnasta cruza el héroe dando ruedas, una sola vez al entrar,
-           y se va. Es un guiño, no información: si alguien pidió menos
-           movimiento en su sistema, no aparece y no se pierde nada. -->
-      <div class="rueda" aria-hidden="true"></div>
+      <!-- Una sola foto grande de gente moviéndose, del alto completo del
+           héroe. Antes eran cinco polaroids chicas: nada mandaba. Va antes
+           del texto para que en celular aparezca arriba. Las polaroids
+           viven ahora en la galería. -->
+      <figure class="heroe__foto" data-heroe-foto></figure>
 
       <div class="contenedor heroe__rejilla">
         <div class="heroe__texto">
@@ -75,17 +76,12 @@
 
         <p class="heroe__sub">Sala de artes y movimiento</p>
 
-        <p class="heroe__manifiesto">
-          Un crisol es el recipiente donde los metales se funden y se transforman.
-          Acá pasa lo mismo con las personas: <strong>deporte, arte y cultura</strong> se mezclan
-          en un espacio íntimo, autogestionado y de puertas abiertas, donde
-          <strong>entrenar, crear y encontrarse</strong> es la misma cosa.
-        </p>
-
+        <!-- Un solo botón. El segundo llamado baja a enlace: compiten menos
+             y el visitante sabe qué se espera de él. -->
         <div class="heroe__ctas">
-          <a class="boton boton--fuego" data-ws="Hola! Quiero tomar clases con ustedes ✨" href="#">Agenda tu primera clase</a>
-          <a class="boton boton--borde" href="#talleres">Ver las clases de septiembre ↓</a>
+          <a class="boton boton--fuego boton--grande" data-ws="Hola! Quiero tomar clases con ustedes ✨" href="#">Agenda tu primera clase</a>
         </div>
+        <a class="heroe__secundario" href="#talleres">Ver las clases de septiembre ↓</a>
 
         <!-- Los tres datos que deciden si alguien viene: dónde queda, qué
              tan lejos del metro y cuánta gente hay en clase. Sin cápsulas
@@ -97,13 +93,25 @@
         </ul>
         </div>
 
-        <!-- fotos colgadas de un hilo, como los banderines -->
-        <div class="tendedero" data-tendedero aria-label="Fotos de las clases en la sala"></div>
       </div>
 
       <svg class="heroe__gota" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0,30 C240,70 480,10 720,38 C960,66 1200,18 1440,44 L1440,70 L0,70 Z" fill="currentColor"/>
       </svg>
+    </section>
+
+    <!-- ===================== QUÉ ES ESTO =====================
+         El manifiesto salía en el héroe y competía con el titular.
+         Acá tiene su propio aire y se lee. -->
+    <section class="manifiesto">
+      <div class="contenedor">
+        <p class="manifiesto__texto revelar">
+          Un crisol es el recipiente donde los metales se funden y se transforman.
+          Acá pasa lo mismo con las personas: <strong>deporte, arte y cultura</strong> se mezclan
+          en un espacio íntimo, autogestionado y de puertas abiertas, donde
+          <strong>entrenar, crear y encontrarse</strong> es la misma cosa.
+        </p>
+      </div>
     </section>
 
     <!-- ===================== CINTA DE TALLERES ===================== -->
@@ -445,5 +453,12 @@
 
   <script src="js/config.js?v=2"></script>
   <script src="js/main.js?v=2"></script>
+
+  <!-- En celular el botón principal viaja fijo abajo: es lo que hacen los
+       referentes de reservas. Se esconde solo cuando hay un formulario en
+       pantalla, para no taparlo. -->
+  <div class="barra-movil" data-barra-movil>
+    <a class="boton boton--fuego" data-ws="Hola! Quiero tomar clases con ustedes ✨" href="#">Agenda tu primera clase</a>
+  </div>
 </body>
 </html>
