@@ -13,3 +13,8 @@ CLAVE*.txt
 
 # Configuración local para levantar el sitio en el computador
 .claude/
+
+# Archivos que crea wrangler (Cloudflare) al probar o publicar desde la
+# terminal. No van al repositorio: se regeneran solos.
+.wrangler/
+node_modules/

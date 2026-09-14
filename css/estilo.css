@@ -2196,6 +2196,9 @@ body[data-subpagina] { padding-top: 0; }
 @media (max-width: 900px) {
   .evento-hero { padding-top: 7rem; }
   .evento-hero__rejilla { grid-template-columns: 1fr; gap: 2rem; }
+  /* va acá y no solo arriba: la regla base de esta rejilla está más
+     abajo en el archivo y le ganaba a la de celular */
+  .evento-cuerpo__rejilla { grid-template-columns: 1fr; gap: 2rem; }
   .evento-hero__afiche { max-width: 420px; }
 }
 
@@ -2303,3 +2306,524 @@ a.afiche:hover .flecha { transform: translateX(4px); }
   border-radius: 999px; padding: 0.3em 0.75em;
   font-size: 0.78rem; color: var(--tinta-suave);
 }
+
+/* ============================================================
+   FONDA EN LA CASONA
+   ------------------------------------------------------------
+   Un evento de una fecha con la cara de su afiche pintado a mano:
+   el índigo de la banda, el oro de las letras, el carmín de
+   «ENTRADA» y el crema del papel. Lo propio del sitio se queda:
+   la guirnalda (teñida de fonda), los stickers ladeados y el
+   cuerpo en papel claro con líneas finas en vez de tarjetas.
+   ============================================================ */
+.fonda-hero,
+.fonda-cierre {
+  --fonda-indigo: #2B2766;
+  --fonda-noche: #1C1A48;
+  --fonda-oro: #F2C94C;
+  --fonda-carmin: #C1272D;
+  --fonda-azul: #2F6DB5;
+  --fonda-crema: #F7EBD2;
+  /* la miga «volver» usa las variables de las páginas de evento */
+  --ev-tinta: var(--fonda-crema);
+  --ev-acento: var(--fonda-oro);
+}
+
+.fonda-hero {
+  position: relative;
+  padding: 9rem 0 4.5rem;
+  color: var(--fonda-crema);
+  background:
+    radial-gradient(60% 55% at 80% 20%, rgba(242, 201, 76, 0.16), transparent 70%),
+    radial-gradient(55% 50% at 10% 90%, rgba(193, 39, 45, 0.22), transparent 70%),
+    var(--fonda-indigo);
+  overflow: hidden;
+}
+/* la guirnalda del techo, un poco más abajo que en la portada para
+   que se vea completa bajo el menú */
+.fonda-hero .guirnalda--techo { top: 58px; opacity: 0.95; }
+
+.fonda-hero__rejilla {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3rem;
+  align-items: center;
+}
+.fonda-hero__texto { min-width: 0; }
+
+.fonda-hero__eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fonda-oro);
+  margin: 1.2rem 0 0.8rem;
+}
+
+/* Las letras con la sombra doble de los letreros de fonda */
+.fonda-hero__titulo {
+  font-family: var(--fuente-display);
+  font-weight: 700;
+  font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+  font-size: clamp(3rem, 7.6vw, 5.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  color: var(--fonda-crema);
+  text-shadow:
+    0.035em 0.035em 0 var(--fonda-carmin),
+    0.07em 0.07em 0 var(--fonda-noche);
+}
+/* el «en la» chiquito y apilado, como en el afiche */
+.fonda-hero__titulo .conector {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 0.04em;
+  transform: translateY(-0.2em);
+  font-size: 0.3em;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: var(--fonda-oro);
+  text-shadow: 0.06em 0.06em 0 var(--fonda-noche);
+}
+
+/* la banda de la fecha: un sticker del sitio, en oro */
+.fonda-hero__banda {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65em;
+  margin: 1.7rem 0 1.2rem;
+  padding: 0.5em 1.15em;
+  border-radius: 6px;
+  background: var(--fonda-oro);
+  color: var(--fonda-noche);
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.6vw, 1.02rem);
+  transform: rotate(-1.5deg);
+  box-shadow: 4px 4px 0 var(--fonda-carmin);
+}
+.fonda-hero__banda::before,
+.fonda-hero__banda::after {
+  content: "★";
+  font-size: 0.72em;
+  color: var(--fonda-carmin);
+}
+.fonda-hero__banda:empty { display: none; }
+.fonda-hero__banda .sin-corte { white-space: nowrap; }
+@media (max-width: 520px) {
+  .fonda-hero__banda { display: flex; flex-wrap: wrap; justify-content: center; column-gap: 0.4em; text-align: center; }
+  .fonda-hero__banda::before,
+  .fonda-hero__banda::after { display: none; }
+}
+
+.fonda-hero__bajada {
+  font-family: var(--fuente-display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  color: color-mix(in srgb, var(--fonda-crema) 88%, transparent);
+  max-width: 34ch;
+}
+
+.fonda-hero__ctas { align-items: center; }
+.fonda-hero__cuenta {
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--fonda-crema) 78%, transparent);
+}
+
+.boton--oro {
+  background: var(--fonda-oro);
+  color: var(--fonda-noche);
+  box-shadow: 0 4px 16px rgba(242, 201, 76, 0.25);
+}
+.boton--oro:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(242, 201, 76, 0.38); }
+
+/* --- el afiche y el boleto --- */
+.fonda-visual {
+  position: relative;
+  display: grid;
+  justify-items: center;
+}
+.fonda-visual__afiche {
+  width: min(100%, 380px);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.45);
+  transform: rotate(2deg);
+}
+.fonda-visual__afiche img { width: 100%; display: block; }
+/* con afiche, el boleto se apoya encima de su esquina */
+.fonda-visual.con-afiche .boleto-sombra {
+  position: absolute;
+  left: -2%;
+  bottom: -7%;
+  width: min(78%, 360px);
+}
+
+/* La sombra va en un envoltorio: la máscara que troquela el boleto
+   cortaría una box-shadow puesta en el mismo elemento. */
+.boleto-sombra {
+  width: min(100%, 460px);
+  transform: rotate(-3deg);
+  filter: drop-shadow(0 22px 34px rgba(0, 0, 0, 0.45));
+}
+.boleto {
+  --talon: 36%;
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(100% - var(--talon)) var(--talon);
+  background: var(--fonda-crema);
+  color: var(--fonda-noche);
+  border-radius: 14px;
+  /* las dos muescas del troquel, justo sobre la línea punteada */
+  -webkit-mask:
+    radial-gradient(circle 11px at calc(100% - var(--talon)) 0, #0000 97%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle 11px at calc(100% - var(--talon)) 100%, #0000 97%, #000) bottom / 100% 51% no-repeat;
+          mask:
+    radial-gradient(circle 11px at calc(100% - var(--talon)) 0, #0000 97%, #000) top / 100% 51% no-repeat,
+    radial-gradient(circle 11px at calc(100% - var(--talon)) 100%, #0000 97%, #000) bottom / 100% 51% no-repeat;
+}
+/* el filete interior de los carteles */
+.boleto::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1.5px solid rgba(193, 39, 45, 0.5);
+  border-radius: 9px;
+  pointer-events: none;
+}
+.boleto--sin-talon { grid-template-columns: 1fr; -webkit-mask: none; mask: none; }
+
+.boleto__cuerpo {
+  padding: 1.6rem 1.4rem 1.4rem 1.7rem;
+  border-right: 2px dashed rgba(28, 26, 72, 0.3);
+}
+.boleto--sin-talon .boleto__cuerpo { border-right: none; }
+.boleto__talon {
+  padding: 1.6rem 1rem 1.4rem;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+.boleto__rotulo {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fonda-carmin);
+}
+.boleto__precio {
+  font-family: var(--fuente-display);
+  font-weight: 700;
+  font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+  font-size: clamp(2.5rem, 5.4vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--fonda-carmin);
+  text-shadow: 0.05em 0.05em 0 var(--fonda-azul);
+  margin: 0.3rem 0 0.35rem;
+}
+.boleto__precio--puerta {
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  color: var(--fonda-noche);
+  text-shadow: none;
+  opacity: 0.8;
+}
+.boleto__nota {
+  font-family: var(--fuente-display);
+  font-style: italic;
+  font-size: 1.02rem;
+  color: var(--fonda-azul);
+}
+
+@media (max-width: 900px) {
+  .fonda-hero { padding: 8rem 0 4rem; }
+  .fonda-hero__rejilla { grid-template-columns: 1fr; gap: 2.8rem; }
+  .fonda-visual { justify-items: start; }
+  .fonda-visual.con-afiche { justify-items: center; }
+}
+@media (max-width: 520px) {
+  .boleto { --talon: 38%; }
+  .boleto__cuerpo { padding: 1.3rem 1rem 1.2rem 1.3rem; }
+  .boleto__talon { padding: 1.3rem 0.6rem 1.2rem; }
+  .boleto__nota { font-size: 0.92rem; }
+  .fonda-visual.con-afiche .boleto-sombra { position: relative; left: auto; bottom: auto; width: 100%; margin-top: -2.5rem; }
+}
+
+/* --- el cuerpo, en papel --- */
+.fonda-cuerpo { padding: 4rem 0 5rem; }
+.fonda-relato { min-width: 0; }
+
+.fonda-bloque { max-width: 62ch; margin-bottom: 3rem; }
+.fonda-bloque--ancho { max-width: none; }
+.fonda-bloque h2 {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin-bottom: 0.8rem;
+}
+.fonda-bloque h2 .acento { color: var(--frambuesa-texto); font-style: italic; }
+.fonda-bloque p { color: var(--tinta-suave); font-size: 1.03rem; }
+.fonda-bloque p + p { margin-top: 0.8rem; }
+.fonda-bloque strong { color: var(--tinta); font-weight: 600; }
+
+/* Qué va a haber: la carta de la fonda. Columnas separadas por un
+   filete, cada una colgando de su banderín. */
+.fonda-carta {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  border-top: 1px solid var(--linea);
+  border-bottom: 1px solid var(--linea);
+}
+.fonda-carta__item {
+  position: relative;
+  padding: 2.4rem 1.3rem 1.4rem;
+}
+.fonda-carta__item + .fonda-carta__item { border-left: 1px solid var(--linea); }
+.fonda-carta__banderin {
+  position: absolute;
+  top: 0;
+  left: 1.3rem;
+  width: 20px;
+  height: 26px;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: #C1272D;
+}
+.fonda-carta__item:nth-child(3n+2) .fonda-carta__banderin { background: #2F6DB5; }
+.fonda-carta__item:nth-child(3n+3) .fonda-carta__banderin { background: #E0B23A; }
+.fonda-carta__item h3 {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: 1.25rem;
+  margin-bottom: 0.3rem;
+  color: var(--tinta);
+}
+.fonda-carta__item p { font-size: 0.95rem; color: var(--tinta-suave); }
+
+@media (max-width: 640px) {
+  .fonda-carta { grid-template-columns: 1fr; }
+  .fonda-carta__item { padding: 1.1rem 0 1.1rem 2.4rem; }
+  .fonda-carta__item + .fonda-carta__item { border-left: none; border-top: 1px solid var(--linea); }
+  .fonda-carta__banderin { top: 1.25rem; left: 0; width: 16px; height: 21px; }
+}
+
+.fonda-ninxs {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  max-width: 62ch;
+  margin: -0.6rem 0 3rem;
+  padding: 1.2rem 1.3rem;
+  background: var(--salvia-velo);
+  border: 1px solid #C9DEC7;
+  border-radius: var(--radio);
+}
+.fonda-ninxs .banderin { margin-top: 0.2rem; }
+.fonda-ninxs h3 {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: 1.15rem;
+  margin-bottom: 0.2rem;
+}
+.fonda-ninxs p { font-size: 0.95rem; color: #4A5E48; }
+
+.fonda-donde { margin-bottom: 0; }
+/* la calle en grande, igual que en la portada (le gana a .fonda-bloque p) */
+.fonda-donde .direccion { font-size: clamp(1.9rem, 3.4vw, 2.7rem); color: var(--tinta); }
+.fonda-donde .direccion + .direccion__comuna { margin-top: 0.15rem; }
+
+/* --- la reserva --- */
+.fonda-col-reserva { min-width: 0; }
+.fonda-reserva { position: static; }
+.fonda-reserva .sticker { margin-bottom: 0.9rem; }
+.fonda-reserva h3 { margin-bottom: 0.9rem; }
+
+.fonda-pasos {
+  list-style: none;
+  counter-reset: paso;
+  display: grid;
+  gap: 0.55rem;
+  margin-bottom: 1.3rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--linea);
+}
+.fonda-pasos li {
+  counter-increment: paso;
+  position: relative;
+  padding-left: 2.1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--tinta-suave);
+}
+.fonda-pasos li::before {
+  content: counter(paso);
+  position: absolute;
+  left: 0;
+  top: -0.05rem;
+  width: 1.45rem;
+  height: 1.45rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--frambuesa);
+  color: #FFF8F4;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.fonda-pasos b { color: var(--tinta); font-weight: 600; }
+
+/* formulario sin su propia caja: ya está dentro del panel */
+.formulario--plano { padding: 0; border: none; box-shadow: none; background: none; }
+.formulario--plano .boton { width: 100%; }
+.campo__opcional { text-transform: none; letter-spacing: 0; font-weight: 500; opacity: 0.7; }
+
+.contador {
+  display: grid;
+  grid-template-columns: 46px 1fr 46px;
+  gap: 0.4rem;
+}
+.contador__boton {
+  min-height: 46px;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  background: var(--crema);
+  color: var(--tinta);
+  font-family: var(--fuente-texto);
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.contador__boton:hover { background: var(--rosa-velo); border-color: var(--frambuesa); }
+.campo .contador input {
+  text-align: center;
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-size: 1.15rem;
+  -moz-appearance: textfield;
+}
+.contador input::-webkit-outer-spin-button,
+.contador input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.fonda-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0 0.2rem;
+  border-top: 1px dashed var(--linea);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+.fonda-total b {
+  font-family: var(--fuente-display);
+  font-weight: 600;
+  font-size: 1.7rem;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--tinta);
+}
+
+/* los botones de copiar de los datos para transferir */
+.transf__copiar,
+.transf__copiar-todo {
+  font-family: var(--fuente-texto);
+  font-weight: 600;
+  color: var(--frambuesa-texto);
+  background: none;
+  cursor: pointer;
+}
+.transf__copiar {
+  margin-left: 0.4rem;
+  padding: 0.15em 0.6em;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  vertical-align: 0.08em;
+}
+.transf__copiar:hover { border-color: var(--frambuesa); }
+.transf__copiar-todo {
+  display: block;
+  margin: -0.3rem 0 1rem;
+  padding: 0.3rem 0;
+  border: none;
+  font-size: 0.84rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.transf--dentro {
+  margin: 0 0 1.1rem;
+  text-align: left;
+  background: var(--crema);
+}
+.transf--dentro .transf__copiar-todo { margin-bottom: 0; }
+.inscrita .transf--dentro .transf__titulo { font-size: 1.05rem; margin-bottom: 0.7rem; }
+
+/* --- el cierre --- */
+.fonda-cierre {
+  background: var(--fonda-indigo);
+  color: var(--fonda-crema);
+  text-align: center;
+  padding-bottom: 4.5rem;
+}
+.fonda-cierre .guirnalda { margin-bottom: 2rem; }
+.fonda-cierre__frase {
+  font-family: var(--fuente-display);
+  font-weight: 700;
+  font-variation-settings: "SOFT" 30, "WONK" 1, "opsz" 144;
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-shadow: 0.04em 0.04em 0 var(--fonda-carmin);
+}
+.fonda-cierre__frase em { color: var(--fonda-oro); font-weight: 600; }
+.fonda-cierre__firma {
+  margin: 0.9rem 0 1.8rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--fonda-crema) 75%, transparent);
+}
+
+/* --- la pestaña del evento en el menú --- */
+.nav__links a.nav__evento {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  color: var(--tinta);
+  font-weight: 600;
+}
+.nav__evento::before {
+  content: "";
+  width: 9px;
+  height: 12px;
+  flex: 0 0 auto;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: #C1272D;
+}
+.nav__links a.nav__evento[aria-current="page"] { color: var(--frambuesa-texto); }
+/* con la pestaña extra, entre 941 y ~1050 px los enlaces se partían en
+   dos líneas («El / espacio») y el menú crecía; así se quedan enteros */
+.nav__nombre,
+.nav__links > li > a { white-space: nowrap; }
+@media (max-width: 940px) {
+  .nav__links a.nav__evento { display: flex; }
+}
+
+/* la franja de la portada, cuando el evento todavía no tiene afiche */
+.comunidad__panel--solo { grid-template-columns: 1fr; max-width: 760px; }

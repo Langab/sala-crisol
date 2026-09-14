@@ -6,10 +6,10 @@
     "fotoPortada": "img/talleres/pilates-mat/fotos/01.jpg",
     "mesActual": "Septiembre",
     "transferencia": {
-      "titular": "",
-      "rut": "",
-      "banco": "",
-      "tipoCuenta": "",
+      "titular": "Consuelo Ongaro",
+      "rut": "19.840.126-9",
+      "banco": "BancoEstado",
+      "tipoCuenta": "Cuenta RUT",
       "numero": "",
       "correo": ""
     }
@@ -28,7 +28,7 @@
       "duracion": "",
       "temporada": "",
       "color": "salvia",
-      "descripcion": "Pilates de suelo, con el peso del propio cuerpo y sin máquinas. Trabajamos el **centro profundo**, la respiración y el control del movimiento — despacio, con precisión y sin impacto. Es de esas clases en que no sudas a chorros pero al otro día descubres músculos que no sabías que tenías.",
+      "descripcion": "Pilates de suelo, con el peso del propio cuerpo y sin máquinas. Trabajamos el **centro profundo**, la respiración y el control del movimiento, despacio y sin impacto. No vas a sudar a chorros, pero al otro día vas a descubrir músculos que no sabías que tenías.",
       "trabajo": [
         {
           "titulo": "Centro",
@@ -48,7 +48,7 @@
         },
         {
           "titulo": "Progresión",
-          "texto": "cada ejercicio tiene versión más simple y más exigente."
+          "texto": "cada ejercicio tiene una versión más simple y otra más exigente."
         }
       ],
       "paraMi": [
@@ -112,7 +112,7 @@
       "duracion": "1 hora",
       "temporada": "",
       "color": "turquesa",
-      "descripcion": "Una hora para soltar el cuerpo y encontrarle lenguaje propio. Partimos con **técnica y calentamiento**, seguimos con secuencias en el espacio y cerramos con improvisación. No hay que saber bailar: hay que tener ganas de moverse y de mirar qué aparece.",
+      "descripcion": "Una hora para soltar el cuerpo y encontrar tu propia forma de moverte. Partimos con **técnica y calentamiento**, seguimos con secuencias en el espacio y cerramos con improvisación. No hay que saber bailar, solo tener ganas de moverse y ver qué sale.",
       "trabajo": [
         {
           "titulo": "Espacio",
@@ -176,7 +176,7 @@
       "nombre": "Movimiento Flexible",
       "estado": "activo",
       "subtitulo": "",
-      "frase": "La flexibilidad no es doblarse: es habitar más cuerpo.",
+      "frase": "Estirarse también es entrenar.",
       "profe": "Consuelo Ongaro",
       "profeIg": "_consuelidad_",
       "profeCorto": "Consuelo",
@@ -184,7 +184,7 @@
       "duracion": "",
       "temporada": "",
       "color": "rosa",
-      "descripcion": "Un entrenamiento donde la elongación deja de ser ese momento aburrido después de la clase y se convierte en la clase entera: trabajamos **rangos de movimiento activos**, fuerza en posiciones profundas y la consciencia para moverte con libertad — sin forzar, sin apuro y con harta risa de por medio.",
+      "descripcion": "Acá la elongación deja de ser ese rato aburrido del final y pasa a ser la clase entera. Trabajamos **rangos de movimiento activos**, fuerza en posiciones profundas y conciencia de lo que hace tu cuerpo, sin forzar ni apurarte. Y con harta risa de por medio.",
       "trabajo": [
         {
           "titulo": "Consciencia",
@@ -208,7 +208,7 @@
         }
       ],
       "paraMi": [
-        "Sí. No necesitas llegar tocándote la punta de los pies — de hecho, para eso vienes. El grupo es multinivel y las propuestas se adaptan a cada cuerpo: hay quienes llegan del circo o la danza, y quienes no se estiraban desde la clase de educación física.",
+        "Sí. No necesitas llegar tocándote la punta de los pies: para eso vienes. El grupo es multinivel y los ejercicios se adaptan a cada cuerpo. Hay quienes llegan del circo o la danza, y quienes no se estiraban desde la clase de educación física.",
         "Trae ropa cómoda que te deje mover y agua. Los mats y el buen ambiente los pone la sala."
       ],
       "bioProfe": "Fundadora de Sala Crisol. Se mueve entre la flexibilidad, el equilibrio de manos y las artes del circo — y celebra cada semestre cumplido junto a su grupo.",
@@ -268,7 +268,7 @@
       "duracion": "2 horas",
       "temporada": "",
       "color": "mostaza",
-      "descripcion": "Aprender a pararse de manos desde cero, con método y sin miedo. Trabajamos **muñecas, hombros y centro**, la técnica de subida y — sobre todo — cómo caerse bien, que es lo primero que hay que perderle el susto.",
+      "descripcion": "Aprender a pararse de manos desde cero, con método y sin miedo. Trabajamos **muñecas, hombros y centro**, la técnica para subir y, sobre todo, cómo caerse bien: a eso es lo primero que hay que perderle el susto.",
       "trabajo": [
         {
           "titulo": "Muñecas",
@@ -288,7 +288,7 @@
         },
         {
           "titulo": "Paciencia",
-          "texto": "es un proceso largo y se disfruta el camino."
+          "texto": "es un proceso largo, y la gracia es ir disfrutándolo."
         }
       ],
       "paraMi": [
@@ -517,26 +517,42 @@
       "nombre": "Fonda en la Casona",
       "estado": "activo",
       "subtitulo": "",
-      "frase": "Un espacio seguro para compartir.",
-      "profe": "Sala Crisol y Ironcross Calistenia",
+      "frase": "Se nos movió la fecha, pero ahora sí: hay fonda.",
+      "profe": "Ironcross × Sala Crisol",
       "profeIg": "sala.crisol",
       "profeCorto": "Sala Crisol",
       "nivel": "Abierto a todas y todos",
       "duracion": "",
       "temporada": "",
       "color": "mostaza",
-      "descripcion": "Nos juntamos con **Ironcross Calistenia** para celebrar el 18 en la casona. Hay choripán, terremoto y espacio para quedarse toda la tarde. La entrada anticipada incluye **un choripán o un terremoto**.",
-      "trabajo": [],
-      "paraMi": [],
+      "descripcion": "El sábado 26 de septiembre nos juntamos en la Casona a celebrar el 18 a nuestra manera: con comida rica, terremotos, juegos y música. Y, sobre todo, en comunidad.",
+      "trabajo": [
+        {
+          "titulo": "Para comer",
+          "texto": "Empanadas, choripanes normales y veggie, y pebre."
+        },
+        {
+          "titulo": "Para tomar",
+          "texto": "Terremoto, cerveza y bebidas."
+        },
+        {
+          "titulo": "Para pasarlo bien",
+          "texto": "Juegos dieciocheros, música y buena onda."
+        }
+      ],
+      "paraMi": [
+        "Es el primer evento que armamos juntxs entre **Ironcross** y **Sala Crisol**: dos espacios y dos comunidades que se mueven distinto. Unxs vienen de las barras; otrxs, del circo, las acrobacias o la danza.",
+        "Pero fuera del entrenamiento nos gustan las mismas cosas: comer, jugar, conversar y celebrar. La idea es conocernos, mostrar lo que hace cada unx y ver qué podemos armar juntxs de aquí en adelante."
+      ],
       "bioProfe": "",
       "fotoProfe": "",
-      "portada": "img/eventos/fonda-2026-09-19/afiche.jpg",
+      "portada": "img/eventos/fonda-2026-09-26/afiche.jpg",
       "portadaEsFoto": false,
       "fotos": [],
       "horarios": [
         {
           "dia": "Sábado",
-          "hora": "16:00 en adelante",
+          "hora": "desde las 16:00",
           "cuposTotal": 0,
           "cuposDisponibles": null
         }
@@ -555,7 +571,7 @@
       ],
       "pagina": "eventos/fonda-en-la-casona.html",
       "tipo": "evento",
-      "fechaFija": "2026-09-19",
+      "fechaFija": "2026-09-26",
       "enHorario": false
     }
   ],
@@ -638,8 +654,8 @@
   "domingoPopular": {
     "fecha": "Domingo 6 de septiembre",
     "horario": "10:00 – 18:00",
-    "bajada": "Los espacios culturales se construyen entre todas y todos. Una vez al mes abrimos las puertas para una jornada completa.",
-    "descripcion": "Una vez al mes abrimos la sala el domingo entero. Hay clases de las mismas disciplinas que dictamos toda la semana, almuerzo comunitario y tiempo para quedarse. Participas aportando el valor de una clase **o trayendo materiales** para la sala: café, plantas, papelería, cosas de limpieza. Puedes venir a una sola clase o quedarte la jornada completa.",
+    "bajada": "Los espacios culturales se construyen entre todas y todos. Por eso, un domingo al mes, abrimos la sala todo el día.",
+    "descripcion": "Hay clases de las mismas disciplinas que hacemos durante la semana, almuerzo comunitario y tiempo para quedarse. Participas aportando el valor de una clase **o trayendo materiales** para la sala: café, plantas, papelería, cosas de limpieza. Puedes venir a una sola clase o quedarte todo el día.",
     "afiche": "img/domingos/2026-09-06/afiche.jpg",
     "piezas": [
       "img/domingos/2026-09-06/aportes.jpg",

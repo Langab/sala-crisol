@@ -19,7 +19,7 @@ Consuelo entra al panel desde el celular
    → cambia un cupo, sube un afiche, publica una tertulia
       → se guarda como un cambio en el repositorio de GitHub
          → el sitio se republica solo
-            → en 1 o 2 minutos está en línea
+            → en un par de minutos está en línea
 ```
 
 Como cada cambio queda registrado, si algo sale mal se devuelve en 30 segundos.
@@ -183,22 +183,23 @@ publica. Si tienes dudas sobre algo, ahí hay un `LEEME_SEGURIDAD.md`.
 git add -A && git commit -m "Actualizo la portada" && git push
 ```
 
-En 1–2 minutos https://salacrisol.cl/ queda actualizado.
+En un par de minutos https://salacrisol.cl/ queda actualizado.
 (Si no ves el cambio, recarga con Ctrl+Shift+R / Cmd+Shift+R.)
 
-### El `?v=2` de los scripts
+### El `?v=3` de los scripts
 
-Los `<script>` de todas las páginas apuntan a `js/config.js?v=2` y `js/main.js?v=2`.
-Ese numerito no es decorativo: GitHub Pages le dice al navegador que guarde los
-archivos por 10 minutos, así que sin él alguien que visitó el sitio hace poco
-puede quedarse con el HTML nuevo y el JavaScript viejo — y las páginas de clase
-salen en blanco.
+Los `<script>` de todas las páginas apuntan a `js/config.js?v=3` y `js/main.js?v=3`.
+Ese numerito no es decorativo: el navegador guarda los scripts un rato para no
+bajarlos en cada visita (en GitHub Pages eran 10 minutos; en Cloudflare es una
+hora, lo dice el archivo `_headers`), así que sin él alguien que visitó el sitio
+hace poco puede quedarse con el HTML nuevo y el JavaScript viejo — y las páginas
+de clase salen en blanco.
 
 **Cada vez que cambies `js/main.js` o `js/config.js`, súbele 1 al número en todas
 las páginas:**
 
 ```bash
-sed -i '' 's/\.js?v=2"/.js?v=3"/g' *.html talleres/*.html tertulias/*.html
+sed -i '' 's/\.js?v=3"/.js?v=4"/g' *.html talleres/*.html tertulias/*.html eventos/*.html
 ```
 
 `datos/contenido.json` no necesita esto: se pide con `no-cache`, así que los

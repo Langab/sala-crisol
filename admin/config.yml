@@ -120,12 +120,13 @@ collections:
                 required: false
                 collapsed: true
                 summary: "{{fields.titulo}}"
+                hint: "En un evento (la fonda) es «Qué va a haber»: un título por columna (Para comer) y lo que hay."
                 fields:
                   - { name: titulo, label: "Palabra clave", widget: string }
                   - { name: texto, label: "Explicación", widget: string }
               - { name: paraMi, label: "¿Es para mí?", widget: list, required: false,
                   field: { name: parrafo, label: "Párrafo", widget: text },
-                  hint: "Un párrafo por ítem: si sirve para principiantes, qué traer." }
+                  hint: "Un párrafo por ítem: si sirve para principiantes, qué traer. En un evento son los párrafos de «Dos mundos, una Casona»." }
               - name: horarios
                 label: "Horarios y cupos"
                 label_singular: "Horario"

@@ -10,31 +10,21 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <title>Fonda en la Casona — Sala Crisol</title>
-  <meta name="description" content="Fonda en la Casona: sábado 19 de septiembre desde las 16:00 en Sala Crisol, Ñuñoa. Junto a Ironcross Calistenia. Entrada anticipada $5.000 con choripán o terremoto incluido.">
+  <meta name="description" content="Fonda en la Casona, Ironcross × Sala Crisol: sábado 26 de septiembre desde las 16:00 en Av. Salvador 2302, Ñuñoa. Entrada anticipada $5.000 con un terremoto incluido; en la puerta, $8.000.">
   <link rel="canonical" href="https://salacrisol.cl/eventos/fonda-en-la-casona.html">
   <meta property="og:site_name" content="Sala Crisol">
   <meta property="og:locale" content="es_CL">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://salacrisol.cl/eventos/fonda-en-la-casona.html">
-  <meta property="og:title" content="Fonda en la Casona — Sala Crisol">
-  <meta property="og:description" content="Fonda en la Casona: sábado 19 de septiembre desde las 16:00 en Sala Crisol, Ñuñoa. Junto a Ironcross Calistenia. Entrada anticipada $5.000 con choripán o terremoto incluido.">
-  <meta property="og:image" content="https://salacrisol.cl/img/eventos/fonda-2026-09-19/afiche.jpg">
+  <meta property="og:title" content="Fonda en la Casona — Ironcross × Sala Crisol">
+  <meta property="og:description" content="Sábado 26 de septiembre desde las 16:00 en Ñuñoa. Entrada anticipada $5.000 con un terremoto incluido; en la puerta, $8.000.">
+  <meta property="og:image" content="https://salacrisol.cl/img/eventos/fonda-2026-09-26/afiche.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="../img/sala/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..600,0..100,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/estilo.css">
-  <style>
-    /* Los colores salen del afiche: el índigo de la banda de la fecha,
-       el oro de las letras, el carmesí de "ENTRADA" y el crema del papel. */
-    .evento-hero {
-      --ev-fondo: #2E2A63;
-      --ev-tinta: #F7EBD2;
-      --ev-acento: #F0C74E;
-      --ev-acento2: #C1272D;
-    }
-  </style>
 </head>
 <body data-subpagina data-taller-actual="fonda-en-la-casona">
 
@@ -61,75 +51,150 @@
   </header>
 
   <main>
-    <section class="evento-hero">
-      <div class="contenedor evento-hero__rejilla">
-        <div class="evento-hero__texto">
+    <!-- ===================== EL LETRERO =====================
+         Los colores salen del afiche pintado a mano: el índigo de la
+         banda de la fecha, el oro de las letras, el carmín de "ENTRADA"
+         y el crema del papel. Los banderines son la guirnalda de
+         siempre del sitio, teñida de fonda. -->
+    <section class="fonda-hero">
+      <div class="guirnalda guirnalda--techo" data-guirnalda
+           data-guirnalda-colores="#C1272D,#F7EBD2,#2F6DB5,#F2C94C"
+           data-guirnalda-hilo="#8C83C9"></div>
+
+      <div class="contenedor fonda-hero__rejilla">
+        <div class="fonda-hero__texto">
           <a class="miga miga--claro" href="../index.html">← Volver al inicio</a>
-          <p class="evento-hero__eyebrow" data-ev-eyebrow></p>
-          <h1 class="evento-hero__titulo" data-ev-titulo></h1>
-          <p class="evento-hero__fecha" data-ev-fecha></p>
-          <p class="evento-hero__bajada" data-ev-bajada></p>
-          <a class="boton boton--evento" href="#inscribirme">Quiero mi entrada</a>
+          <p class="fonda-hero__eyebrow" data-ev-eyebrow></p>
+          <h1 class="fonda-hero__titulo" data-ev-titulo></h1>
+          <p class="fonda-hero__banda" data-ev-fecha></p>
+          <p class="fonda-hero__bajada" data-ev-bajada></p>
+          <div class="heroe__ctas fonda-hero__ctas" data-ev-cta>
+            <a class="boton boton--oro" href="#entradas">Quiero mi entrada</a>
+            <span class="fonda-hero__cuenta" data-ev-cuenta hidden></span>
+          </div>
         </div>
-        <figure class="evento-hero__afiche" data-ev-afiche></figure>
+
+        <div class="fonda-visual" data-ev-visual>
+          <figure class="fonda-visual__afiche" data-ev-afiche hidden></figure>
+
+          <!-- El boleto: lo primero que se pregunta es cuánto sale -->
+          <div class="boleto-sombra">
+            <div class="boleto" data-ev-boleto>
+              <div class="boleto__cuerpo">
+                <p class="boleto__rotulo" data-ev-precio-nombre="0"></p>
+                <p class="boleto__precio" data-ev-precio="0"></p>
+                <p class="boleto__nota">con derecho a un terremoto</p>
+              </div>
+              <div class="boleto__talon" data-ev-talon>
+                <p class="boleto__rotulo" data-ev-precio-nombre="1"></p>
+                <p class="boleto__precio boleto__precio--puerta" data-ev-precio="1"></p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="evento-cuerpo">
+    <section class="evento-cuerpo fonda-cuerpo">
       <div class="contenedor evento-cuerpo__rejilla">
-        <div data-ev-cuerpo></div>
 
-        <div>
-          <aside class="panel-inscripcion" id="inscribirme" data-panel-inscripcion>
-          <h3>Inscríbete</h3>
-          <p>Reserva tu entrada anticipada y te confirmamos por WhatsApp.</p>
+        <div class="fonda-relato">
+          <div class="fonda-bloque" data-ev-cuerpo></div>
 
-          <div class="horarios-lista" data-horarios></div>
-          <div class="precios-linea" data-precios></div>
+          <div class="fonda-bloque" data-ev-mundos hidden>
+            <h2>Dos mundos, <span class="acento">una Casona</span></h2>
+            <div data-ev-mundos-texto></div>
+          </div>
 
-          <form class="formulario" data-form-inscripcion style="padding:0;border:none;box-shadow:none;background:none">
-            <div class="campo">
-              <label for="i-nombre">Tu nombre</label>
-              <input id="i-nombre" name="nombre" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" required>
+          <div class="fonda-bloque fonda-bloque--ancho" data-ev-habra hidden>
+            <h2>Qué va a <span class="acento">haber</span></h2>
+            <ul class="fonda-carta" data-ev-habra-lista></ul>
+          </div>
+
+          <aside class="fonda-ninxs" data-ev-extra>
+            <span class="banderin banderin--salvia" aria-hidden="true"></span>
+            <div>
+              <h3>Espacio seguro para niñas y niños</h3>
+              <p>Puedes venir con tus hijxs: va a haber un lugar pensado para ellxs, para que
+              todxs lo pasemos bien, con respeto y cuidándonos.</p>
             </div>
-            <div class="campo">
-              <label for="i-telefono">WhatsApp</label>
-              <input id="i-telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 ..." required>
-            </div>
-            <div class="campo">
-              <label for="i-correo">Correo <span style="text-transform:none;opacity:0.6">(opcional)</span></label>
-              <input id="i-correo" name="correo" type="email" autocomplete="email" placeholder="tucorreo@mail.com">
-            </div>
-            <div class="campo">
-              <label for="i-horario">Horario</label>
-              <select id="i-horario" name="horario" data-selector-horario required></select>
-            </div>
-            <div class="campo">
-              <label id="lbl-exp">¿Es tu primera vez acá?</label>
-              <div class="opciones" role="radiogroup" aria-labelledby="lbl-exp">
-                <label class="opcion"><input type="radio" name="experiencia" value="primera-vez" checked><span>Primera vez</span></label>
-                <label class="opcion"><input type="radio" name="experiencia" value="antigua"><span>Ya vengo</span></label>
+          </aside>
+
+          <div class="fonda-bloque fonda-donde" data-ev-extra>
+            <h2>Dónde</h2>
+            <p class="direccion">Av. Salvador 2302</p>
+            <p class="direccion__comuna">Ñuñoa · a 4 minutos del Metro Monseñor Eyzaguirre (L3)</p>
+            <a class="enlace-flecha" href="https://maps.google.com/?q=Av.+Salvador+2302,+%C3%91u%C3%B1oa,+Santiago" target="_blank" rel="noopener">Abrir en Google Maps</a>
+          </div>
+        </div>
+
+        <div class="fonda-col-reserva">
+          <aside class="panel-inscripcion fonda-reserva" id="entradas" data-reserva-evento>
+            <span class="sticker sticker--amarillo">Entrada anticipada</span>
+            <h3>Reserva tu entrada</h3>
+
+            <ol class="fonda-pasos">
+              <li><b>Déjanos tus datos</b> y cuántas entradas quieres.</li>
+              <li><b>Transfiere <span data-ev-valor></span></b> por cada entrada.</li>
+              <li><b>Manda el comprobante</b> por WhatsApp y te confirmamos.</li>
+            </ol>
+
+            <form class="formulario formulario--plano" data-form-evento>
+              <div class="campo">
+                <label for="e-nombre">Tu nombre</label>
+                <input id="e-nombre" name="nombre" type="text" autocomplete="name" placeholder="¿Cómo te llamas?" required>
               </div>
-            </div>
-            <div class="campo">
-              <label id="lbl-mod">¿Qué entrada quieres?</label>
-              <div class="opciones opciones--precios" role="radiogroup" aria-labelledby="lbl-mod" data-modalidades></div>
-            </div>
-            <div class="campo">
-              <label for="i-comentario">Comentario <span style="text-transform:none;opacity:0.6">(opcional)</span></label>
-              <textarea id="i-comentario" name="comentario" placeholder="Lesiones, dudas, lo que quieras contarnos"></textarea>
-            </div>
-            <p class="aviso" data-aviso role="status" aria-live="polite"></p>
-            <button class="boton boton--ws" type="submit">Inscribirme →</button>
-            <p class="campo__pista" data-aviso-privacidad style="margin-top:12px">Guardamos tu nombre y contacto solo para reservarte el cupo y escribirte por la fonda. <a href="../privacidad.html">Cómo cuidamos tus datos</a>.</p>
-            <p class="formulario__nota">Tu inscripción queda registrada al tiro. La sala te confirma por WhatsApp y te pasa los datos para transferir.</p>
-          </form>
-        </aside>
+              <div class="campo">
+                <label for="e-telefono">WhatsApp</label>
+                <input id="e-telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 ..." required>
+              </div>
+              <div class="campo">
+                <label for="e-correo">Correo <span class="campo__opcional">(opcional)</span></label>
+                <input id="e-correo" name="correo" type="email" autocomplete="email" placeholder="tucorreo@mail.com">
+              </div>
+              <div class="campo">
+                <label for="e-cantidad">¿Cuántas entradas?</label>
+                <div class="contador">
+                  <button class="contador__boton" type="button" data-cantidad="-1" aria-label="Una entrada menos">−</button>
+                  <input id="e-cantidad" name="cantidad" type="number" inputmode="numeric" min="1" max="10" value="1" required>
+                  <button class="contador__boton" type="button" data-cantidad="1" aria-label="Una entrada más">+</button>
+                </div>
+              </div>
+              <div class="campo">
+                <label id="lbl-ninxs">¿Vienen niñas o niños?</label>
+                <div class="opciones" role="radiogroup" aria-labelledby="lbl-ninxs">
+                  <label class="opcion"><input type="radio" name="ninxs" value="no" checked><span>No</span></label>
+                  <label class="opcion"><input type="radio" name="ninxs" value="si"><span>Sí</span></label>
+                </div>
+              </div>
+              <div class="campo">
+                <label for="e-comentario">Comentario <span class="campo__opcional">(opcional)</span></label>
+                <textarea id="e-comentario" name="comentario" placeholder="Si vienes con alguien más o hay algo que debamos saber"></textarea>
+              </div>
+
+              <p class="fonda-total">Total a transferir <b data-ev-total></b></p>
+
+              <p class="aviso" data-aviso role="status" aria-live="polite"></p>
+              <button class="boton boton--fuego" type="submit">Reservar →</button>
+              <p class="campo__pista">Guardamos tu nombre y contacto solo para anotarte en la fonda y escribirte por tu entrada. <a href="../privacidad.html">Cómo cuidamos tus datos</a>.</p>
+            </form>
+          </aside>
           <div class="transf" data-transferencia hidden></div>
         </div>
       </div>
     </section>
 
+    <!-- ===================== CIERRE ===================== -->
+    <section class="fonda-cierre" data-ev-extra>
+      <div class="guirnalda" data-guirnalda
+           data-guirnalda-colores="#F2C94C,#2F6DB5,#F7EBD2,#C1272D"
+           data-guirnalda-hilo="#8C83C9"></div>
+      <div class="contenedor">
+        <p class="fonda-cierre__frase">Dos mundos, <em>una misma Casona</em>.</p>
+        <p class="fonda-cierre__firma" data-ev-nos-vemos></p>
+        <a class="boton boton--oro" href="#entradas" data-ev-cta>Quiero mi entrada</a>
+      </div>
+    </section>
   </main>
 
   <footer class="pie">
@@ -142,14 +207,13 @@
     </div>
   </footer>
 
-  <script src="../js/config.js?v=2"></script>
-  <script src="../js/main.js?v=2"></script>
+  <script src="../js/config.js?v=3"></script>
+  <script src="../js/main.js?v=3"></script>
 
-  <!-- En celular el botón principal viaja fijo abajo: es lo que hacen los
-       referentes de reservas. Se esconde solo cuando hay un formulario en
-       pantalla, para no taparlo. -->
+  <!-- En celular el botón principal viaja fijo abajo. Se esconde solo
+       cuando el formulario o el botón del letrero están en pantalla. -->
   <div class="barra-movil" data-barra-movil>
-    <a class="boton boton--fuego" data-ws="Hola! Quiero tomar clases con ustedes ✨" href="#">Agenda tu primera clase</a>
+    <a class="boton boton--fuego" href="#entradas">Quiero mi entrada</a>
   </div>
 </body>
 </html>

@@ -141,7 +141,23 @@ function pintarSitio() {
            '<rect width="8" height="8" fill="' + color + '"/>' + motivo + '</pattern>';
   }
 
+  /* Cada guirnalda lleva su número, para que las tramas de dos guirnaldas
+     en la misma página no compartan id. */
+  var guirnaldasNumeradas = 0;
+
   function dibujarGuirnalda(cont) {
+    /* Una página puede teñir su guirnalda (la fonda la quiere tricolor):
+       data-guirnalda-colores="#C1272D,#F7EBD2" y data-guirnalda-hilo. */
+    var colores = String(cont.getAttribute("data-guirnalda-colores") || "")
+      .split(",").map(function (c) { return c.trim(); }).filter(Boolean);
+    if (!colores.length) colores = COLORES_BANDERIN;
+    var colorHilo = cont.getAttribute("data-guirnalda-hilo") || "#B9A894";
+    var numero = cont.getAttribute("data-guirnalda-n");
+    if (!numero) {
+      numero = String(guirnaldasNumeradas++);
+      cont.setAttribute("data-guirnalda-n", numero);
+    }
+
     var ancho = Math.max(cont.clientWidth || 0, 320);
     var caida = Math.min(Math.max(ancho * 0.035, 16), 46);   // cuánto cuelga el hilo
     var yIni = 4;
@@ -164,10 +180,10 @@ function pintarSitio() {
       var dy = 2 * u * (cy - yIni) + 2 * t * (yIni - cy);
       var ang = Math.atan2(dy, dx) * 180 / Math.PI;
 
-      var ci = (i + desfase) % COLORES_BANDERIN.length;
-      var color = COLORES_BANDERIN[ci];
+      var ci = (i + desfase) % colores.length;
+      var color = colores[ci];
       var tipo = (i + desfase) % 4;
-      var pid = "trama-" + semilla + "-" + i;
+      var pid = "trama-" + numero + "-" + i;
       defs += tramaBanderin(pid, color, tipo);
 
       var mitad = anchoBanderin / 2;
@@ -180,7 +196,7 @@ function pintarSitio() {
     }
 
     var hilo = '<path d="M0 ' + yIni + ' Q ' + cx + ' ' + cy + ' ' + ancho + ' ' + yIni + '" ' +
-               'fill="none" stroke="#B9A894" stroke-width="1.6" stroke-linecap="round"/>';
+               'fill="none" stroke="' + escHtml(colorHilo) + '" stroke-width="1.6" stroke-linecap="round"/>';
 
     cont.innerHTML =
       '<svg viewBox="0 0 ' + ancho + " " + alto + '" width="' + ancho + '" height="' + alto + '" ' +
@@ -582,6 +598,23 @@ function pintarSitio() {
                " <small>" + pie + "</small></a>";
       }).join("");
   });
+
+  /* ---------- pestaña del próximo evento ----------
+     Mientras haya un evento de una fecha por venir (la fonda), el menú
+     suma una pestaña con la primera palabra de su nombre. Cuando la
+     fecha pasa, la pestaña se va sola: nadie tiene que acordarse. */
+  var evMenu = eventosProximos()[0];
+  var listaMenu = document.querySelector(".nav__links");
+  if (evMenu && evMenu.pagina && listaMenu && listaMenu.lastElementChild) {
+    var liEv = document.createElement("li");
+    var estoyAhi = document.body.getAttribute("data-taller-actual") === evMenu.id;
+    liEv.innerHTML =
+      '<a class="nav__evento" href="' + base + escHtml(limpiarRuta(evMenu.pagina)) + '"' +
+      ' title="' + escHtml(evMenu.nombre + " · " + fechaLarga(evMenu.fechaFija)) + '"' +
+      (estoyAhi ? ' aria-current="page"' : "") + ">" +
+      texto(String(evMenu.nombre).split(" ")[0]) + "</a>";
+    listaMenu.insertBefore(liEv, listaMenu.lastElementChild);
+  }
 
   /* ---------- dirección de la sala (va en el pie de cada página) ---------- */
   if (CRISOL.sala.direccion) {
@@ -1194,17 +1227,23 @@ function pintarSitio() {
      haya pasado todavía. Si no hay ninguno, la sección no aparece:
      nadie tiene que acordarse de bajarla cuando termine la fonda.
      ============================================================ */
-  var cajaProx = document.querySelector("[data-evento-proximo]");
-  if (cajaProx) {
+
+  /** Los eventos de una fecha que todavía no pasan, el más cercano primero. */
+  function eventosProximos() {
     var hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
-    var proximos = talleresVisibles().filter(function (t) {
+    return talleresVisibles().filter(function (t) {
       if (t.tipo !== "evento" || t.enHorario !== false || !t.fechaFija) return false;
       var f = new Date(t.fechaFija + "T12:00:00");
       return !isNaN(f) && f >= hoy;
     }).sort(function (a, b) {
       return String(a.fechaFija).localeCompare(String(b.fechaFija));
     });
+  }
+
+  var cajaProx = document.querySelector("[data-evento-proximo]");
+  if (cajaProx) {
+    var proximos = eventosProximos();
 
     if (!proximos.length) {
       cajaProx.hidden = true;
@@ -1233,6 +1272,15 @@ function pintarSitio() {
               '"><img src="' + base + limpiarRuta(afi) + '" alt="Afiche de ' + texto(ev.nombre) + '"></a>'
             : "") +
         "</div>";
+      /* si el afiche todavía no está en la carpeta, la franja queda
+         en una sola columna en vez de mostrar una imagen rota */
+      var imgProx = cajaProx.querySelector(".dp-afiche img");
+      if (imgProx) {
+        respaldoImagen(imgProx, [], function (img) {
+          img.parentNode.remove();
+          cajaProx.querySelector(".comunidad__panel").classList.add("comunidad__panel--solo");
+        });
+      }
       /* el botón de WhatsApp que acabo de crear necesita su enlace */
       cajaProx.querySelectorAll("[data-ws]").forEach(function (el) {
         el.href = enlaceWhatsApp(el.getAttribute("data-ws"));
@@ -1243,21 +1291,24 @@ function pintarSitio() {
   /* ============================================================
      PÁGINA DE UN EVENTO DE UNA SOLA FECHA
      ------------------------------------------------------------
-     Usa el molde oscuro de las tertulias, pero los datos salen de
-     la misma ficha de "clases" del panel. Así la inscripción, los
-     cupos y la planilla funcionan igual que en cualquier clase, sin
-     inventar un sistema aparte.
+     Los datos salen de la misma ficha de "clases" del panel: fecha,
+     precios, textos y afiche. En un evento, «Qué vas a trabajar» es
+     lo que va a haber y «¿Es para mí?» son los párrafos de la
+     historia. La reserva cae en la misma planilla que las clases.
      ============================================================ */
   var contEv = document.querySelector("[data-ev-cuerpo]");
   if (contEv) pintarPaginaEvento(taller);
 
   function pintarPaginaEvento(t) {
+    var reserva = document.querySelector("[data-reserva-evento]");
+
     if (!t || t.estado === "oculto") {
       contEv.innerHTML =
-        '<div class="evento-relato"><h2>Este evento no está <span class="acento">disponible</span></h2>' +
-        '<p>Puede que ya haya pasado. Mira <a href="' + base + 'index.html">qué viene ahora</a>.</p></div>';
-      var panelEv = document.querySelector("[data-panel-inscripcion]");
-      if (panelEv) panelEv.hidden = true;
+        '<h2>Este evento no está <span class="acento">disponible</span></h2>' +
+        '<p>Puede que ya haya pasado. Mira <a href="' + base + 'index.html">qué viene ahora</a>.</p>';
+      [reserva, document.querySelector("[data-ev-visual]")]
+        .concat([].slice.call(document.querySelectorAll("[data-ev-extra], [data-ev-cta]")))
+        .forEach(function (el) { if (el) el.hidden = true; });
       return;
     }
 
@@ -1267,22 +1318,274 @@ function pintarSitio() {
       var el = document.querySelector(sel);
       if (el) el.innerHTML = html;
     };
+    var h0 = (t.horarios || [])[0] || null;
+    var cuando = fechaLarga(t.fechaFija) + (h0 ? " · " + h0.hora : "");
+    var precios = t.precios || [];
 
-    poner("[data-ev-titulo]", texto(t.nombre));
+    poner("[data-ev-titulo]", tituloConConectores(t.nombre));
     poner("[data-ev-eyebrow]", texto(t.profe));
     poner("[data-ev-bajada]", texto(t.frase));
-    poner("[data-ev-fecha]", texto(fechaLarga(t.fechaFija) +
-      ((t.horarios || [])[0] ? " · " + t.horarios[0].hora : "")));
+    /* en dos trozos que no se parten: en celular salta entero a la
+       línea de abajo "desde las 16:00" y no queda un "16:00" huérfano */
+    poner("[data-ev-fecha]", '<span class="sin-corte">' + texto(fechaLarga(t.fechaFija)) + "</span>" +
+      (h0 ? ' <span class="sin-corte">· ' + texto(h0.hora) + "</span>" : ""));
 
-    var afiche = portadaTaller(t);
-    if (afiche) {
-      poner("[data-ev-afiche]", '<img src="' + base + limpiarRuta(afiche) +
-        '" alt="Afiche de ' + texto(t.nombre) + '">');
+    /* el boleto: primer precio grande, el segundo en el talón */
+    document.querySelectorAll("[data-ev-precio]").forEach(function (el) {
+      var p = precios[parseInt(el.getAttribute("data-ev-precio"), 10)];
+      el.innerHTML = p ? texto(p.valor) : "";
+    });
+    document.querySelectorAll("[data-ev-precio-nombre]").forEach(function (el) {
+      var p = precios[parseInt(el.getAttribute("data-ev-precio-nombre"), 10)];
+      el.innerHTML = p ? texto(p.nombre) : "";
+    });
+    var talon = document.querySelector("[data-ev-talon]");
+    if (talon && !precios[1]) {
+      talon.hidden = true;
+      document.querySelector("[data-ev-boleto]").classList.add("boleto--sin-talon");
+    }
+    document.querySelectorAll("[data-ev-valor]").forEach(function (el) {
+      el.innerHTML = precios[0] ? texto(precios[0].valor) : "";
+    });
+
+    /* El afiche aparece recién cuando carga: si todavía no está en la
+       carpeta, el letrero se sostiene solo con el boleto. */
+    var figAfiche = document.querySelector("[data-ev-afiche]");
+    if (figAfiche && t.portada) {
+      figAfiche.innerHTML = '<img src="' + base + escHtml(limpiarRuta(t.portada)) +
+        '" alt="Afiche de ' + texto(t.nombre) + '">';
+      var imgAfiche = figAfiche.querySelector("img");
+      imgAfiche.addEventListener("load", function () {
+        figAfiche.hidden = false;
+        var visual = document.querySelector("[data-ev-visual]");
+        if (visual) visual.classList.add("con-afiche");
+      });
+      respaldoImagen(imgAfiche, [], function () { figAfiche.innerHTML = ""; });
     }
 
-    contEv.innerHTML =
-      '<div class="evento-relato"><h2>De qué se trata</h2><p>' +
-      texto(t.descripcion) + "</p></div>";
+    contEv.innerHTML = "<h2>De qué se <span class=\"acento\">trata</span></h2><p>" +
+      texto(t.descripcion) + "</p>";
+
+    var mundos = document.querySelector("[data-ev-mundos]");
+    var parrafos = (t.paraMi || []).filter(Boolean);
+    if (mundos) {
+      mundos.querySelector("[data-ev-mundos-texto]").innerHTML =
+        parrafos.map(function (p) { return "<p>" + texto(p) + "</p>"; }).join("");
+      mundos.hidden = !parrafos.length;
+    }
+
+    var habra = document.querySelector("[data-ev-habra]");
+    var cosas = (t.trabajo || []).filter(function (b) { return b && (b.titulo || b.texto); });
+    if (habra) {
+      habra.querySelector("[data-ev-habra-lista]").innerHTML = cosas.map(function (b) {
+        return '<li class="fonda-carta__item"><span class="fonda-carta__banderin" aria-hidden="true"></span>' +
+               "<h3>" + texto(b.titulo) + "</h3><p>" + texto(b.texto) + "</p></li>";
+      }).join("");
+      habra.hidden = !cosas.length;
+    }
+
+    var diaDelMes = /^\d{4}-\d{2}-(\d{2})$/.exec(String(t.fechaFija || ""));
+    poner("[data-ev-nos-vemos]", texto("Nos vemos el " + (diaDelMes ? parseInt(diaDelMes[1], 10) : "día de la fonda") +
+      (t.profe ? " · " + t.profe : "")));
+
+    var faltan = diasHasta(t.fechaFija);
+    var cuenta = document.querySelector("[data-ev-cuenta]");
+    if (cuenta && faltan !== null && faltan >= 0) {
+      cuenta.textContent = faltan === 0 ? "Es hoy" : faltan === 1 ? "Es mañana" : "Faltan " + faltan + " días";
+      cuenta.hidden = false;
+    }
+
+    /* pasada la fecha, la página queda como recuerdo y sin formulario */
+    if (faltan !== null && faltan < 0) {
+      if (reserva) {
+        reserva.innerHTML =
+          '<div class="inscrita"><h3>Esta fecha ya pasó</h3>' +
+          "<p>Gracias a todxs los que vinieron. Mira <a href=\"" + base +
+          'index.html">qué viene ahora en la sala</a>.</p></div>';
+      }
+      document.querySelectorAll("[data-ev-cta]").forEach(function (el) { el.hidden = true; });
+      return;
+    }
+
+    if (reserva) montarReservaEvento(t, reserva, cuando);
+  }
+
+  /* ---------- reserva de entradas de un evento ----------
+     Una fila por reserva en la planilla, aunque sean varias entradas:
+     el monto es el total y la cantidad va en las notas. Así una
+     transferencia se marca como pagada de una sola vez en el panel. */
+  function montarReservaEvento(t, reserva, cuando) {
+    var form = reserva.querySelector("[data-form-evento]");
+    if (!form) return;
+
+    var MAX_ENTRADAS = 10;
+    var precio = (t.precios || [])[0] || null;
+    var valorEntrada = precio ? (Number(precio.monto) || 0) : 0;
+    var campoCantidad = form.querySelector('[name="cantidad"]');
+    var elTotal = form.querySelector("[data-ev-total]");
+
+    var cantidad = function () {
+      var n = parseInt(campoCantidad.value, 10);
+      return isNaN(n) ? 1 : Math.min(MAX_ENTRADAS, Math.max(1, n));
+    };
+    var refrescarTotal = function () {
+      if (elTotal) elTotal.textContent = valorEntrada ? pesos(valorEntrada * cantidad()) : "por confirmar";
+    };
+    form.querySelectorAll("[data-cantidad]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        campoCantidad.value = String(Math.min(MAX_ENTRADAS,
+          Math.max(1, cantidad() + parseInt(b.getAttribute("data-cantidad"), 10))));
+        refrescarTotal();
+      });
+    });
+    campoCantidad.addEventListener("input", refrescarTotal);
+    campoCantidad.addEventListener("change", function () {
+      campoCantidad.value = String(cantidad());
+      refrescarTotal();
+    });
+    refrescarTotal();
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var val = function (n) {
+        var el = form.querySelector('[name="' + n + '"]');
+        return el ? el.value.trim() : "";
+      };
+      var aviso = form.querySelector("[data-aviso]");
+      var boton = form.querySelector('button[type="submit"]');
+
+      var nombre = val("nombre");
+      var telefono = val("telefono");
+      var comentario = val("comentario");
+      var n = cantidad();
+      var total = valorEntrada * n;
+      var entradas = n + (n === 1 ? " entrada" : " entradas");
+      var conNinxs = (form.querySelector('[name="ninxs"]:checked') || {}).value === "si";
+      var h0 = (t.horarios || [])[0] || {};
+      var fechaCorta = fechaLarga(t.fechaFija).toLowerCase();
+
+      var ahora = new Date().toISOString();
+      var inscripcion = {
+        id: "insc_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+        creado: ahora,
+        nombre: nombre,
+        telefono: telefono,
+        correo: val("correo"),
+        claseId: t.id,
+        claseNombre: t.nombre,
+        dia: h0.dia || "",
+        hora: h0.hora || "",
+        fechaSesion: t.fechaFija,
+        /* en un evento no aplica; "antigua" evita que el panel lo
+           etiquete como la primera clase de alguien */
+        experiencia: "antigua",
+        modalidad: "suelta",
+        monto: total,
+        asistio: false,
+        pago: false,
+        metodoPago: "",
+        notas: entradas + " anticipadas" + (conNinxs ? " · vienen niñas o niños" : "") +
+               (comentario ? " · " + comentario : ""),
+        estado: "activa",
+        updatedAt: ahora
+      };
+
+      var msjComprobante = "Hola! Soy " + nombre + ". Reservé " + entradas + " para " + t.nombre +
+        " (" + fechaCorta + ") y transferí " + pesos(total) + ". Acá va el comprobante 📎";
+      var msjAMano = "Hola! Soy " + nombre + " y quiero reservar " + entradas + " para " + t.nombre +
+        " (" + fechaCorta + ").";
+
+      var confirmar = function () {
+        var datosTransf = contenidoTransferencia();
+        reserva.innerHTML =
+          '<div class="inscrita fonda-lista">' +
+            '<div class="inscrita__marca">✓</div>' +
+            "<h3>Listo, " + escHtml(nombre.split(" ")[0]) + "</h3>" +
+            "<p>Te guardamos " + entradas + ". Quedan confirmadas cuando nos llegue la transferencia.</p>" +
+            '<dl class="inscrita__datos">' +
+              "<dt>Entradas</dt><dd>" + n + "</dd>" +
+              "<dt>Total</dt><dd>" + pesos(total) + "</dd>" +
+              "<dt>Cuándo</dt><dd>" + texto(cuando) + "</dd>" +
+            "</dl>" +
+            (datosTransf ? '<div class="transf transf--dentro">' + datosTransf + "</div>" : "") +
+            '<a class="boton boton--ws" target="_blank" rel="noopener" href="' +
+              enlaceWhatsApp(msjComprobante) + '">Mandar el comprobante</a>' +
+            '<button class="inscrita__otra" type="button">Reservar para otra persona</button>' +
+          "</div>";
+        engancharCopiar(reserva);
+        /* los datos ya quedaron en la confirmación: la caja de abajo sobra */
+        var cajaAparte = document.querySelector("[data-transferencia]");
+        if (cajaAparte) cajaAparte.hidden = true;
+        reserva.querySelector(".inscrita__otra").addEventListener("click", function () {
+          location.reload();
+        });
+        reserva.scrollIntoView({ behavior: sinMovimiento ? "auto" : "smooth", block: "start" });
+      };
+
+      var fallar = function () {
+        if (aviso) {
+          aviso.className = "aviso aviso--error";
+          aviso.innerHTML = "No pudimos guardar tu reserva. " +
+            '<a href="' + enlaceWhatsApp(msjAMano) + '" target="_blank" rel="noopener"><strong>Escríbenos por WhatsApp</strong></a>' +
+            " y te anotamos a mano.";
+        }
+        if (boton) { boton.disabled = false; boton.textContent = "Reservar →"; }
+      };
+
+      if (!nombre || !telefono) { fallar(); return; }
+
+      var destino = CRISOL.inscripcionesURL || "";
+      if (!destino) { confirmar(); return; }
+
+      if (boton) { boton.disabled = true; boton.textContent = "Guardando…"; }
+      if (aviso) { aviso.className = "aviso"; aviso.textContent = ""; }
+
+      fetch(destino, {
+        method: "POST",
+        redirect: "follow",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ inscripciones: [inscripcion] })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (r) { if (r && r.ok) confirmar(); else fallar(); })
+        .catch(fallar);
+    });
+  }
+
+  /** "Fonda en la Casona" → las palabras chicas del medio van apiladas y
+      en cursiva, como el "EN LA" pintado a mano en el afiche. */
+  function tituloConConectores(nombre) {
+    var chicas = /^(en|la|el|de|del|los|las|y|a)$/i;
+    var palabras = String(nombre || "").split(/\s+/).filter(Boolean);
+    var html = "";
+    var grupo = [];
+    palabras.forEach(function (p, i) {
+      if (chicas.test(p) && i > 0 && i < palabras.length - 1) { grupo.push(p); return; }
+      if (grupo.length) {
+        html += ' <span class="conector">' +
+          grupo.map(function (g) { return "<span>" + texto(g) + "</span>"; }).join(" ") + "</span> ";
+        grupo = [];
+      } else if (html) {
+        html += " ";
+      }
+      html += texto(p);
+    });
+    return html;
+  }
+
+  /** Días que faltan para una fecha "YYYY-MM-DD": 0 es hoy, negativo ya pasó. */
+  function diasHasta(iso) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(iso || ""))) return null;
+    var p = iso.split("-");
+    var fecha = new Date(+p[0], +p[1] - 1, +p[2]);
+    var hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    return Math.round((fecha - hoy) / 864e5);
+  }
+
+  /** 10000 → "$10.000" */
+  function pesos(n) {
+    return "$" + String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
   /** "2026-09-19" → "Sábado 19 de septiembre". Si no hay fecha, "". */
@@ -1302,33 +1605,66 @@ function pintarSitio() {
      Mientras estén vacíos el bloque no aparece: mejor no mostrar
      nada que mostrar una cuenta a medias.
      ============================================================ */
-  var cajaTransf = document.querySelector("[data-transferencia]");
-  if (cajaTransf) {
+  function contenidoTransferencia() {
     var cta = (CRISOL.sala && CRISOL.sala.transferencia) || {};
     var filas = [
       ["Nombre", cta.titular], ["RUT", cta.rut], ["Banco", cta.banco],
       ["Tipo de cuenta", cta.tipoCuenta], ["N° de cuenta", cta.numero],
       ["Correo", cta.correo],
     ].filter(function (f) { return String(f[1] || "").trim(); });
+    if (!filas.length) return "";
 
-    if (!filas.length) {
+    /* el RUT y el número se escriben a mano en la app del banco: esos
+       dos llevan su botón de copiar */
+    var copiables = { "RUT": true, "N° de cuenta": true };
+    var todo = filas.map(function (f) { return f[0] + ": " + f[1]; }).join("\n");
+    return '<h3 class="transf__titulo">Datos para transferir</h3>' +
+      '<dl class="transf__datos">' +
+      filas.map(function (f) {
+        return "<dt>" + texto(f[0]) + "</dt><dd>" + texto(f[1]) +
+          (copiables[f[0]]
+            ? ' <button class="transf__copiar" type="button" data-copiar="' + escHtml(f[1]) +
+              '" aria-label="Copiar ' + escHtml(f[0]) + '">Copiar</button>'
+            : "") +
+          "</dd>";
+      }).join("") +
+      "</dl>" +
+      '<button class="transf__copiar-todo" type="button" data-copiar="' + escHtml(todo) +
+      '">Copiar todos los datos</button>';
+  }
+
+  /** Botones [data-copiar] dentro de raiz. Sin portapapeles, se sacan. */
+  function engancharCopiar(raiz) {
+    raiz.querySelectorAll("[data-copiar]").forEach(function (b) {
+      if (!navigator.clipboard) { b.remove(); return; }
+      var original = b.textContent;
+      b.addEventListener("click", function () {
+        navigator.clipboard.writeText(b.getAttribute("data-copiar")).then(function () {
+          b.textContent = "Copiado ✓";
+          setTimeout(function () { b.textContent = original; }, 1800);
+        });
+      });
+    });
+  }
+
+  var cajaTransf = document.querySelector("[data-transferencia]");
+  if (cajaTransf) {
+    var datosTransf = contenidoTransferencia();
+    var eventoPasado = taller && taller.tipo === "evento" && diasHasta(taller.fechaFija) < 0;
+    if (!datosTransf || eventoPasado) {
       cajaTransf.hidden = true;
     } else {
       cajaTransf.hidden = false;
-      cajaTransf.innerHTML =
-        '<h3 class="transf__titulo">Para transferir</h3>' +
-        '<dl class="transf__datos">' +
-        filas.map(function (f) {
-          return "<dt>" + texto(f[0]) + "</dt><dd>" + texto(f[1]) + "</dd>";
-        }).join("") +
-        "</dl>" +
-        '<p class="transf__nota">Cuando transfieras, <strong>mándanos el comprobante ' +
-        'por WhatsApp</strong> y te confirmamos el cupo. Si prefieres, también puedes ' +
-        'pagar en la puerta.</p>' +
-        '<a class="boton boton--ws" data-ws="Hola! Ya transferí para la Fonda en la Casona. Acá va el comprobante 📎" href="#">Enviar comprobante</a>';
-      /* el botón nuevo también necesita su enlace de WhatsApp */
-      var btn = cajaTransf.querySelector("[data-ws]");
-      if (btn) btn.href = enlaceWhatsApp(btn.getAttribute("data-ws"));
+      cajaTransf.innerHTML = datosTransf +
+        '<p class="transf__nota">¿Ya reservaste? Cuando transfieras, <strong>mándanos el ' +
+        "comprobante por WhatsApp</strong> y te confirmamos.</p>" +
+        '<a class="boton boton--ws" href="#">Mandar el comprobante</a>';
+      var btnComprobante = cajaTransf.querySelector(".boton--ws");
+      btnComprobante.href = enlaceWhatsApp("Hola! Ya transferí para " +
+        (taller ? taller.nombre : "mi entrada") + ". Acá va el comprobante 📎");
+      btnComprobante.target = "_blank";
+      btnComprobante.rel = "noopener";
+      engancharCopiar(cajaTransf);
     }
   }
 

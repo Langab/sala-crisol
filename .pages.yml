@@ -7,7 +7,8 @@
 #
 # Cómo se entra:  https://app.pagescms.org  (invitación por correo)
 # Qué edita:      datos/contenido.json
-# Cuánto demora:  el cambio se ve en el sitio en 1 o 2 minutos.
+# Cuánto demora:  el cambio se publica solo y se ve en el sitio en un
+#                 par de minutos.
 #
 # Si cambias algo acá, revisa que el campo exista igual en
 # admin/config.yml (el panel alternativo). Ver COMO_EDITAR_EL_SITIO.md
@@ -145,7 +146,7 @@ content:
             type: object
             list:
               collapsible: { summary: "{fields.titulo}" }
-            description: Los puntos con viñeta de la página. Entre 4 y 6 quedan bien.
+            description: "Los puntos con viñeta de la página. Entre 4 y 6 quedan bien. En un evento (la fonda) es «Qué va a haber»: un título por columna (Para comer) y lo que hay (Empanadas, choripanes…)."
             fields:
               - { name: titulo, label: Palabra clave, type: string, required: true }
               - { name: texto, label: Explicación, type: string, required: true }
@@ -153,7 +154,7 @@ content:
             label: "¿Es para mí?"
             type: text
             list: true
-            description: "Un párrafo por línea. Aquí va lo práctico: si sirve para principiantes, qué traer."
+            description: "Un párrafo por línea. Aquí va lo práctico: si sirve para principiantes, qué traer. En un evento son los párrafos de «Dos mundos, una Casona»."
           - name: horarios
             label: Horarios y cupos
             type: object
