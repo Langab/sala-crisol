@@ -1363,22 +1363,35 @@ function pintarSitio() {
     poner("[data-ev-fecha]", '<span class="sin-corte">' + texto(fechaLarga(t.fechaFija)) + "</span>" +
       (h0 ? ' <span class="sin-corte">· ' + texto(h0.hora) + "</span>" : ""));
 
-    /* el boleto: primer precio grande, el segundo en el talón */
+    /* el boleto: el primer precio grande, el de la puerta y el de los
+       menores de 10 en el talón */
+    var tarifas = tarifasEvento(t);
     document.querySelectorAll("[data-ev-precio]").forEach(function (el) {
-      var p = precios[parseInt(el.getAttribute("data-ev-precio"), 10)];
+      var p = tarifas.adultos[parseInt(el.getAttribute("data-ev-precio"), 10)];
       el.innerHTML = p ? texto(p.valor) : "";
     });
     document.querySelectorAll("[data-ev-precio-nombre]").forEach(function (el) {
-      var p = precios[parseInt(el.getAttribute("data-ev-precio-nombre"), 10)];
+      var p = tarifas.adultos[parseInt(el.getAttribute("data-ev-precio-nombre"), 10)];
       el.innerHTML = p ? texto(p.nombre) : "";
     });
+    var talonPuerta = document.querySelector("[data-ev-talon-puerta]");
+    if (talonPuerta) talonPuerta.hidden = !tarifas.adultos[1];
+    document.querySelectorAll("[data-ev-ninxs]").forEach(function (el) {
+      el.hidden = !tarifas.ninxs;
+    });
+    if (tarifas.ninxs) {
+      poner("[data-ev-ninxs-nombre]", texto(tarifas.ninxs.nombre));
+      document.querySelectorAll("[data-ev-ninxs-valor]").forEach(function (el) {
+        el.innerHTML = texto(tarifas.ninxs.valor);
+      });
+    }
     var talon = document.querySelector("[data-ev-talon]");
-    if (talon && !precios[1]) {
+    if (talon && !tarifas.adultos[1] && !tarifas.ninxs) {
       talon.hidden = true;
       document.querySelector("[data-ev-boleto]").classList.add("boleto--sin-talon");
     }
     document.querySelectorAll("[data-ev-valor]").forEach(function (el) {
-      el.innerHTML = precios[0] ? texto(precios[0].valor) : "";
+      el.innerHTML = tarifas.adultos[0] ? texto(tarifas.adultos[0].valor) : "";
     });
 
     /* El afiche aparece recién cuando carga: si todavía no está en la
@@ -1443,38 +1456,75 @@ function pintarSitio() {
     if (reserva) montarReservaEvento(t, reserva, cuando);
   }
 
+  /** Los precios de un evento, separados: los de adultos en su orden
+      (anticipada, puerta) y el de menores, que se reconoce por el nombre
+      («Menores de 10 años», «Niñas y niños»). */
+  function tarifasEvento(t) {
+    var esNinxs = function (p) { return /menor|niñ/i.test(String(p && p.nombre)); };
+    var precios = (t.precios || []).filter(Boolean);
+    return {
+      adultos: precios.filter(function (p) { return !esNinxs(p); }),
+      ninxs: precios.filter(esNinxs)[0] || null
+    };
+  }
+
   /* ---------- reserva de entradas de un evento ----------
      Una fila por reserva en la planilla, aunque sean varias entradas:
-     el monto es el total y la cantidad va en las notas. Así una
+     el monto es el total y las cantidades van en las notas. Así una
      transferencia se marca como pagada de una sola vez en el panel. */
   function montarReservaEvento(t, reserva, cuando) {
     var form = reserva.querySelector("[data-form-evento]");
     if (!form) return;
 
-    var MAX_ENTRADAS = 10;
-    var precio = (t.precios || [])[0] || null;
-    var valorEntrada = precio ? (Number(precio.monto) || 0) : 0;
-    var campoCantidad = form.querySelector('[name="cantidad"]');
+    var tarifas = tarifasEvento(t);
+    var valorAdulto = tarifas.adultos[0] ? (Number(tarifas.adultos[0].monto) || 0) : 0;
+    var valorNinxs = tarifas.ninxs ? (Number(tarifas.ninxs.monto) || 0) : 0;
     var elTotal = form.querySelector("[data-ev-total]");
+    var elDetalle = form.querySelector("[data-ev-total-detalle]");
 
-    var cantidad = function () {
-      var n = parseInt(campoCantidad.value, 10);
-      return isNaN(n) ? 1 : Math.min(MAX_ENTRADAS, Math.max(1, n));
+    /* sin precio de menores, el contador de menores no aparece */
+    var campoNinxs = form.querySelector("[data-campo-ninxs]");
+    if (campoNinxs && !tarifas.ninxs) campoNinxs.remove();
+
+    /* el número de un contador, siempre dentro de su mínimo y su máximo */
+    var leer = function (nombre) {
+      var campo = form.querySelector('[name="' + nombre + '"]');
+      if (!campo) return 0;
+      var min = parseInt(campo.min, 10) || 0;
+      var max = parseInt(campo.max, 10) || 10;
+      var n = parseInt(campo.value, 10);
+      return isNaN(n) ? min : Math.min(max, Math.max(min, n));
     };
+    var plural = function (n, uno, varios) { return n + " " + (n === 1 ? uno : varios); };
+    var descripcion = function (a, m) {
+      return plural(a, "entrada", "entradas") + (m ? " y " + plural(m, "menor de 10", "menores de 10") : "");
+    };
+
     var refrescarTotal = function () {
-      if (elTotal) elTotal.textContent = valorEntrada ? pesos(valorEntrada * cantidad()) : "por confirmar";
+      var a = leer("cantidad"), m = leer("ninxs");
+      if (elTotal) elTotal.textContent = valorAdulto ? pesos(valorAdulto * a + valorNinxs * m) : "por confirmar";
+      if (elDetalle) {
+        elDetalle.textContent = m && valorAdulto
+          ? a + " × " + pesos(valorAdulto) + " + " + m + " × " + pesos(valorNinxs)
+          : "";
+        elDetalle.hidden = !elDetalle.textContent;
+      }
     };
-    form.querySelectorAll("[data-cantidad]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        campoCantidad.value = String(Math.min(MAX_ENTRADAS,
-          Math.max(1, cantidad() + parseInt(b.getAttribute("data-cantidad"), 10))));
+
+    form.querySelectorAll(".contador").forEach(function (contador) {
+      var campo = contador.querySelector("input");
+      contador.querySelectorAll("[data-paso]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          campo.value = String(leer(campo.name) + parseInt(b.getAttribute("data-paso"), 10));
+          campo.value = String(leer(campo.name));
+          refrescarTotal();
+        });
+      });
+      campo.addEventListener("input", refrescarTotal);
+      campo.addEventListener("change", function () {
+        campo.value = String(leer(campo.name));
         refrescarTotal();
       });
-    });
-    campoCantidad.addEventListener("input", refrescarTotal);
-    campoCantidad.addEventListener("change", function () {
-      campoCantidad.value = String(cantidad());
-      refrescarTotal();
     });
     refrescarTotal();
 
@@ -1490,10 +1540,10 @@ function pintarSitio() {
       var nombre = val("nombre");
       var telefono = val("telefono");
       var comentario = val("comentario");
-      var n = cantidad();
-      var total = valorEntrada * n;
-      var entradas = n + (n === 1 ? " entrada" : " entradas");
-      var conNinxs = (form.querySelector('[name="ninxs"]:checked') || {}).value === "si";
+      var adultos = leer("cantidad");
+      var menores = leer("ninxs");
+      var total = valorAdulto * adultos + valorNinxs * menores;
+      var entradas = descripcion(adultos, menores);
       var h0 = (t.horarios || [])[0] || {};
       var fechaCorta = fechaLarga(t.fechaFija).toLowerCase();
 
@@ -1517,8 +1567,7 @@ function pintarSitio() {
         asistio: false,
         pago: false,
         metodoPago: "",
-        notas: entradas + " anticipadas" + (conNinxs ? " · vienen niñas o niños" : "") +
-               (comentario ? " · " + comentario : ""),
+        notas: "Anticipada: " + entradas + (comentario ? " · " + comentario : ""),
         estado: "activa",
         updatedAt: ahora
       };
@@ -1536,7 +1585,8 @@ function pintarSitio() {
             "<h3>Listo, " + escHtml(nombre.split(" ")[0]) + "</h3>" +
             "<p>Te guardamos " + entradas + ". Quedan confirmadas cuando nos llegue la transferencia.</p>" +
             '<dl class="inscrita__datos">' +
-              "<dt>Entradas</dt><dd>" + n + "</dd>" +
+              "<dt>Entradas</dt><dd>" + adultos + "</dd>" +
+              (menores ? "<dt>Menores de 10</dt><dd>" + menores + "</dd>" : "") +
               "<dt>Total</dt><dd>" + pesos(total) + "</dd>" +
               "<dt>Cuándo</dt><dd>" + texto(cuando) + "</dd>" +
             "</dl>" +

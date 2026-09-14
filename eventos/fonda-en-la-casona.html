@@ -10,14 +10,14 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <title>Fonda en la Casona — Sala Crisol</title>
-  <meta name="description" content="Fonda en la Casona, Ironcross × Sala Crisol: sábado 26 de septiembre desde las 16:00 en Av. Salvador 2302, Ñuñoa. Entrada anticipada $5.000 con un terremoto incluido; en la puerta, $8.000.">
+  <meta name="description" content="Fonda en la Casona, Ironcross × Sala Crisol: sábado 26 de septiembre desde las 16:00 en Av. Salvador 2302, Ñuñoa. Entrada anticipada $5.000 con un terremoto incluido; en la puerta, $8.000. Menores de 10 años, $3.000.">
   <link rel="canonical" href="https://salacrisol.cl/eventos/fonda-en-la-casona.html">
   <meta property="og:site_name" content="Sala Crisol">
   <meta property="og:locale" content="es_CL">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://salacrisol.cl/eventos/fonda-en-la-casona.html">
   <meta property="og:title" content="Fonda en la Casona — Ironcross × Sala Crisol">
-  <meta property="og:description" content="Sábado 26 de septiembre desde las 16:00 en Ñuñoa. Entrada anticipada $5.000 con un terremoto incluido; en la puerta, $8.000.">
+  <meta property="og:description" content="Sábado 26 de septiembre desde las 16:00 en Ñuñoa. Entrada anticipada $5.000 con un terremoto incluido; en la puerta, $8.000. Menores de 10 años, $3.000.">
   <meta property="og:image" content="https://salacrisol.cl/img/eventos/fonda-2026-09-26/compartir.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -88,8 +88,14 @@
                 <p class="boleto__nota">con derecho a un terremoto</p>
               </div>
               <div class="boleto__talon" data-ev-talon>
-                <p class="boleto__rotulo" data-ev-precio-nombre="1"></p>
-                <p class="boleto__precio boleto__precio--puerta" data-ev-precio="1"></p>
+                <div data-ev-talon-puerta>
+                  <p class="boleto__rotulo" data-ev-precio-nombre="1"></p>
+                  <p class="boleto__precio boleto__precio--puerta" data-ev-precio="1"></p>
+                </div>
+                <div class="boleto__ninxs" data-ev-ninxs hidden>
+                  <p class="boleto__rotulo" data-ev-ninxs-nombre></p>
+                  <p class="boleto__precio boleto__precio--puerta" data-ev-ninxs-valor></p>
+                </div>
               </div>
             </div>
           </div>
@@ -119,6 +125,7 @@
               <h3>Espacio seguro para niñas y niños</h3>
               <p>Puedes venir con tus hijxs: va a haber un lugar pensado para ellxs, para que
               todxs lo pasemos bien, con respeto y cuidándonos.</p>
+              <p class="fonda-ninxs__precio" data-ev-ninxs hidden>Las niñas y niños menores de 10 años pagan <b data-ev-ninxs-valor></b> la entrada.</p>
             </div>
           </aside>
 
@@ -137,7 +144,7 @@
 
             <ol class="fonda-pasos">
               <li><b>Déjanos tus datos</b> y cuántas entradas quieres.</li>
-              <li><b>Transfiere <span data-ev-valor></span></b> por cada entrada.</li>
+              <li><b>Transfiere <span data-ev-valor></span></b> por entrada<span data-ev-ninxs hidden> y <b data-ev-ninxs-valor></b> por cada menor de 10</span>.</li>
               <li><b>Manda el comprobante</b> por WhatsApp y te confirmamos.</li>
             </ol>
 
@@ -155,18 +162,19 @@
                 <input id="e-correo" name="correo" type="email" autocomplete="email" placeholder="tucorreo@mail.com">
               </div>
               <div class="campo">
-                <label for="e-cantidad">¿Cuántas entradas?</label>
+                <label for="e-cantidad">Entradas <span class="campo__opcional">(10 años o más)</span></label>
                 <div class="contador">
-                  <button class="contador__boton" type="button" data-cantidad="-1" aria-label="Una entrada menos">−</button>
+                  <button class="contador__boton" type="button" data-paso="-1" aria-label="Una entrada menos">−</button>
                   <input id="e-cantidad" name="cantidad" type="number" inputmode="numeric" min="1" max="10" value="1" required>
-                  <button class="contador__boton" type="button" data-cantidad="1" aria-label="Una entrada más">+</button>
+                  <button class="contador__boton" type="button" data-paso="1" aria-label="Una entrada más">+</button>
                 </div>
               </div>
-              <div class="campo">
-                <label id="lbl-ninxs">¿Vienen niñas o niños?</label>
-                <div class="opciones" role="radiogroup" aria-labelledby="lbl-ninxs">
-                  <label class="opcion"><input type="radio" name="ninxs" value="no" checked><span>No</span></label>
-                  <label class="opcion"><input type="radio" name="ninxs" value="si"><span>Sí</span></label>
+              <div class="campo" data-campo-ninxs>
+                <label for="e-ninxs">Menores de 10 años <span class="campo__opcional">(<span data-ev-ninxs-valor></span> c/u)</span></label>
+                <div class="contador">
+                  <button class="contador__boton" type="button" data-paso="-1" aria-label="Un menor de 10 menos">−</button>
+                  <input id="e-ninxs" name="ninxs" type="number" inputmode="numeric" min="0" max="10" value="0">
+                  <button class="contador__boton" type="button" data-paso="1" aria-label="Un menor de 10 más">+</button>
                 </div>
               </div>
               <div class="campo">
@@ -174,7 +182,10 @@
                 <textarea id="e-comentario" name="comentario" placeholder="Si vienes con alguien más o hay algo que debamos saber"></textarea>
               </div>
 
-              <p class="fonda-total">Total a transferir <b data-ev-total></b></p>
+              <div class="fonda-total">
+                <p class="fonda-total__linea">Total a transferir <b data-ev-total></b></p>
+                <p class="fonda-total__detalle" data-ev-total-detalle hidden></p>
+              </div>
 
               <p class="aviso" data-aviso role="status" aria-live="polite"></p>
               <button class="boton boton--fuego" type="submit">Reservar →</button>
@@ -209,8 +220,8 @@
     </div>
   </footer>
 
-  <script src="../js/config.js?v=4"></script>
-  <script src="../js/main.js?v=4"></script>
+  <script src="../js/config.js?v=5"></script>
+  <script src="../js/main.js?v=5"></script>
 
   <!-- En celular el botón principal viaja fijo abajo. Se esconde solo
        cuando el formulario o el botón del letrero están en pantalla. -->

@@ -567,6 +567,11 @@
           "nombre": "En la puerta",
           "valor": "$8.000",
           "monto": 8000
+        },
+        {
+          "nombre": "Menores de 10 años",
+          "valor": "$3.000",
+          "monto": 3000
         }
       ],
       "pagina": "eventos/fonda-en-la-casona.html",

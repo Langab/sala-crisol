@@ -2521,6 +2521,13 @@ a.afiche:hover .flecha { transform: translateX(4px); }
   justify-items: center;
   text-align: center;
 }
+/* los menores de 10, debajo del precio de la puerta */
+.boleto__ninxs {
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed rgba(28, 26, 72, 0.25);
+}
+.boleto__ninxs .boleto__precio { margin-bottom: 0; }
 .boleto__rotulo {
   font-size: 0.7rem;
   font-weight: 700;
@@ -2657,6 +2664,8 @@ a.afiche:hover .flecha { transform: translateX(4px); }
   margin-bottom: 0.2rem;
 }
 .fonda-ninxs p { font-size: 0.95rem; color: #4A5E48; }
+.fonda-ninxs .fonda-ninxs__precio { margin-top: 0.5rem; color: #3F5A3D; }
+.fonda-ninxs__precio b { font-weight: 700; }
 
 .fonda-donde { margin-bottom: 0; }
 /* la calle en grande, igual que en la portada (le gana a .fonda-bloque p) */
@@ -2737,25 +2746,34 @@ a.afiche:hover .flecha { transform: translateX(4px); }
 .contador input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
 .fonda-total {
+  padding: 0.9rem 0 0.2rem;
+  border-top: 1px dashed var(--linea);
+}
+.fonda-total__linea {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.9rem 0 0.2rem;
-  border-top: 1px dashed var(--linea);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--tinta-suave);
 }
-.fonda-total b {
+.fonda-total__linea b {
   font-family: var(--fuente-display);
   font-weight: 600;
   font-size: 1.7rem;
   letter-spacing: -0.01em;
   text-transform: none;
   color: var(--tinta);
+}
+
+.fonda-total__detalle {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--tinta-suave);
+  font-variant-numeric: tabular-nums;
 }
 
 /* los botones de copiar de los datos para transferir */
