@@ -2456,13 +2456,23 @@ a.afiche:hover .flecha { transform: translateX(4px); }
   transform: rotate(2deg);
 }
 .fonda-visual__afiche img { width: 100%; display: block; }
-/* con afiche, el boleto se apoya encima de su esquina */
+/* Con afiche, el afiche se corre a la derecha y baja lo justo para no
+   montarse en los banderines. El boleto se apoya sobre su lado izquierdo,
+   a la altura de los precios pintados (dicen lo mismo), y deja a la vista
+   la fecha y los dos logos. */
+.fonda-visual.con-afiche { justify-items: end; margin-top: 2.5rem; }
 .fonda-visual.con-afiche .boleto-sombra {
   position: absolute;
-  left: -2%;
-  bottom: -7%;
-  width: min(78%, 360px);
+  left: -14%;
+  bottom: 17%;
+  width: min(68%, 330px);
 }
+/* el boleto chico no alcanza para las cifras del boleto solo */
+.fonda-visual.con-afiche .boleto__cuerpo { padding-inline: 1.3rem 1rem; }
+.fonda-visual.con-afiche .boleto__talon { padding-inline: 0.5rem; }
+.fonda-visual.con-afiche .boleto__precio { font-size: clamp(1.9rem, 2.6vw, 2.3rem); }
+.fonda-visual.con-afiche .boleto__precio--puerta { font-size: clamp(1.1rem, 1.5vw, 1.35rem); }
+.fonda-visual.con-afiche .boleto__nota { font-size: 0.9rem; }
 
 /* La sombra va en un envoltorio: la máscara que troquela el boleto
    cortaría una box-shadow puesta en el mismo elemento. */
@@ -2545,14 +2555,23 @@ a.afiche:hover .flecha { transform: translateX(4px); }
   .fonda-hero { padding: 8rem 0 4rem; }
   .fonda-hero__rejilla { grid-template-columns: 1fr; gap: 2.8rem; }
   .fonda-visual { justify-items: start; }
-  .fonda-visual.con-afiche { justify-items: center; }
+  /* en una columna, el boleto va debajo del afiche, montado en su marco */
+  .fonda-visual.con-afiche { justify-items: center; margin-top: 0; }
+  .fonda-visual.con-afiche .boleto-sombra {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: min(100%, 420px);
+    margin-top: -1.2rem;
+  }
+  .fonda-visual.con-afiche .boleto__precio { font-size: clamp(2.2rem, 7vw, 2.8rem); }
+  .fonda-visual.con-afiche .boleto__precio--puerta { font-size: clamp(1.3rem, 4vw, 1.6rem); }
 }
 @media (max-width: 520px) {
   .boleto { --talon: 38%; }
   .boleto__cuerpo { padding: 1.3rem 1rem 1.2rem 1.3rem; }
   .boleto__talon { padding: 1.3rem 0.6rem 1.2rem; }
   .boleto__nota { font-size: 0.92rem; }
-  .fonda-visual.con-afiche .boleto-sombra { position: relative; left: auto; bottom: auto; width: 100%; margin-top: -2.5rem; }
 }
 
 /* --- el cuerpo, en papel --- */
