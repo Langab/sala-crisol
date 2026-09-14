@@ -2563,15 +2563,18 @@ a.afiche:hover .flecha { transform: translateX(4px); }
   .fonda-hero { padding: 8rem 0 4rem; }
   .fonda-hero__rejilla { grid-template-columns: 1fr; gap: 2.8rem; }
   .fonda-visual { justify-items: start; }
-  /* en una columna, el boleto va debajo del afiche, montado en su marco */
-  .fonda-visual.con-afiche { justify-items: center; margin-top: 0; }
+  /* En una columna nada se monta: primero el boleto, que es lo que se
+     busca (cuánto sale), y después el afiche, más chico y con aire.
+     Antes el boleto iba encima del marco y tapaba la dirección. */
+  .fonda-visual.con-afiche { justify-items: center; row-gap: 2.2rem; margin-top: 0; }
   .fonda-visual.con-afiche .boleto-sombra {
+    order: -1;
     position: relative;
     left: auto;
     bottom: auto;
     width: min(100%, 420px);
-    margin-top: -1.2rem;
   }
+  .fonda-visual.con-afiche .fonda-visual__afiche { width: min(82%, 330px); }
   .fonda-visual.con-afiche .boleto__precio { font-size: clamp(2.2rem, 7vw, 2.8rem); }
   .fonda-visual.con-afiche .boleto__precio--puerta { font-size: clamp(1.3rem, 4vw, 1.6rem); }
 }
@@ -2836,6 +2839,70 @@ a.afiche:hover .flecha { transform: translateX(4px); }
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--fonda-crema) 75%, transparent);
+}
+
+/* --- atajos de celular ---
+   Fijos bajo el menú (main.js les da la altura exacta del menú). Van
+   con position: fixed y no sticky porque el body del sitio tiene
+   overflow-x: hidden, y eso anula cualquier sticky de la página.
+   El último, «Reservar», va relleno: es la acción de la página. */
+.fonda-atajos { display: none; }
+
+@media (max-width: 900px) {
+  .fonda-atajos {
+    display: block;
+    position: fixed;
+    top: 62px;
+    left: 0;
+    right: 0;
+    z-index: 80;
+    background: color-mix(in srgb, var(--crema) 94%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--linea);
+  }
+  .fonda-atajos__lista {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.45rem 4vw;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .fonda-atajos__lista::-webkit-scrollbar { display: none; }
+  .fonda-atajos a {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 0.85rem;
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+    background: var(--papel);
+    color: var(--tinta-suave);
+    font-size: 0.84rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .fonda-atajos a.activo { color: var(--tinta); border-color: var(--tinta-suave); }
+  .fonda-atajos a.fonda-atajos__reservar {
+    margin-left: auto;
+    background: var(--frambuesa);
+    border-color: var(--frambuesa);
+    color: #FFF8F4;
+  }
+  .fonda-atajos a.fonda-atajos__reservar.activo { box-shadow: 0 0 0 2px var(--papel), 0 0 0 3.5px var(--frambuesa); }
+
+  /* el letrero y sus banderines se bajan lo que miden los atajos (51 px),
+     para que nada quede escondido detrás de ellos */
+  .fonda-atajos + .fonda-hero { padding-top: calc(8rem + 51px); }
+  .fonda-atajos + .fonda-hero .guirnalda--techo { top: calc(58px + 51px); }
+
+  /* al saltar a una sección, que el título no quede tapado por el
+     menú y los atajos */
+  html:has(.fonda-atajos) { scroll-padding-top: 128px; }
 }
 
 /* --- la pestaña del evento en el menú --- */

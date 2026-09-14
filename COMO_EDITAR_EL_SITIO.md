@@ -186,9 +186,9 @@ git add -A && git commit -m "Actualizo la portada" && git push
 En un par de minutos https://salacrisol.cl/ queda actualizado.
 (Si no ves el cambio, recarga con Ctrl+Shift+R / Cmd+Shift+R.)
 
-### El `?v=5` de los scripts
+### El `?v=6` de los scripts
 
-Los `<script>` de todas las páginas apuntan a `js/config.js?v=5` y `js/main.js?v=5`.
+Los `<script>` de todas las páginas apuntan a `js/config.js?v=6` y `js/main.js?v=6`.
 Ese numerito no es decorativo: el navegador guarda los scripts un rato para no
 bajarlos en cada visita (en GitHub Pages eran 10 minutos; en Cloudflare es una
 hora, lo dice el archivo `_headers`), así que sin él alguien que visitó el sitio
@@ -199,7 +199,7 @@ de clase salen en blanco.
 las páginas:**
 
 ```bash
-sed -i '' 's/\.js?v=5"/.js?v=6"/g' *.html talleres/*.html tertulias/*.html eventos/*.html
+sed -i '' 's/\.js?v=6"/.js?v=7"/g' *.html talleres/*.html tertulias/*.html eventos/*.html
 ```
 
 `datos/contenido.json` no necesita esto: se pide con `no-cache`, así que los

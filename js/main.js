@@ -1342,6 +1342,9 @@ function pintarSitio() {
       [reserva, document.querySelector("[data-ev-visual]")]
         .concat([].slice.call(document.querySelectorAll("[data-ev-extra], [data-ev-cta]")))
         .forEach(function (el) { if (el) el.hidden = true; });
+      /* los atajos llevan display propio en celular: hidden no les basta */
+      var atajosSinEvento = document.querySelector("[data-ev-atajos]");
+      if (atajosSinEvento) atajosSinEvento.remove();
       return;
     }
 
@@ -1430,6 +1433,8 @@ function pintarSitio() {
       habra.hidden = !cosas.length;
     }
 
+    montarAtajos();
+
     var diaDelMes = /^\d{4}-\d{2}-(\d{2})$/.exec(String(t.fechaFija || ""));
     poner("[data-ev-nos-vemos]", texto("Nos vemos el " + (diaDelMes ? parseInt(diaDelMes[1], 10) : "día de la fonda") +
       (t.profe ? " · " + t.profe : "")));
@@ -1454,6 +1459,61 @@ function pintarSitio() {
     }
 
     if (reserva) montarReservaEvento(t, reserva, cuando);
+  }
+
+  /* ---------- atajos de celular ----------
+     Van fijos justo bajo el menú (su alto cambia con el ancho), se quitan
+     los que apuntan a una sección que no se muestra, y se marca en qué
+     parte va la lectura. */
+  function montarAtajos() {
+    var atajos = document.querySelector("[data-ev-atajos]");
+    if (!atajos) return;
+
+    var menu = document.querySelector(".nav");
+    var ajustarAlto = function () {
+      if (menu) atajos.style.top = menu.offsetHeight + "px";
+    };
+    ajustarAlto();
+    window.addEventListener("resize", ajustarAlto);
+
+    var pares = [].slice.call(atajos.querySelectorAll('a[href^="#"]')).map(function (a) {
+      var destino = document.getElementById(a.getAttribute("href").slice(1));
+      if (!destino || destino.hidden) { a.remove(); return null; }
+      return { enlace: a, destino: destino };
+    }).filter(Boolean);
+
+    var lista = atajos.querySelector(".fonda-atajos__lista");
+    var marcada = null;
+    var marcar = function () {
+      /* la última sección cuyo comienzo ya subió hasta 120 px bajo los
+         atajos. Una línea más baja (la mitad de la pantalla) marcaba
+         «Reservar» al tocar «Dónde», que es corta y tiene el formulario
+         justo debajo. */
+      var linea = atajos.getBoundingClientRect().bottom + 120;
+      var actual = null;
+      pares.forEach(function (p) {
+        if (p.destino.getBoundingClientRect().top <= linea) actual = p;
+      });
+      if (actual === marcada) return;
+      marcada = actual;
+      pares.forEach(function (p) {
+        var es = p === actual;
+        p.enlace.classList.toggle("activo", es);
+        if (es) p.enlace.setAttribute("aria-current", "location");
+        else p.enlace.removeAttribute("aria-current");
+      });
+      /* si los atajos no caben, que el marcado quede a la vista */
+      if (actual && lista && lista.scrollWidth > lista.clientWidth) {
+        lista.scrollTo({
+          left: actual.enlace.offsetLeft - (lista.clientWidth - actual.enlace.offsetWidth) / 2,
+          behavior: sinMovimiento ? "auto" : "smooth"
+        });
+      }
+    };
+    /* son cuatro medidas por evento: no hace falta agruparlas en un frame */
+    window.addEventListener("scroll", marcar, { passive: true });
+    window.addEventListener("resize", marcar);
+    marcar();
   }
 
   /** Los precios de un evento, separados: los de adultos en su orden

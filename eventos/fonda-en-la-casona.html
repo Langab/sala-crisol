@@ -53,6 +53,18 @@
   </header>
 
   <main>
+    <!-- Atajos de celular: fijos bajo el menú mientras se baja, para
+         saltar a cada parte sin recorrer toda la página. En escritorio
+         no se muestran: ahí el formulario ya está al lado del texto. -->
+    <nav class="fonda-atajos" aria-label="En esta página" data-ev-atajos>
+      <div class="fonda-atajos__lista">
+        <a href="#que-hay">Qué hay</a>
+        <a href="#ninxs">Niñas y niños</a>
+        <a href="#donde">Dónde</a>
+        <a class="fonda-atajos__reservar" href="#entradas">Reservar</a>
+      </div>
+    </nav>
+
     <!-- ===================== EL LETRERO =====================
          Los colores salen del afiche pintado a mano: el índigo de la
          banda de la fecha, el oro de las letras, el carmín de "ENTRADA"
@@ -114,12 +126,12 @@
             <div data-ev-mundos-texto></div>
           </div>
 
-          <div class="fonda-bloque fonda-bloque--ancho" data-ev-habra hidden>
+          <div class="fonda-bloque fonda-bloque--ancho" id="que-hay" data-ev-habra hidden>
             <h2>Qué va a <span class="acento">haber</span></h2>
             <ul class="fonda-carta" data-ev-habra-lista></ul>
           </div>
 
-          <aside class="fonda-ninxs" data-ev-extra>
+          <aside class="fonda-ninxs" id="ninxs" data-ev-extra>
             <span class="banderin banderin--salvia" aria-hidden="true"></span>
             <div>
               <h3>Espacio seguro para niñas y niños</h3>
@@ -129,7 +141,7 @@
             </div>
           </aside>
 
-          <div class="fonda-bloque fonda-donde" data-ev-extra>
+          <div class="fonda-bloque fonda-donde" id="donde" data-ev-extra>
             <h2>Dónde</h2>
             <p class="direccion">Av. Salvador 2302</p>
             <p class="direccion__comuna">Ñuñoa · a 4 minutos del Metro Monseñor Eyzaguirre (L3)</p>
@@ -220,13 +232,12 @@
     </div>
   </footer>
 
-  <script src="../js/config.js?v=5"></script>
-  <script src="../js/main.js?v=5"></script>
+  <script src="../js/config.js?v=6"></script>
+  <script src="../js/main.js?v=6"></script>
 
-  <!-- En celular el botón principal viaja fijo abajo. Se esconde solo
-       cuando el formulario o el botón del letrero están en pantalla. -->
-  <div class="barra-movil" data-barra-movil>
-    <a class="boton boton--fuego" href="#entradas">Quiero mi entrada</a>
-  </div>
+  <!-- Esta página no lleva la barra fija de abajo que tienen las demás:
+       en celular, los atajos de arriba ya traen «Reservar» a la vista
+       todo el rato, y con las dos barras más la de Safari quedaba poca
+       pantalla para leer. -->
 </body>
 </html>
