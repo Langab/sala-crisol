@@ -644,6 +644,45 @@ function pintarSitio() {
     el.rel = "noopener";
   });
 
+  /* ------------------------------------------------------------
+     ENVÍO A LA PLANILLA
+     ------------------------------------------------------------
+     Apps Script corre el script (y guarda la fila) antes de contestar,
+     y contesta con una redirección a script.googleusercontent.com,
+     donde deja el resultado. Esa segunda dirección falla seguido: un
+     404 después de 15 a 30 segundos, con la fila ya guardada. La
+     visitante leía «no pudimos guardar tu reserva» y se anotaba dos
+     veces. Por eso no se sigue la redirección: que llegue quiere decir
+     que el script ya corrió. Si Google no contesta en 90 segundos, se
+     ofrece anotarse por WhatsApp.
+     ------------------------------------------------------------ */
+  function enviarInscripcion(destino, inscripcion) {
+    var control = window.AbortController ? new AbortController() : null;
+    var reloj = control ? setTimeout(function () { control.abort(); }, 90000) : null;
+    return fetch(destino, {
+      method: "POST",
+      redirect: "manual",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ inscripciones: [inscripcion] }),
+      signal: control ? control.signal : undefined
+    }).then(function (r) {
+      clearTimeout(reloj);
+      if (r.type === "opaqueredirect") return true;
+      /* si algún día Google contesta directo, se lee la respuesta */
+      return r.json().then(function (j) { return !!(j && j.ok); });
+    }, function (err) {
+      clearTimeout(reloj);
+      throw err;
+    });
+  }
+
+  /** El script de la planilla tarda entre 4 y 20 segundos: que se note que avanza. */
+  function avisarEspera(aviso) {
+    if (!aviso) return;
+    aviso.className = "aviso aviso--espera";
+    aviso.textContent = "Guardando… puede tardar unos segundos, no cierres la página.";
+  }
+
   /* próxima fecha (YYYY-MM-DD) en que cae ese día de la semana */
   /* Todo lo que escribe una visitante pasa por aquí antes de volver a la
      página. Sin esto, un nombre con < > se interpreta como HTML. */
@@ -995,17 +1034,11 @@ function pintarSitio() {
 
           // bloquea el doble envío mientras viaja
           if (boton) { boton.disabled = true; boton.textContent = "Guardando…"; }
-          if (aviso) { aviso.className = "aviso"; aviso.textContent = ""; }
+          avisarEspera(aviso);
 
-          fetch(destino, {
-            method: "POST",
-            redirect: "follow",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ inscripciones: [inscripcion] })
-          })
-            .then(function (r) { return r.json(); })
-            .then(function (r) { if (r && r.ok) confirmar(); else fallar(); })
-            .catch(fallar);
+          enviarInscripcion(destino, inscripcion).then(function (ok) {
+            if (ok) confirmar(); else fallar();
+          }, fallar);
         });
     }
   }
@@ -1538,17 +1571,11 @@ function pintarSitio() {
       if (!destino) { confirmar(); return; }
 
       if (boton) { boton.disabled = true; boton.textContent = "Guardando…"; }
-      if (aviso) { aviso.className = "aviso"; aviso.textContent = ""; }
+      avisarEspera(aviso);
 
-      fetch(destino, {
-        method: "POST",
-        redirect: "follow",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ inscripciones: [inscripcion] })
-      })
-        .then(function (r) { return r.json(); })
-        .then(function (r) { if (r && r.ok) confirmar(); else fallar(); })
-        .catch(fallar);
+      enviarInscripcion(destino, inscripcion).then(function (ok) {
+        if (ok) confirmar(); else fallar();
+      }, fallar);
     });
   }
 

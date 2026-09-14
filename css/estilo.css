@@ -1496,6 +1496,7 @@ a { color: inherit; }
 }
 .aviso--ok { display: block; background: var(--salvia-velo); color: #3F6B45; border: 1px solid #C9DEC7; }
 .aviso--error { display: block; background: var(--rosa-velo); color: #9A4A56; border: 1px solid #EFD3D8; }
+.aviso--espera { display: block; background: var(--crema-2); color: var(--tinta-suave); border: 1px solid var(--linea); }
 
 @media (max-width: 860px) {
   .hablemos__rejilla { grid-template-columns: 1fr; gap: 2rem; }
